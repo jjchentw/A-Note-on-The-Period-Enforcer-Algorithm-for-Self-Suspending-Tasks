@@ -1,26 +1,61 @@
+
 \section{Introduction} 
-This report presents some discussions to explain how to use the period enforcer algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle self-suspending real-time tasks. The report explains briefly the underlying assumption of the period enforcer algorithm, its limitations, and how it should be correctly used to handle self-suspending sporadic real-time tasks. 
+This report revists the \emph{period enforcer} algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle self-suspending real-time tasks. The report briefly reviews the period enforcer algorithm, explains its underlying assumptions and limitations, and discusses how it may be analyzed to correctly determine the schedulability of self-suspending sporadic real-time tasks subject to period enforcement. 
 
-Self-suspending tasks can be classified into two models: \emph{dynamic} self-suspension and \emph{segmented} (or \emph{multi-segment}) self-suspension models. 
+The main contributions of this report are two observations that have not been previously reported in the real-time literature:
+
+\begin{enumerate}
+	\item period enforcement can render self-suspending tasks sets unschedulable that are schedulable otherwise (i.e., period enforcement can induce deadline misses); and
+	\item with current techniques, schedulability analysis of the period enforcer algorithm requires a task set transformation that is subject to exponential time complexity.
+\end{enumerate}
+
+\subsection{Preliminaries}
+
+To date, the real-time literature on self-suspending tasks has focused on two task models: the \emph{dynamic} and the \emph{segmented} (or \emph{multi-segment}) self-suspension model. 
 The dynamic self-suspension sporadic task model characterizes each
-task $\tau_i$ as a $4$-tuple $(C_i,S_i,T_i,D_i)$: $T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, $D_i$ is the relative deadline,
-$C_i$ denotes the upper bound on total execution time of each job of $\tau_i$,
-and $S_i$ denotes the upper bound on total suspension time of each job of $\tau_i$.  In addition to the above $4$-tuple, the segmented sporadic task model further 
-characterizes the computation segments and suspension intervals as an array
-$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For the simplicity of presentation, we will implicitly assume that a task $\tau_i$ always starts with a computation segment. The arguments can be easily extended to handle tasks that start with self-suspensions.
+task $\tau_i$ as a $4$-tuple $(C_i,S_i,T_i,D_i)$: 
+$C_i$ denotes the upper bound on the total execution time of any job of $\tau_i$,
+$S_i$ denotes the upper bound on the total self-suspension time of any job of $\tau_i$,
+$T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ is the relative deadline. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur.
 
-The basic notation in the report in \cite{Raj:suspension1991} is a \emph{deferrable task}. In Section 3 in the report in \cite{Raj:suspension1991}, it is assumed that "\emph{With deferred execution, a task $\tau_i$ can execute its $C_i$ units of execution in discrete amounts $C_i^1, C_i^2$, $\cdots$ with suspension inbetween $C_i^j$ and $C_i^{j+1}$.\footnote{The notations are alerted here to be consistent.} Without any loss of generality, we shall assume that a task $\tau_i$ can defer its entire execution time but not parts of it. That is, a task $\tau_i$ executes for $C_i$ units with no suspensions once it begins execution. Any task that does suspend after it executes for a while can be considered to be two or more tasks each with its own worst- case execution time. The only difference is that if a task $\tau_i$ is split into two tasks $\tau_i'$ followed by $\tau_i''$, then $\tau_i''$ has the same deadlines as $\tau_i′$. }". 
+In contrast, the segmented sporadic task model extends the above $4$-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
+$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For the simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. The arguments can be easily extended to handle tasks that start with self-suspensions.
 
-The deferrable execution of a deferrable task imposes a scheduling penalty because one job of a deferrable task can first defer defer its execution by some amount of time and for the next job without any deferrable execution. The purpose of the period enforcer algorithm is to reduce such penalty. One of the main contributions in the report in \cite{Raj:suspension1991} is its Theorem 5, as follows:
+The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on control flow. The advantage of the segmented model is that is allows for more accurate analysis. The period enforcer algorithm and its analysis fundamentally applies (only) to the segmented model.
+
+The central notation in Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{deferrable task}, which matches our notion of multi-segment tasks.  Specifically, Rajkumar states that:
 \begin{quote}
-{\bf Theorem 5} \cite{Raj:suspension1991}: A deferrable task that is schedulable under its worst-case conditions is also schedulable under the period enforcer algorithm.
+With deferred execution, a task $\tau_i$ can execute its $C_i$ units of execution in discrete amounts $C_i^1, C_i^2$, $\ldots$ with suspension in between $C_i^j$ and $C_i^{j+1}$. \cite[Section 3]{Raj:suspension1991}\footnote{The notation has been altered here for the sake of consistency.} 
+\end{quote}
+%
+Central to Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{task set transformation} that splits each deferrable task with multiple segments into a corresponding number of single-segment deferrable tasks.  In the words of Rajkumar~\cite[Section 3]{Raj:suspension1991}:
+
+\begin{quote}
+	 Without any loss of generality, we shall assume that a task $\tau_i$ can defer its entire execution time but not parts of it. That is, a task $\tau_i$ executes for $C_i$ units with no suspensions once it begins execution. Any task that does suspend after it executes for a while can be considered to be two or more tasks each with its own worst-case execution time. The only difference is that if a task $\tau_i$ is split into two tasks $\tau_i'$ followed by $\tau_i''$, then $\tau_i''$ has the same deadlines as $\tau_i{{'}}$. 
+\end{quote}
+%
+In other words, the transformation can be understood as splitting each self-suspending task into a matching number of non-self-suspending sporadic tasks subject to \emph{release jitter}, which can be easily analyzed with classic fixed-priority response-time analysis~\cite{ABRTW:93}.
+
+It is well known that uncontrolled deferred execution (i.e, release jitter) can impose a scheduling penalty because of the potential for ``back-to-back'' execution~\cite{ABRTW:93}. That is, if a job of a deferrable task that maximally defers its execution is directly followed by a job that executes immediately without deferring its execution, then lower-priority tasks may suffer increased interference. 
+
+The purpose of the period enforcer algorithm is to reduce such penalties for lower-priority tasks without detrimentally affecting the schedulability of self-suspending, higher-priority tasks. The latter aspect --- no detrimental effects for self-suspending tasks --- is captured concisely by Theorem 5 in the original analysis of the period enforcer algorithm \cite{Raj:suspension1991}.
+\begin{quote}
+{\bf Theorem 5}: A deferrable task that is schedulable under its worst-case conditions is also schedulable under the period enforcer algorithm.  \cite{Raj:suspension1991}
 \end{quote}
 
-Theorem 5 in \cite{Raj:suspension1991} provides a very positive result to handle deferrable task systems. That is, if a deferrable task system can be schedulable by using a fixed-priority scheduling policy, the perioc enforcer algorithm also provides a feasible schedule. However, recall that the deferrable task systems are based on the assumption that a deferrable task $\tau_i$ can defer its entire execution time but not parts of it. If we would like to use this result to handle segmented self-suspending task systems, the first question we have to answer is \emph{"What is the corresponding deferrable task system of a sporadic segmented self-suspending task system?"}. Unfortunately, the report in \cite{Raj:suspension1991} did not provide any explanation about the above question. In this report, we will explain two concepts:
-\begin{itemize}
-\item First, there exists (at least) a sporadic segmented self-suspending task system that is schedulable under fixed-priority scheduling without any enforcement, but the corresponding schedule by using the period enforcer algorithm is not feasible. This shows that the result in Theorem 5 in \cite{Raj:suspension1991} has to be carefully used only based on the schedulability of \emph{deferrable task systems} instead of \emph{self-suspending task systems}.
-\item Second, deriving the corresponding deferrable task system of a sporadic segmented self-suspending task system in polynomial time is an open problem. The recent findings by Nelissen et al. \cite{ecrts15nelissen} can be applied, but it takes exponential time.
-\end{itemize}
+\subsection{Questions answered in this report}
+
+Theorem 5 in \cite{Raj:suspension1991} provides a very positive result for the analysis of deferrable task sets subject to period enforcement. That is, if the corresponding transformed task set can be shown to be schedulable under fixed-priority scheduling using \emph{any} applicable analysis, then the period enforcer algorithm also provides a feasible schedule. 
+
+However, note that Theorem 5 in \cite{Raj:suspension1991} applies only to the \emph{transformed} task set: recall that, in the original analysis~\cite{Raj:suspension1991}, deferrable tasks are assumed to defer their entire execution time either completely or not at all (but not parts of it).  Therefore, if we would like to use the period enforcer algorithm to handle segmented self-suspending task sets, we first have to answer the following question: ``\emph{Given a set of sporadic segmented self-suspending tasks, what is the corresponding set of (single-segment) deferrable tasks?}'' That is, how do we convert given self-suspension segments into equivalent bounds on release jitter such that we may apply Theorem 5 to conclude that the system remains schedulable despite period enforcement? Unfortunately, the original proposal \cite{Raj:suspension1991} does not provide an answer to this central question. 
+
+
+In this report, we make two observations pertaining to this question:
+\begin{enumerate}
+	\item There exist sporadic segmented self-suspending task sets that are schedulable under fixed-priority scheduling without any enforcement, but the corresponding schedule by using the period enforcer algorithm is not feasible. This shows that Theorem 5 in \cite{Raj:suspension1991} has to be  used with care --- it may be applied only in the context of the transformed single-segment deferrable task set, and not in the context of the original segmented self-suspending task set.
+
+	\item Deriving a single-segment deferrable task set corresponding to a given set of sporadic segmented self-suspending tasks in polynomial time is an open problem. Recent findings by Nelissen et al. \cite{ecrts15nelissen} can be applied, but their method takes exponential time.
+\end{enumerate}
 
 \section{Schedulable Self-Suspending Tasks but Unschedulable Period Enforcer}
 \label{sec:unschedulable}
