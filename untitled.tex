@@ -74,8 +74,7 @@ Consider a task system with $2$ tasks. Let $\tau_1$ denote a sporadic task witho
 \end{itemize}
 
 
-\textbf{XXX TODO:} It would be nice to show a schedule for the uncontrolled example.\textbf{XXX}
-
+Let's release these two tasks periodically, starting from time $0$. The fixed-priority schedule is presented in Figure \ref{fig:example-original}.
 The period enforcer algorithm determines for each segment (i.e., for each converted single-segment deferrable task) an \emph{eligibility time}. If a segment resumes (i.e., a job of a single-segment deferrable task arrives) before its eligibility time, the execution of the segment (i.e., the single-segment job) is delayed until the eligibility time is reached.
 
 Let $ET_{2,j}^1$ and $ET_{2,j}^2$ denote the eligibility times of the first and second segment, respectively, of the $j^{\mathrm{th}}$ job of $\tau_2$. Further, let $a^1_{2,j}$ and $a^2_{2,j}$ denote the arrival times\footnote{A segment \emph{arrives} when it becomes available for execution. The first segment arrives immediately when the job is released; the segment arrives when the job resumes from its self-suspension.} of the job's first and second segment, respectively.  Finally, let $\mathit{busy}(\tau_2, t')$ denote the last time that a level-2 busy interval began on or prior to time $t'$. According to Section 3.1 in \cite{Raj:suspension1991}, the period enforcer algorithm then defines the segment eligibility times as
