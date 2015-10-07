@@ -1,3 +1,2 @@
-figures/example/example.png
 untitled.tex
-figures/example.png
+figures/example/example.png
