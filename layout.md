@@ -1,2 +1,2 @@
 untitled.tex
-figures/example.png
+figures/example.pdf
