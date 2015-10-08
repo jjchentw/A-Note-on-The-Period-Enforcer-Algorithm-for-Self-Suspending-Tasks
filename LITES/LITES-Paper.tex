@@ -1,0 +1,58 @@
+\input{../preamble}
+
+\input{../header.tex}
+
+\title{A Note on the Period Enforcer Algorithm  for Self-Suspending Tasks}
+
+\author[1]{Jian-Jia Chen}
+\author[2]{Bj\"orn Brandenburg}
+\affil[1]{TU Dortmund University, Germany\\
+  \texttt{jian-jia.chen@cs.uni-dortmund.de}}
+\affil[2]{Max Planck Institute for Software Systems (MPI-SWS)\\
+  \texttt{bbb@mpi-sws.org}}
+\authorrunning{Chen and Brandenburg} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et. al.'
+
+\Copyright{Chen and Brandenburg}%mandatory. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+%\subjclass{MANDATORY:  Please refer to \url{www.acm.org/about/class/2012}}% mandatory: Please choose 2012 ACM classifications from http://www.acm.org/about/class/2012 . E.g., cite as "Integrated circuits". 
+%\keywords{MANDATORY: Please provide 1--5 keywords as a comma-separated list}% mandatory: Please provide 1-5 keywords
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%EditorialOffice macros (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\Volume{XXX}
+\Issue{YYY}
+\DateSubmission{Date of submission}
+\DateAcceptance{Date of acceptance}
+\DatePublished{Date of publishing}
+\SectionAreaEditor{LITES section area editor}
+\DOI{10.4230/LITES.xxx.yyy.p}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\begin{document}
+
+\maketitle
+\input{../abstract.tex}
+\input{../untitled.tex}
+\begin{figure}[t]
+  \centering
+  \input{../figures/example-original/example-body.tex}
+  \caption{An illustrative example of the original self-suspending task schedule.}
+  \label{fig:example-original}
+  \end{figure}
+
+\begin{figure}[t]
+  \centering
+  \input{../figures/example/example-body.tex}
+  \caption{An illustrative example demonstrating a deadline miss at time 22
+    under the period enforcer algorithm.}
+\label{fig:example}  
+\end{figure}
+%\input{../figures/example-original/example.png}
+%\input{../figures/example/example.png}
+\input{../transformation.tex}
+\input{../conclusion.tex}
+
+\bibliography{../bibliography/biblio}{}
+
+\end{document}

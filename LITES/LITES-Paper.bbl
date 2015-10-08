@@ -1,0 +1,19 @@
+\begin{thebibliography}{1}
+
+\bibitem{ABRTW:93}
+N.~Audsley, A.~Burns, M.~Richardson, K.~Tindell, and A.J. Wellings.
+\newblock Applying new scheduling theory to static priority pre-emptive
+  scheduling.
+\newblock {\em Software Engineering Journal}, 8(5):284--292, 1993.
+
+\bibitem{ecrts15nelissen}
+Gurulingesh~Raravi Geoffrey~Nelissen, José~Fonseca and Vincent Nelis.
+\newblock {Timing Analysis of Fixed Priority Self-Suspending Sporadic Tasks}.
+\newblock In {\em Euromicro Conference on Real-Time Systems (ECRTS)}, 2015.
+
+\bibitem{Raj:suspension1991}
+R.~Rajkumar.
+\newblock {Dealing with Suspending Periodic Tasks.}
+\newblock Technical report, IBM T. J. Watson Research Center, 1991.
+
+\end{thebibliography}
