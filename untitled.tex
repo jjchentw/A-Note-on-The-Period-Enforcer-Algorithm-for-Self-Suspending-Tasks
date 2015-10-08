@@ -109,28 +109,4 @@ One may consider to enrich the period enforcer with the following power: when th
 Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism: if we convert the two computation segments of task $\tau_2$ into two deferrable tasks $\tau_2^1$ and $\tau_2^2$, where  task $\tau_2^1$ never defers its execution and task $\tau_2^2$ defers its execution by at most \emph{$9$} time units,  then it is immediately obvious that the resulting single-segment deferrable task set $\{\tau_1, \tau_2^1, \tau_2^2\}$ is in fact not schedulable under a rate-monotonic priority assignment since we can time the release of a job of $\tau_1$ to coincide with the arrival of a job of $\tau_2^2$ after it has maximally deferred its execution, which clearly results in a deadline miss.
 
 
-\clearpage
-
-\section{Deriving a Corresponding Deferrable Task Set}
-\label{sec:convert}
-
-The example in Section \ref{sec:unschedulable} can be easily converted to a corresponding single-segment deferrable task set. However, in general,  \emph{precisely} converting a self-suspending task system into a corresponding single-segment  deferrable task set is not an easy problem. We can demonstrate the inherent difficulty by looking at a special case.
-
-Suppose that the system has $k-1$ ordinary sporadic tasks and only one segmented self-suspending task $\tau_k$. Converting a computation segment into a deferrable task requires to derive the \emph{worst-case resume time of a computation segment}, denoted as $R_k^j$ for the $j^{\mathrm{th}}$ computation segment of task $\tau_k$. Suppose that the worst-case response time of the $j^{\mathrm{th}}$ computation segment of task $\tau_k$ is $W_k^j$. It is not difficult to see that $R_k^1=0$ and $R_k^j = W_k^{j-1}+S_k^{j-1}$ for $j=2,3,\ldots,m_k-1$. We therefore need to derive the worst-case response times of the computation segments of task $\tau_k$. 
-
-Based on these considerations, it appears that, at least for the simple example,  the problem is basically identical to the worst-case response time analysis of segmented self-suspending task systems.  However, it has been recently shown by Nelissen et al.\ \cite{ecrts15nelissen} that calculating the worst-case response time in the above ``simple'' case is already a very challenging problem. In particular, Nelissen et al.\ \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be a very challenging problem. 
-
-
-
-In the context of the period enforcer, we consequently observe that the only existing solution to derive the \emph{precise} bound $W_k^{j}$ (and hence $R_k^j$), due to Nelissen et al.\ \cite{ecrts15nelissen},  has exponential time complexity (even for the special case above). Furthermore, as demonstrated with the example shown in Figure~\ref{fig:example}, even if the conversion is done precisely, the transformed single-segment deferrable task set can admit more pessimism than the original self-suspending task set with respect to schedulability.
-
-\section{Concluding Remarks}
-
-We have revisited the period enforcer algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle segmented self-suspending real-time tasks. One key assumption in the original report \cite{Raj:suspension1991} is that a deferrable task $\tau_i$ can defer its entire execution time but not parts of it. This creates some mismatches between the original self-suspending task set and the corresponding deferrable task set, which we have demonstrated with an example that shows that Theorem 5 in \cite{Raj:suspension1991} does not reflect the schedulability of the original self-suspending task system. 
-
-
-Furthermore, the original report \cite{Raj:suspension1991} left open the question of how to convert a segmented self-suspending task system to a corresponding deferrable task system. Taking into account recent developments~\cite{ecrts15nelissen}, we have observed that such a task set transformation is non-trivial in the general case.  
-
-
-Nevertheless, Theorem 5 in \cite{Raj:suspension1991} can be useful for handling self-suspending task systems if there exist \emph{efficient} schedulability tests for the corresponding deferrable task systems or the period enforcer algorithm. However, such tests have not been found yet and the development of a precise and efficient schedulability test for self-suspending tasks remains an open problem.
-
+%\clearpage
