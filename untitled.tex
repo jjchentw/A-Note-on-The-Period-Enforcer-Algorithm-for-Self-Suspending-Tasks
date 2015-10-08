@@ -75,8 +75,6 @@ Consider a task system with $2$ tasks. Let $\tau_1$ denote a sporadic task witho
 
 
 Let's release these two tasks periodically, starting from time $0$. The fixed-priority schedule is presented in Figure \ref{fig:example-original}.
-
-
 The period enforcer algorithm determines for each segment (i.e., for each converted single-segment deferrable task) an \emph{eligibility time}. If a segment resumes (i.e., a job of a single-segment deferrable task arrives) before its eligibility time, the execution of the segment (i.e., the single-segment job) is delayed until the eligibility time is reached.
 
 Let $ET_{2,j}^1$ and $ET_{2,j}^2$ denote the eligibility times of the first and second segment, respectively, of the $j^{\mathrm{th}}$ job of $\tau_2$. Further, let $a^1_{2,j}$ and $a^2_{2,j}$ denote the arrival times\footnote{A segment \emph{arrives} when it becomes available for execution. The first segment arrives immediately when the job is released; the segment arrives when the job resumes from its self-suspension.} of the job's first and second segment, respectively.  Finally, let $\mathit{busy}(\tau_2, t')$ denote the last time that a level-2 busy interval began on or prior to time $t'$. According to Section 3.1 in \cite{Raj:suspension1991}, the period enforcer algorithm then defines the segment eligibility times as
@@ -103,6 +101,8 @@ In contrast to the first job, the second job of task $\tau_2$ (which is released
 According to the rules of the period enforcer algorithm, the processor therefore remains idle at time $19$ because the segment is not eligible to execute until time $ET_{2,2}^2 = 20$. However, at time $20$, the third job of $\tau_1$ is released. As a result, the second job of $\tau_2$ incurs additional interference and misses its deadline at time $22$.
 
 This example shows that there exist sporadic segmented self-suspending task sets that   \textbf{(i)} are schedulable under fixed-priority scheduling without any enforcement, but \textbf{(ii)} are not schedulable under the period enforcer algorithm.
+
+One may consider to enrich the period enforcer with the following power: when the processor becomes idle, the task becomes ready to run right away regardless of the settings of eligibility time. Even with this, the above example remains valid by introducing a lowest priority task $\tau_3$ with execution time $C_3=13$ (to be executed from $3$ to $9$ and $13$ to $20$) and $T_3=D_3=100$.
 
 Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism: if we convert the two computation segments of task $\tau_2$ into two deferrable tasks $\tau_2^1$ and $\tau_2^2$, where  task $\tau_2^1$ never defers its execution and task $\tau_2^2$ defers its execution by at most \emph{$9$} time units,  then it is immediately obvious that the resulting single-segment deferrable task set $\{\tau_1, \tau_2^1, \tau_2^2\}$ is in fact not schedulable under a rate-monotonic priority assignment since we can time the release of a job of $\tau_1$ to coincide with the arrival of a job of $\tau_2^2$ after it has maximally deferred its execution, which clearly results in a deadline miss.
 
