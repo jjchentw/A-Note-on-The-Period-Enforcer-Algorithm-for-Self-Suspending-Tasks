@@ -2,7 +2,7 @@
 \section{Deriving a Corresponding Deferrable Task Set}
 \label{sec:convert}
 
-The example in Section \ref{sec:unschedulable} can be easily converted to a corresponding single-segment deferrable task set. However, in general,  \emph{precisely} converting a self-suspending task system into a corresponding single-segment  deferrable task set is not an easy problem. We can demonstrate the inherent difficulty by looking at a special case.
+The example in Section \ref{sec:unschedulable} can be easily converted to a corresponding single-segment deferrable task set. However, in general,  \emph{precisely} converting a self-suspending task system into a corresponding single-segment  deferrable task set is not an easy problem. We demonstrate the inherent difficulty by focusing on a special case.
 
 Suppose that the system has $k-1$ ordinary sporadic tasks and only one segmented self-suspending task $\tau_k$. Converting a computation segment into a deferrable task requires to derive the \emph{worst-case resume time of a computation segment}, denoted as $R_k^j$ for the $j^{\mathrm{th}}$ computation segment of task $\tau_k$. Suppose that the worst-case response time of the $j^{\mathrm{th}}$ computation segment of task $\tau_k$ is $W_k^j$. It is not difficult to see that $R_k^1=0$ and $R_k^j = W_k^{j-1}+S_k^{j-1}$ for $j=2,3,\ldots,m_k-1$. We therefore need to derive the worst-case response times of the computation segments of task $\tau_k$. 
 

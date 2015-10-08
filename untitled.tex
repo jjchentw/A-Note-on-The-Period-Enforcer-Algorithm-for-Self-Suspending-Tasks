@@ -2,9 +2,9 @@
 
 
 \section{Introduction} 
-This report revisits the \emph{period enforcer} algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle self-suspending real-time tasks. The report briefly reviews the period enforcer algorithm, explains its underlying assumptions and limitations, and discusses how it may be analyzed to correctly determine the schedulability of self-suspending sporadic real-time tasks subject to period enforcement. 
+This report revisits the \emph{period enforcer} algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle self-suspending real-time tasks. We briefly review the period enforcer algorithm, explain its underlying assumptions and limitations, and discuss how it may be analyzed to correctly determine the schedulability of self-suspending sporadic real-time tasks subject to period enforcement. 
 
-The main contributions of this report are two observations that have not been previously reported in the real-time literature:
+The main contributions of this paper are two observations that have not been previously reported in the real-time literature:
 
 \begin{enumerate}
 	\item period enforcement can render self-suspending tasks sets unschedulable that are schedulable otherwise (i.e., period enforcement can induce deadline misses); and
@@ -13,15 +13,15 @@ The main contributions of this report are two observations that have not been pr
 
 \subsection{Preliminaries}
 
-To date, the real-time literature on self-suspending tasks has focused on two task models: the \emph{dynamic} and the \emph{segmented} (or \emph{multi-segment}) self-suspension model. 
+To date, the real-time literature on self-suspensions has focused on two task models: the \emph{dynamic} and the \emph{segmented} (or \emph{multi-segment}) self-suspension model. 
 The dynamic self-suspension sporadic task model characterizes each
 task $\tau_i$ as a $4$-tuple $(C_i,S_i,T_i,D_i)$: 
-$C_i$ denotes the upper bound on the total execution time of any job of $\tau_i$,
-$S_i$ denotes the upper bound on the total self-suspension time of any job of $\tau_i$,
+$C_i$ denotes an upper bound on the total execution time of any job of $\tau_i$,
+$S_i$ denotes an upper bound on the total self-suspension time of any job of $\tau_i$,
 $T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ is the relative deadline. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur.
 
 In contrast, the segmented sporadic task model extends the above $4$-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
-$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For the simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. The arguments can be easily extended to handle tasks that start with self-suspensions.
+$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For the simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. The arguments can be easily extended to handle tasks that start with a self-suspension.
 
 The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on control flow. The advantage of the segmented model is that is allows for more accurate analysis. The period enforcer algorithm and its analysis fundamentally applies (only) to the segmented model.
 
@@ -45,7 +45,7 @@ The purpose of the period enforcer algorithm is to reduce such penalties for low
 {\bf Theorem 5}: A deferrable task that is schedulable under its worst-case conditions is also schedulable under the period enforcer algorithm.  \cite{Raj:suspension1991}
 \end{quote}
 
-\subsection{Questions answered in this report}
+\subsection{Questions answered in this paper}
 
 Theorem 5 in \cite{Raj:suspension1991} provides a very positive result for the analysis of deferrable task sets subject to period enforcement: if the corresponding transformed task set can be shown to be schedulable under fixed-priority scheduling using \emph{any} applicable analysis, then the period enforcer algorithm also yields a correct schedule. 
 
@@ -54,7 +54,7 @@ However, note that Theorem 5 in \cite{Raj:suspension1991} applies only to the \e
 
 
 
-In this report, which is motivated by the fact that the original proposal \cite{Raj:suspension1991} does not provide an answer to this central question, 
+In this paper, which is motivated by the fact that the original proposal \cite{Raj:suspension1991} does not provide an answer to this central question, 
 we make two pertinent observations.
 \begin{enumerate}
 	\item There exist sporadic segmented self-suspending task sets that are schedulable under fixed-priority scheduling without any enforcement, but the corresponding schedule by using the period enforcer algorithm is not feasible. This shows that Theorem 5 in \cite{Raj:suspension1991} has to be  used with care --- it may be applied only in the context of the transformed single-segment deferrable task set, and not in the context of the original segmented self-suspending task set.
@@ -67,7 +67,7 @@ we make two pertinent observations.
 
 In this section, we demonstrate with an example that there exist sporadic  segmented self-suspending task sets that both \textbf{(i)} are schedulable \emph{without} period enforcement and \textbf{(ii)} are not schedulable with period enforcement.
 
-Consider a task system with $2$ tasks. Let $\tau_1$ denote a sporadic task without self-suspensions and parameters $C_1 = 2$ and $T_1=D_1=10$, and let $\tau_2$ denote a self-suspending task consisting of two segments with parameters  $C_{2,1} = 1$,  $S_{2,1} = 6$, $C_{2,2}=1$, and $ T_2=D_2=11$. Suppose that we use the rate-monotonic priority assignment, i.e., $\tau_1$ has higher priority than $\tau_2$. This task set is schedulable without any enforcement since at most one computation segment of a job of $\tau_2$ can be delayed by $\tau_1$: 
+To this end, consider a task system consisting of $2$ tasks. Let $\tau_1$ denote a sporadic task without self-suspensions and parameters $C_1 = 2$ and $T_1=D_1=10$, and let $\tau_2$ denote a self-suspending task consisting of two segments with parameters  $C_{2,1} = 1$,  $S_{2,1} = 6$, $C_{2,2}=1$, and $ T_2=D_2=11$. Suppose that we use the rate-monotonic priority assignment, i.e., $\tau_1$ has higher priority than $\tau_2$. This task set is schedulable without any enforcement since at most one computation segment of a job of $\tau_2$ can be delayed by $\tau_1$: 
 \begin{itemize}
 	\item if the first segment of a job of $\tau_2$ is interfered with by $\tau_1$, then the second segment resumes at most after $9$ time units after the release of the job and the response time of task $\tau_2$ is hence $10$; otherwise,
 	\item  if the first segment of a job of $\tau_2$ is not interfered with by $\tau_1$, then the second segment resumes at most $7$ time units after the release of the job and hence the  response time of task $\tau_2$ is at most $10$ even if the second segment is interfered with by $\tau_1$.
