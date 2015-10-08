@@ -102,8 +102,6 @@ According to the rules of the period enforcer algorithm, the processor therefore
 
 This example shows that there exist sporadic segmented self-suspending task sets that   \textbf{(i)} are schedulable under fixed-priority scheduling without any enforcement, but \textbf{(ii)} are not schedulable under the period enforcer algorithm.
 
-One may consider to enrich the period enforcer with the following power: when the processor becomes idle, the task becomes ready to run right away regardless of the settings of eligibility time. Even with this, the above example remains valid by introducing a lowest priority task $\tau_3$ with execution time $C_3=13$ (to be executed from $3$ to $9$ and $13$ to $20$) and $T_3=D_3=100$.
-
 Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism: if we convert the two computation segments of task $\tau_2$ into two deferrable tasks $\tau_2^1$ and $\tau_2^2$, where  task $\tau_2^1$ never defers its execution and task $\tau_2^2$ defers its execution by at most \emph{$9$} time units,  then it is immediately obvious that the resulting single-segment deferrable task set $\{\tau_1, \tau_2^1, \tau_2^2\}$ is in fact not schedulable under a rate-monotonic priority assignment since we can time the release of a job of $\tau_1$ to coincide with the arrival of a job of $\tau_2^2$ after it has maximally deferred its execution, which clearly results in a deadline miss.
 
 
