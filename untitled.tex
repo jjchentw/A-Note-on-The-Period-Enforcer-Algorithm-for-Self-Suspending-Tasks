@@ -2,7 +2,7 @@
 
 
 \section{Introduction} 
-This report revists the \emph{period enforcer} algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle self-suspending real-time tasks. The report briefly reviews the period enforcer algorithm, explains its underlying assumptions and limitations, and discusses how it may be analyzed to correctly determine the schedulability of self-suspending sporadic real-time tasks subject to period enforcement. 
+This report revisits the \emph{period enforcer} algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle self-suspending real-time tasks. The report briefly reviews the period enforcer algorithm, explains its underlying assumptions and limitations, and discusses how it may be analyzed to correctly determine the schedulability of self-suspending sporadic real-time tasks subject to period enforcement. 
 
 The main contributions of this report are two observations that have not been previously reported in the real-time literature:
 
@@ -72,9 +72,17 @@ Consider a task system with $2$ tasks. Let $\tau_1$ denote a sporadic task witho
 	\item if the first segment of a job of $\tau_2$ is interfered with by $\tau_1$, then the second segment resumes at most after $9$ time units after the release of the job and the response time of task $\tau_2$ is hence $10$; otherwise,
 	\item  if the first segment of a job of $\tau_2$ is not interfered with by $\tau_1$, then the second segment resumes at most $7$ time units after the release of the job and hence the  response time of task $\tau_2$ is at most $10$ even if the second segment is interfered with by $\tau_1$.
 \end{itemize}
+Figure \ref{fig:example-original} depicts an example schedule of the task set assuming periodic job arrivals.
 
 
-Let's release these two tasks periodically, starting from time $0$. The fixed-priority schedule is presented in Figure \ref{fig:example-original}.
+\begin{figure}[t]
+  \centering
+  \input{../figures/example-original/example-body.tex}
+  \caption{An illustrative example of the original self-suspending task set (without period enforcement) assuming periodic job arrivals.}
+  \label{fig:example-original}
+  \end{figure}
+
+Next, let us consider the same task set under control of the period enforcer algorithm.
 The period enforcer algorithm determines for each segment (i.e., for each converted single-segment deferrable task) an \emph{eligibility time}. If a segment resumes (i.e., a job of a single-segment deferrable task arrives) before its eligibility time, the execution of the segment (i.e., the single-segment job) is delayed until the eligibility time is reached.
 
 Let $ET_{2,j}^1$ and $ET_{2,j}^2$ denote the eligibility times of the first and second segment, respectively, of the $j^{\mathrm{th}}$ job of $\tau_2$. Further, let $a^1_{2,j}$ and $a^2_{2,j}$ denote the arrival times\footnote{A segment \emph{arrives} when it becomes available for execution. The first segment arrives immediately when the job is released; the segment arrives when the job resumes from its self-suspension.} of the job's first and second segment, respectively.  Finally, let $\mathit{busy}(\tau_2, t')$ denote the last time that a level-2 busy interval began on or prior to time $t'$. According to Section 3.1 in \cite{Raj:suspension1991}, the period enforcer algorithm then defines the segment eligibility times as
@@ -99,6 +107,15 @@ In contrast to the first job, the second job of task $\tau_2$ (which is released
 	ET_{2,2}^2 & = \max\left(9 + 11,\ \mathit{busy}(\tau_2, 19\right) ) = 20.
 \end{align*}
 According to the rules of the period enforcer algorithm, the processor therefore remains idle at time $19$ because the segment is not eligible to execute until time $ET_{2,2}^2 = 20$. However, at time $20$, the third job of $\tau_1$ is released. As a result, the second job of $\tau_2$ incurs additional interference and misses its deadline at time $22$.
+
+\begin{figure}[t]
+  \centering
+  \input{../figures/example/example-body.tex}
+  \caption{An illustrative example demonstrating a deadline miss at time 22
+    under the period enforcer algorithm.}
+\label{fig:example}  
+\end{figure}
+
 
 This example shows that there exist sporadic segmented self-suspending task sets that   \textbf{(i)} are schedulable under fixed-priority scheduling without any enforcement, but \textbf{(ii)} are not schedulable under the period enforcer algorithm.
 
