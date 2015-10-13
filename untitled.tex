@@ -85,15 +85,13 @@ Figure \ref{fig:example-original} depicts an example schedule of the task set as
 Next, let us consider the same task set under control of the period enforcer algorithm.
 The period enforcer algorithm determines for each segment (i.e., for each converted single-segment deferrable task) an \emph{eligibility time}. If a segment resumes (i.e., a job of a single-segment deferrable task arrives) before its eligibility time, the execution of the segment (i.e., the single-segment job) is delayed until the eligibility time is reached.
 
-Let $ET_{2,j}^1$ and $ET_{2,j}^2$ denote the eligibility times of the first and second segment, respectively, of the $j^{\mathrm{th}}$ job of $\tau_2$. Further, let $a^1_{2,j}$ and $a^2_{2,j}$ denote the arrival times\footnote{A segment \emph{arrives} when it becomes available for execution. The first segment arrives immediately when the job is released; the segment arrives when the job resumes from its self-suspension.} of the job's first and second segment, respectively.  Finally, let $\mathit{busy}(\tau_2, t')$ denote the last time that a level-2 busy interval began on or prior to time $t'$. According to Section 3.1 in \cite{Raj:suspension1991}, the period enforcer algorithm then defines the segment eligibility times as
-\begin{align*}
-	ET_{2,j}^1 & = \max\left(ET_{2,j-1}^1 + T_2,\ \mathit{busy}(\tau_2, a^1_{2,j})\right)  \text{ and }
-\\
-	ET_{2,j}^2 & = \max\left(ET_{2,j-1}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,j}) \right),
-\end{align*}
-where $ET_{2,0}^1 = ET_{2,0}^2 = -T_2$. 
+A segment's eligibility time is determined according to the following rule. Let $ET_{i,j}^k$ denote the eligibility time of the $k$\xth segment of the $j$\xth job of task $\tau_i$. Further, let $a^k_{i,j}$ denote the segment's arrival time.\footnote{A segment \emph{arrives} when it becomes available for execution. The first segment arrives immediately when the job is released; the segment arrives when the job resumes from its self-suspension.} Finally, let $\mathit{busy}(\tau_i, t')$ denote the last time that a level-$i$ busy interval began on or prior to time $t'$. According to Section 3.1 in \cite{Raj:suspension1991}, the period enforcer algorithm defines the segment eligibility time of the $k$\xth segment as
+\begin{align}\label{eq:ET-def}
+	ET_{i,j}^k & = \max\left(ET_{i,j-1}^k + T_i,\ \mathit{busy}(\tau_i, a^k_{i,j})\right),
+\end{align}
+where $ET_{i,0}^k = -T_i$. 
 
-Figure \ref{fig:example} shows the resulting schedule assuming a periodic release pattern. The first job of task $\tau_2$ (which arrives at time $a^1_{2,1} =  0$) is executed as if there is no period enforcement since the definition $ET_{2,0}^1 = ET_{2,0}^2 = -T_2$ ensures that both segments are immediately eligible. Note that the first segment of $\tau_2$'s first job is delayed due to interference from $\tau_1$. As a result, the second segment of $\tau_2$'s first job does not resume until time $a^2_{2,1} = 9$. Thus, we have
+Assuming this definition, Figure \ref{fig:example} shows the resulting schedule for a periodic release pattern. The first job of task $\tau_2$ (which arrives at time $a^1_{2,1} =  0$) is executed as if there is no period enforcement since the definition $ET_{2,0}^1 = ET_{2,0}^2 = -T_2$ ensures that both segments are immediately eligible. Note that the first segment of $\tau_2$'s first job is delayed due to interference from $\tau_1$. As a result, the second segment of $\tau_2$'s first job does not resume until time $a^2_{2,1} = 9$. Thus, we have
 \begin{align*}
 	ET_{2,1}^1 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, 0)\right) = 0  \text{ and }
 \\
