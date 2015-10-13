@@ -1,0 +1,52 @@
+\section{Incompatibility with Suspension-Based Locking Protocols}
+\label{sec:locking}
+
+A common source of self-suspensions in multiprocessor real-time systems are \emph{binary semaphores}, i.e., suspension-based locks used to realize mutually exclusive access to shared resources. When a task tries to use a resource that has already been locked, it self-suspends until the resource becomes available. Such self-suspensions due to lock contention, just like any other self-suspension, result in deferred execution and thus can detrimentally affect the interference of lower-priority tasks. It may thus seem natural to apply the period enforcer algorithm to control the negative effects of locking-induced self-suspensions.\footnote{The combination of suspension-based locks and period enforcement has indeed been assumed in prior work~\cite{Raj:91} and suggested as a potential improvement elsewhere~\cite{Lak:11,LNR:09}.} However, as we demonstrate with two examples, it is actually not safe to combine the period enforcer algorithm with suspension-based locks.
+
+\subsection{Combining Period Enforcement and Suspension-Based Locks}
+
+Whenever a task attempts to lock a shared resource, it may potentially block if the resource has already been  locked by another task. In the context of the multi-segmented self-suspending task model, each lock operations hence marks the beginning of a new segment.
+
+The period enforcer algorithm may therefore be applied to determine the eligibility time of each such segment (which, again, starts with a critical section). There is, however, one complication: when does the task actually \emph{acquire} the lock? That is, if a task's execution is postponed due to the rules of the period enforcement algorithm, at which point is the lock request processed, with the consequence that the resource become unavailable to other tasks? 
+
+There are two possible interpretations.
+\begin{enumerate}
+	\item When a task requires a shared resource, which implies the beginning of a new segment, its lock request is processed only when its new segment becomes eligible for execution (as determined by the period enforcer algorithm). As a consequence, a task may find a required shared resource unavailable when its new segment becomes eligible for execution even though it was available when the prior segment finished.
+	\item Alternatively, when a task requires a shared resource, its request may be processed \emph{immediately}. As a consequence, a shared resource may be locked by a task that is currently ineligible to execute.
+\end{enumerate}
+We believe that the first interpretation is the more natural one. However, for the sake of completeness, we show that either interpretation leads to potentially unbounded worst-case response times.
+
+\subsection{Alternative 1: Locking Takes Effect at Segment Eligibility Time}
+Consider a simple task set consisting of two tasks on two processors that share one resource. Task $\tau_1$, on processor~1, has a total execution cost of $C_1 = 4$ and a period and deadline of $T_1 = D_i = 8$. After one time unit of execution, jobs of $\tau_1$ require the shared resource for two time units. $\tau_1$ thus consists of two segments with cost $C_{1,1} = 1$ and $C_{1,2} = 3$. Task $\tau_2$, on processor~2, has the same overall WCET ($C_2 = 4$), a slightly shorter period ($T_2 = D_2 = 7$), and requires the shared resource for one time unit after \emph{two} time units of execution ($C_{2,1} = 2$ and $C_{2,2} = 2$).
+
+A schedule of the two tasks assuming period job arrivals is depicted in Figure~\ref{XXX}. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
+
+Since $\tau_2$'s first job requests the shared resource only after two time units of execution, it is blocked by $\tau_1$'s critical section, which commenced at time $1$. At time $3$, $\tau_1$ releases the shared resource and $\tau_2$ consequently resumes (i.e., $a^2_{2,1} = 3$). According to the period enforcer rules~\cite{Raj:suspension1991}, the second segment is immediately eligible because
+\begin{align*}
+	ET_{2,1}^2 & = \max\left(ET_{2,0}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,1})\right) =\max(-T_2 + T_2,\ 3) = 3.
+\end{align*}
+(Recall that $ET_{2,0}^2 = -T_2$, and interpret $\mathit{busy}(\tau_2, a^2_{2,1})$ with respect to $\tau_2$'s processor.)
+
+
+At time $7$, the second job of $\tau_2$ is released. Its first segment ends at time $9$. However, its second segment is not eligible to be scheduled before time $10$ since $ET_{2,2}^2 \geq ET_{2,1}^2 + T_2 = 3 + 7 = 10$. At time $9$, the second job of $\tau_1$, released at time $8$, can thus lock the shared resource without contention. Consequently, when $\tau_2$'s request for the shared resource takes effect at time $10$, the resource is no longer available and $\tau_2$ must wait until time $a^2_{2,2} = 11$ before it can proceed in its execution. We thus have
+\begin{align*}
+	ET_{2,2}^2 & = \max\left(ET_{2,1}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,2})\right) =\max(10,\ 11) = 11.
+\end{align*}
+
+The third job of $\tau_2$ is released at time $14$. Its first segment ends at time $16$, but since $ET_{2,3}^2 \geq ET_{2,2}^2 + T_2 = 11 + 7 = 18$, the segment segment may not commence execution until time $18$ and the shared resource remains available to other tasks in the meantime. The third job of $\tau_1$ is released at time $16$ and acquires the uncontested shared resource at time $17$. Thus, the segment of $\tau_2$ cannot resume execution before time $a^2_{2,3} = 19$. Therefore
+\begin{align*}
+	ET_{2,3}^2 & = \max\left(ET_{2,2}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,3})\right) =\max(18,\ 19) = 19.
+\end{align*}
+
+The same pattern repeats for the fourth job of $\tau_2$, released at time $21$: when its first segment ends at time $23$, the second segment is not eligible to commence execution before time $26$ since $ET_{2,4}^2 \geq ET_{2,3}^2 + T_2 = 19 + 7 = 26$. By then, however, $\tau_1$ has already locked the shared semaphore again, and the second segment of the fourth job of $\tau_2$ cannot resume before time
+\begin{align*}
+	ET_{2,4}^2 & = \max\left(ET_{2,3}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,4})\right) =\max(26,\ 27) = 27.
+\end{align*}
+However, this leaves insufficient time to meet the job's deadline: the second segment of $\tau_2$ requires $C_{2,2} = 2$ time units to complete, the deadline at time $28$ is thus missed.
+
+By construction, this example does not depend on a specific locking protocol; the effect occurs with both the MPCP~\cite{Ra:90} (based on priority queues) and the FMLP~\cite{BLBA:07,BA:08} (based on FIFO queues). However,  the response-time analyses for both the MPCP~\cite{LNR:09,Br:13} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for task $\tau_2$ (i.e., four time units of execution, and at most two time units of blocking due to the critical section of $\tau_1$). This demonstrates that adding period enforcement to suspension-based locks invalidates all existing blocking analyses. Furthermore, it is clear that the devised repeating pattern can be used to construct schedules in which the response time of $\tau_2$  grows beyond any given implicit or constrained deadline.
+
+Next, we show that the alternative interpretation of when a lock request takes effect also leads to unbounded response time growth.
+
+
+\subsection{Alternative 2: Locking Takes Effect Immediately}
