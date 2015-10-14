@@ -24,7 +24,16 @@ First, assume that the processing of lock requests is delayed until the point wh
 
 To this end, consider a simple task set consisting of two tasks on two processors that share one resource. Task $\tau_1$, on processor~1, has a total execution cost of $C_1 = 4$ and a period and deadline of $T_1 = D_i = 8$. After one time unit of execution, jobs of $\tau_1$ require the shared resource for two time units. $\tau_1$ thus consists of two segments with cost $C_{1,1} = 1$ and $C_{1,2} = 3$. Task $\tau_2$, on processor~2, has the same overall WCET ($C_2 = 4$), a slightly shorter period ($T_2 = D_2 = 7$), and requires the shared resource for one time unit after \emph{two} time units of execution ($C_{2,1} = 2$ and $C_{2,2} = 2$).
 
-A schedule of the two tasks assuming period job arrivals is depicted in Figure~\ref{XXX}. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
+A schedule of the two tasks assuming period job arrivals is depicted in Figure~\ref{fig:locking-alt1}. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=1]{../figures/locking/legend}
+  \includegraphics[scale=1]{../figures/locking/sched-locking-alt1}
+  \caption{Example schedule of two tasks $\tau_1$ and $\tau_2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect only when the critical section segment  becomes eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the fourth job of task $\tau_2$ misses its deadline at time $28$.}
+  \label{fig:locking-alt1}
+  \end{figure}
+
 
 Since $\tau_2$'s first job requests the shared resource only after two time units of execution, it is blocked by $\tau_1$'s critical section, which commenced at time $1$. At time $3$, $\tau_1$ releases the shared resource and $\tau_2$ consequently resumes (i.e., $a^2_{2,1} = 3$). According to the period enforcer rules~\cite{Raj:suspension1991}, the second segment is immediately eligible because, according to Equation~\ref{eq:ET-def},
 \begin{align*}
@@ -59,7 +68,7 @@ From now on, assume that all lock requests are processed immediately when they a
 
 To this end, consider two identical tasks hosted on two processors. Task $\tau_1$ is hosted on processor~1; $\tau_2$ is hosted on processor~2. Both tasks have a period of $T_1 = T_2 = D_1 = D_2 = 8$ and a WCET of $C_1 = C_2 = 4$. They both access a single shared resource for two time units each per job. Both tasks request the shared resource after executing for \emph{at most} one time unit. Both tasks thus have two segments each with parameters $C_{1,1} = C_{2,1} = 1$ and $C_{1,2} = C_{2,2} = 3$. The example exploits that jobs may require \emph{less} service than their specified worst-case costs.
 
-Figure~\ref{xxx} shows an example schedule assuming periodic job arrivals and that, for an arbitrary positive $\epsilon <1$,
+Figure~\ref{fig:locking-alt2} shows an example schedule assuming periodic job arrivals and that, for an arbitrarily small, positive $\epsilon <1$,
 \begin{itemize}
 	\item the first segment of the first job of $\tau_2$ executes for only $1-\epsilon$ time units,
 	\item the first segment of the second job of $\tau_1$ executes for only $1-\epsilon$ time units,
@@ -67,27 +76,40 @@ Figure~\ref{xxx} shows an example schedule assuming periodic job arrivals and th
 	\item all other segments must execute for their specified worst-case costs.
 \end{itemize}
 
-At time $1-\epsilon$, the first job of $\tau_2$ acquires the shared resource because $\tau_1$ does not issue its request until time $1$. Consequently, $\tau_1$ is blocked until time $a^2_{1,1} = 3$, and we have
+
+At time $1-\epsilon$, the first job of $\tau_2$ acquires the shared resource because $\tau_1$ does not issue its request until time $1$. Consequently, $\tau_1$ is blocked until time $a^2_{1,1} = 3 - \epsilon$, and we have
 \begin{align*}
-	ET_{1,1}^2 & = \max\left(ET_{1,0}^2 + T_1,\ \mathit{busy}(\tau_1, a^2_{1,1})\right) =\max(-T_1 + T_1,\ 3) = 3 
+	ET_{1,1}^2 & = \max\left(ET_{1,0}^2 + T_1,\ \mathit{busy}(\tau_1, a^2_{1,1})\right) =\max(-T_1 + T_1,\ 3 - \epsilon) = 3 - \epsilon
 \\ \intertext{and}
 	ET_{2,1}^2 & = \max\left(ET_{2,0}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,1})\right) =\max(-T_2 + T_2,\ 1 - \epsilon) = 1 - \epsilon.
 \end{align*}
 
-The roles of the second jobs of both tasks are reversed: since the second job of $\tau_1$ locks the shared resource already at time $9-\epsilon$, $\tau_2$ is blocked when it attempts to lock the resource at time $9$. However, according to the rules of the period enforcer algorithm, the second segment of the second job of $\tau_1$ is not actually eligible to execute before time $11$ since
+The roles of the second jobs of both tasks are reversed: since the second job of $\tau_1$ locks the shared resource already at time $9-\epsilon$, $\tau_2$ is blocked when it attempts to lock the resource at time~$9$. However, according to the rules of the period enforcer algorithm, the second segment of the second job of $\tau_1$ is not actually eligible to execute before time $11 - \epsilon$ since
 \begin{align*}
-	ET_{1,2}^2 & = \max\left(ET_{1,1}^2 + T_1,\ \mathit{busy}(\tau_1, a^2_{1,2})\right) =\max(3 + 8,\ 8) = 11.
+	ET_{1,2}^2 & = \max\left(ET_{1,1}^2 + T_1,\ \mathit{busy}(\tau_1, a^2_{1,2})\right) =\max(3 - \epsilon + 8,\ 8) = 11 - \epsilon.
 \end{align*}
-Consequently, even though the lock is granted to $\tau_1$ already  at time $9-\epsilon$, the critical section is executed only starting at time $11$, and $\tau_2$ is thus delayed until time $13$. At time $13$, $\tau_2$ is immediately eligible to execute since
+Consequently, even though the lock is granted to $\tau_1$ already  at time $9-\epsilon$, the critical section is executed only starting at time $11 - \epsilon$, and $\tau_2$ is thus delayed until time $13 - \epsilon$. At time $13 - \epsilon$, $\tau_2$ is immediately eligible to execute since
 \begin{align*}
-	ET_{2,2}^2 & = \max\left(ET_{2,1}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,2})\right) =\max(1-\epsilon + 8,\ 13) = 13.
+	ET_{2,2}^2 & = \max\left(ET_{2,1}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,2})\right) =\max(1-\epsilon + 8,\ 13 - \epsilon) = 13 - \epsilon.
 \end{align*}
 
-The third jobs of both tasks are released at time $16$. The roles are swapped again: $\tau_2$ acquires the lock before $\tau_1$ can issue its request because $\tau_2$'s first segment requires only $1-\epsilon$ time units of service. However, according to the period enforcer algorithm's eligibility criterium, $\tau_2$ cannot actually continue its execution before time $21$ since
+The third jobs of both tasks are released at time $16$. The roles are swapped again: $\tau_2$ acquires the lock at time $a^2_{2,3} = 17 - \epsilon$, before $\tau_1$ can issue its request, because $\tau_2$'s first segment requires only $1-\epsilon$ time units of service. However, according to the period enforcer algorithm's eligibility criterium, $\tau_2$ cannot actually continue its execution before time $21- \epsilon$ since
 \begin{align*}
-	ET_{2,3}^2 & = \max\left(ET_{2,2}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,3})\right) =\max(13 + 8,\ 17-\epsilon) = 21.
+	ET_{2,3}^2 & = \max\left(ET_{2,2}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,3})\right) =\max(13- \epsilon + 8,\ 16) = 21- \epsilon.
 \end{align*}
-This, however, means that $\tau_1$ cannot use the shared resource before time $23$, which leaves insufficient time to complete the -segment before $\tau_1$'s deadline at time $24$. However, as before,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking).
+This, however, means that $\tau_1$ cannot use the shared resource before time $23 - \epsilon$, which leaves insufficient time to complete the second segment of $\tau_1$'s third job before its deadline at time $24$.
+
+However, as in the previous example,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking). The example thus demonstrates that, if lock requests take effect immediately, then the period enforcer is incompatible with existing blocking analyses because it increases the effective lock-holding times.
+
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=1]{../figures/locking/legend}
+  \includegraphics[scale=1]{../figures/locking/sched-locking-alt2}
+  \caption{Example schedule of two tasks $\tau_1$ and $\tau_2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect immediately, even if the critical section segment is not yet eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the third job of task $\tau_1$ misses its deadline at time $24$.}
+  \label{fig:locking-alt2}
+  \end{figure}
+
 
 \subsection{Discussion}
 
