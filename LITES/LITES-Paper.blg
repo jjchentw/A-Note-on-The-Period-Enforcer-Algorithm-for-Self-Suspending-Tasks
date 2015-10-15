@@ -3,44 +3,44 @@ Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
 The top-level auxiliary file: LITES-Paper.aux
 The style file: plain.bst
 Database file #1: ../bibliography/biblio.bib
-You've used 3 entries,
+You've used 10 entries,
             2118 wiz_defined-function locations,
-            517 strings with 4554 characters,
-and the built_in function-call counts, 914 in all, are:
-= -- 85
-> -- 48
-< -- 0
-+ -- 19
-- -- 16
-* -- 61
-:= -- 167
-add.period$ -- 9
-call.type$ -- 3
-change.case$ -- 18
+            561 strings with 5873 characters,
+and the built_in function-call counts, 3595 in all, are:
+= -- 356
+> -- 140
+< -- 5
++ -- 58
+- -- 46
+* -- 209
+:= -- 566
+add.period$ -- 30
+call.type$ -- 10
+change.case$ -- 52
 chr.to.int$ -- 0
-cite$ -- 3
-duplicate$ -- 33
-empty$ -- 71
-format.name$ -- 16
-if$ -- 182
+cite$ -- 10
+duplicate$ -- 164
+empty$ -- 300
+format.name$ -- 46
+if$ -- 788
 int.to.chr$ -- 0
-int.to.str$ -- 3
-missing$ -- 2
-newline$ -- 18
-num.names$ -- 6
-pop$ -- 18
+int.to.str$ -- 10
+missing$ -- 9
+newline$ -- 53
+num.names$ -- 20
+pop$ -- 69
 preamble$ -- 1
-purify$ -- 14
+purify$ -- 43
 quote$ -- 0
-skip$ -- 20
+skip$ -- 127
 stack$ -- 0
-substring$ -- 40
-swap$ -- 3
-text.length$ -- 0
+substring$ -- 225
+swap$ -- 57
+text.length$ -- 5
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 12
+type$ -- 38
 warning$ -- 0
-while$ -- 8
-width$ -- 4
-write$ -- 34
+while$ -- 36
+width$ -- 12
+write$ -- 110
