@@ -1,5 +1,6 @@
 
 \section{Concluding Remarks}
+\label{sec:conclusion}
 
 We have revisited the period enforcer algorithm proposed by Rajkumar \cite{Raj:suspension1991} to handle segmented self-suspending real-time tasks. One key assumption in the original proposal \cite{Raj:suspension1991} is that a deferrable task $\tau_i$ can defer its entire execution time but not parts of it. This creates some mismatches between the original self-suspending task set and the corresponding deferrable task set, which we have demonstrated with an example that shows that Theorem 5 in \cite{Raj:suspension1991} does not reflect the schedulability of the original self-suspending task system. 
 
@@ -8,4 +9,5 @@ Furthermore, the original proposal \cite{Raj:suspension1991} left open the quest
 
 
 Nevertheless, Theorem 5 in \cite{Raj:suspension1991} can be useful for handling self-suspending task systems if there exist \emph{efficient} schedulability tests for the corresponding deferrable task systems or the period enforcer algorithm. However, such tests have not been found yet and the development of a precise and efficient schedulability test for self-suspending tasks remains an open problem.
+
 
