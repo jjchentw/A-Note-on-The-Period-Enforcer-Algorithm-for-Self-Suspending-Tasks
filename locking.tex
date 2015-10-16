@@ -13,7 +13,7 @@ There are two possible interpretations of how period enforcement and locking rul
 
 As a consequence of the first rule, a task may find a required shared resource unavailable when its new segment becomes eligible for execution even though the resource was available when the prior segment finished.  As a consequence of the second rule, a shared resource may be locked by a task that cannot currently use the resource  because the task is still ineligible to execute.
 
-We believe that the first interpretation is the more natural one, as it does not make much sense to allocate resources to tasks that cannot yet use them. However, for the sake of completeness, we show that either interpretation can lead to deadline misses even if the task set trivially schedulable without any enforcement.
+We believe that the first interpretation is the more natural one, as it does not make much sense to allocate resources to tasks that cannot yet use them. However, for the sake of completeness, we show that either interpretation can lead to deadline misses even if the task set is trivially schedulable without any enforcement.
 
 \subsection{Case 1: Locking Takes Effect at Earliest Segment Eligibility Time}
 In the following example, we assume the first interpretation, i.e., that the processing of lock requests is delayed until the point when a resuming segment would no longer be subject to any delay due to period enforcement. We show that this interpretation leads to a deadline miss in a task set that would otherwise be trivially schedulable.
