@@ -1,0 +1,12 @@
+.DS_Store
+*.aux
+*.log
+*.texshop
+*.fdb_latexmk
+*.dvi
+*.ps
+*.blg
+*.bbl
+*.out
+*.fls
+diff-to-*.pdf
