@@ -98,6 +98,13 @@ Figure \ref{fig:example-original} depicts an example schedule of the task set as
   \caption{An illustrative example of the original self-suspending task set (without period enforcement) assuming periodic job arrivals.}
   \label{fig:example-original}
   \end{figure}
+\begin{figure}[t]
+  \centering
+  \input{../figures/example/example-body.tex}
+  \caption{An illustrative example demonstrating a deadline miss at time 22
+    under the period enforcer algorithm.}
+\label{fig:example}  
+\end{figure}
 
 Next, let us consider the same task set under control of the period enforcer algorithm.
 The period enforcer algorithm determines for each segment (i.e., for each converted single-segment deferrable task) an \emph{eligibility time}. If a segment resumes (i.e., a job of a single-segment deferrable task arrives) before its eligibility time, the execution of the segment (i.e., the single-segment job) is delayed until the eligibility time is reached.
@@ -123,13 +130,7 @@ In contrast to the first job, the second job of task $\tau_2$ (which is released
 \end{align*}
 According to the rules of the period enforcer algorithm, the processor therefore remains idle at time $19$ because the segment is not eligible to execute until time $ET_{2,2}^2 = 20$. However, at time $20$, the third job of $\tau_1$ is released. As a result, the second job of $\tau_2$ incurs additional interference and misses its deadline at time $22$.
 
-\begin{figure}[t]
-  \centering
-  \input{../figures/example/example-body.tex}
-  \caption{An illustrative example demonstrating a deadline miss at time 22
-    under the period enforcer algorithm.}
-\label{fig:example}  
-\end{figure}
+
 
 
 This example shows that there exist sporadic segmented self-suspending task sets that   \textbf{(i)} are schedulable under fixed-priority scheduling without any enforcement, but \textbf{(ii)} are not schedulable under the period enforcer algorithm.
