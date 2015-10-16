@@ -10,3 +10,5 @@
 *.out
 *.fls
 diff-to-*.pdf
+
+*.swp
