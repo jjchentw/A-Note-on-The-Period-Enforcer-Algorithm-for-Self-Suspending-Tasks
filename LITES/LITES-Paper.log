@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.2.3)  8 OCT 2015 12:15
+This is pdfTeX, Version 3.14159265-2.6-1.40.15 (TeX Live 2014) (preloaded format=pdflatex 2015.2.3)  15 OCT 2015 21:26
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -916,6 +916,9 @@ Package microtype Info: Loading configuration file microtype.cfg.
 (/usr/local/texlive/2014/texmf-dist/tex/latex/microtype/microtype.cfg
 File: microtype.cfg 2013/05/23 v2.5a microtype main configuration file (RS)
 ))
+(/usr/local/texlive/2014/texmf-dist/tex/latex/tools/xspace.sty
+Package: xspace 2009/10/20 v1.13 Space after command names (DPC,MH)
+)
 (/usr/local/texlive/2014/texmf-dist/tex/latex/pgf/frontendlayer/tikz.sty
 (/usr/local/texlive/2014/texmf-dist/tex/latex/pgf/basiclayer/pgf.sty
 (/usr/local/texlive/2014/texmf-dist/tex/latex/pgf/utilities/pgfrcs.sty
@@ -1405,7 +1408,7 @@ Package microtype Info: Loading generic settings for font family
 \openout3 = `LITES-Paper.vtc'.
 
  (../abstract.tex)
-(../untitled.tex <cc-by.pdf, id=33, 88.33pt x 31.11626pt>
+(../untitled.tex <cc-by.pdf, id=53, 88.33pt x 31.11626pt>
 File: cc-by.pdf Graphic file (type pdf)
  <use cc-by.pdf>
 Package pdftex.def Info: cc-by.pdf used on input line 27.
@@ -1415,7 +1418,7 @@ LaTeX Font Info:    Try loading font information for TS1+lmr on input line 27.
 (/usr/local/texlive/2014/texmf-dist/tex/latex/lm/ts1lmr.fd
 File: ts1lmr.fd 2009/10/30 v1.6 Font defs for Latin Modern
 )
-<lites-logo.pdf, id=37, 560.51909pt x 153.64502pt>
+<lites-logo.pdf, id=57, 560.51909pt x 153.64502pt>
 File: lites-logo.pdf Graphic file (type pdf)
  <use lites-logo.pdf>
 Package pdftex.def Info: lites-logo.pdf used on input line 27.
@@ -1432,64 +1435,97 @@ LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <5.94997> on input line 30.
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <4.25> on input line 30.
- [2] [3])
-(../figures/example-original/example-body.tex
+ [2] (../figures/example-original/example-body.tex
 Missing character: There is no ; in font nullfont!
 LaTeX Font Info:    External font `lmex10' loaded for size
 (Font)              <9> on input line 74.
 )
-(../figures/example/example-body.tex
+[3] (../figures/example/example-body.tex
 Missing character: There is no ; in font nullfont!
-) (../transformation.tex [4])
-(../conclusion.tex [5]) (./LITES-Paper.bbl) 
+) [4]) (../transformation.tex)
+(../locking.tex [5]
+<../figures/locking/legend.pdf, id=160, 402.50375pt x 53.19875pt>
+File: ../figures/locking/legend.pdf Graphic file (type pdf)
+
+<use ../figures/locking/legend.pdf>
+Package pdftex.def Info: ../figures/locking/legend.pdf used on input line 27.
+(pdftex.def)             Requested size: 402.50276pt x 53.19861pt.
+
+<../figures/locking/sched-locking-alt1.pdf, id=161, 413.545pt x 102.3825pt>
+File: ../figures/locking/sched-locking-alt1.pdf Graphic file (type pdf)
+
+<use ../figures/locking/sched-locking-alt1.pdf>
+Package pdftex.def Info: ../figures/locking/sched-locking-alt1.pdf used on inpu
+t line 28.
+(pdftex.def)             Requested size: 413.54398pt x 102.38225pt.
+ [6] [7 <../figures/locking/legend.pdf> <../figures/locking/sched-locking-alt1.
+pdf>] [8]
+File: ../figures/locking/legend.pdf Graphic file (type pdf)
+
+<use ../figures/locking/legend.pdf>
+Package pdftex.def Info: ../figures/locking/legend.pdf used on input line 105.
+(pdftex.def)             Requested size: 402.50276pt x 53.19861pt.
+
+<../figures/locking/sched-locking-alt2.pdf, id=254, 413.545pt x 102.3825pt>
+File: ../figures/locking/sched-locking-alt2.pdf Graphic file (type pdf)
+
+<use ../figures/locking/sched-locking-alt2.pdf>
+Package pdftex.def Info: ../figures/locking/sched-locking-alt2.pdf used on inpu
+t line 106.
+(pdftex.def)             Requested size: 413.54398pt x 102.38225pt.
+ [9 <../figures/locking/sched-locking-alt2.pdf>]) (../conclusion.tex) (./LITES-
+Paper.bbl)
+
 AED: lastpage setting LastPage
-[6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 58.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 58.
+[10]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 46.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 46.
  (./LITES-Paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 58.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 58.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 46.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 46.
 Package rerunfilecheck Info: File `LITES-Paper.out' has not changed.
-(rerunfilecheck)             Checksum: B90C5883544D81BD964C6E2A3CEAECE9;403.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 58.
+(rerunfilecheck)             Checksum: 8A2AC80ADA425468C3E866C7C09BB8BB;860.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 46.
  ) 
 Here is how much of TeX's memory you used:
- 23216 strings out of 493117
- 419786 string characters out of 6135434
- 525596 words of memory out of 5000000
- 25985 multiletter control sequences out of 15000+600000
- 175391 words of font info for 185 fonts, out of 8000000 for 9000
+ 23353 strings out of 493117
+ 422044 string characters out of 6135434
+ 520230 words of memory out of 5000000
+ 26051 multiletter control sequences out of 15000+600000
+ 200680 words of font info for 212 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 57i,11n,54p,863b,942s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 57i,11n,54p,1084b,933s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/lm/lm-ec.enc}{/usr/local/
 texlive/2014/texmf-dist/fonts/enc/dvips/lm/lm-rm.enc}{/usr/local/texlive/2014/t
-exmf-dist/fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/2014/texmf-dist/
-fonts/enc/dvips/lm/lm-ts1.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvi
-ps/lm/lm-mathsy.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/lm/lm-m
-athit.enc}</usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmbx10.pfb>
-</usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/loca
-l/texlive/2014/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></usr/local/texlive/2
-014/texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2014/texmf-
-dist/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts
-/type1/public/lm/lmmi5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/publ
-ic/lm/lmmi7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmr10
-.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmr5.pfb></usr/l
-ocal/texlive/2014/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive
-/2014/texmf-dist/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2014/texmf-
-dist/fonts/type1/public/lm/lmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/t
-ype1/public/lm/lmr9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/
-lm/lmri10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmri7.p
-fb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/lo
-cal/texlive/2014/texmf-dist/fonts/type1/public/lm/lmri9.pfb></usr/local/texlive
-/2014/texmf-dist/fonts/type1/public/lm/lmss8.pfb></usr/local/texlive/2014/texmf
--dist/fonts/type1/public/lm/lmssbx10.pfb></usr/local/texlive/2014/texmf-dist/fo
-nts/type1/public/lm/lmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/
-public/lm/lmsy7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/l
-mtk10.pfb>
-Output written on LITES-Paper.pdf (6 pages, 455376 bytes).
+exmf-dist/fonts/enc/dvips/lm/lm-mathit.enc}{/usr/local/texlive/2014/texmf-dist/
+fonts/enc/dvips/lm/lm-mathex.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/
+dvips/lm/lm-ts1.enc}{/usr/local/texlive/2014/texmf-dist/fonts/enc/dvips/lm/lm-m
+athsy.enc}</usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cm
+mi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/amsfonts/cm/cmr
+7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmbx10.pfb></us
+r/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmbx12.pfb></usr/local/te
+xlive/2014/texmf-dist/fonts/type1/public/lm/lmbx8.pfb></usr/local/texlive/2014/
+texmf-dist/fonts/type1/public/lm/lmex10.pfb></usr/local/texlive/2014/texmf-dist
+/fonts/type1/public/lm/lmmi10.pfb></usr/local/texlive/2014/texmf-dist/fonts/typ
+e1/public/lm/lmmi5.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/l
+m/lmmi7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmmi9.pfb
+></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmr10.pfb></usr/loca
+l/texlive/2014/texmf-dist/fonts/type1/public/lm/lmr5.pfb></usr/local/texlive/20
+14/texmf-dist/fonts/type1/public/lm/lmr6.pfb></usr/local/texlive/2014/texmf-dis
+t/fonts/type1/public/lm/lmr7.pfb></usr/local/texlive/2014/texmf-dist/fonts/type
+1/public/lm/lmr8.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/
+lmr9.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmri10.pfb><
+/usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmri7.pfb></usr/local/
+texlive/2014/texmf-dist/fonts/type1/public/lm/lmri8.pfb></usr/local/texlive/201
+4/texmf-dist/fonts/type1/public/lm/lmri9.pfb></usr/local/texlive/2014/texmf-dis
+t/fonts/type1/public/lm/lmss8.pfb></usr/local/texlive/2014/texmf-dist/fonts/typ
+e1/public/lm/lmssbx10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/publi
+c/lm/lmsy10.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmsy7
+.pfb></usr/local/texlive/2014/texmf-dist/fonts/type1/public/lm/lmtk10.pfb>
+Output written on LITES-Paper.pdf (10 pages, 601837 bytes).
 PDF statistics:
- 232 PDF objects out of 1000 (max. 8388607)
- 192 compressed objects within 2 object streams
- 24 named destinations out of 1000 (max. 500000)
- 47181 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 409 PDF objects out of 1000 (max. 8388607)
+ 341 compressed objects within 4 object streams
+ 44 named destinations out of 1000 (max. 500000)
+ 51844 words of extra memory for PDF output out of 61914 (max. 10000000)
 

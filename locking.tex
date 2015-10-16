@@ -13,14 +13,14 @@ There are two possible interpretations of how the period enforcer and locking ru
 
 As a consequence of the first rule, a task may find a required shared resource unavailable when its new segment becomes eligible for execution even though the resource was available when the prior segment finished.  As a consequence of the second rule, a shared resource may be locked by a task that cannot currently use the resource  because the task is still ineligible to execute.
 
-We believe that the first interpretation is the more natural one, as it does not make much sense to allocate resources to tasks that cannot yet use them. However, for the sake of completeness, we show that either interpretation leads to potentially unbounded worst-case response times.
+We believe that the first interpretation is the more natural one, as it does not make much sense to allocate resources to tasks that cannot yet use them. However, for the sake of completeness, we show that either interpretation leads to potentially deadline misses even if the original task systems can be feasibly scheduled without any enforcement.
 
 \subsection{Case 1: Locking Takes Effect at Earliest Segment Eligibility Time}
 In the following example, we assume the first interpretation, i.e., that the processing of lock requests is delayed until the point when a resuming segment would no longer be subject to any delay due to period enforcement. We show that this interpretation leads to a deadline miss in a task set that would otherwise be trivially schedulable.
 
-To this end, consider a simple task set consisting of two tasks on two processors that share one resource. Task $\tau_1$, on processor~1, has a total execution cost of $C_1 = 4$ and a period and deadline of $T_1 = D_i = 8$. After one time unit of execution, jobs of $\tau_1$ require the shared resource for two time units. $\tau_1$ thus consists of two segments with costs $C_{1,1} = 1$ and $C_{1,2} = 3$. Task $\tau_2$, on processor~2, has the same overall WCET ($C_2 = 4$), a slightly shorter period ($T_2 = D_2 = 7$), and requires the shared resource for one time unit after \emph{two} time units of execution ($C_{2,1} = 2$ and $C_{2,2} = 2$).
+Towards this, consider a simple task set consisting of two tasks on two processors that share one resource. Task $\tau_1$, on processor~1, has a total execution cost of $C_1 = 4$ and a period and deadline of $T_1 = D_1 = 8$. After one time unit of execution, jobs of $\tau_1$ require the shared resource for two time units. $\tau_1$ thus consists of two segments with costs $C_{1,1} = 1$ and $C_{1,2} = 3$. Task $\tau_2$, on processor~2, has the same overall WCET ($C_2 = 4$), a slightly shorter period ($T_2 = D_2 = 7$), and requires the shared resource for one time unit after \emph{two} time units of execution ($C_{2,1} = 2$ and $C_{2,2} = 2$). We will explain later why these two tasks can be feasibly scheduled without any enforcement. 
 
-A schedule of the two tasks assuming periodic job arrivals is depicted in Figure~\ref{fig:locking-alt1}. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
+A schedule of the two tasks assuming periodic job arrivals and using the period enforcer is depicted in Figure~\ref{fig:locking-alt1}. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
 
 \begin{figure}[t]
   \centering
@@ -54,23 +54,24 @@ The same pattern repeats for the fourth job of $\tau_2$, released at time $21$: 
 \end{align*}
 However, this leaves insufficient time to meet the job's deadline: as the second segment of $\tau_2$ requires $C_{2,2} = 2$ time units to complete, the job's deadline at time~$28$ is  missed.
 
-By construction, this example does not depend on a specific locking protocol; for instance, the effect occurs with both the MPCP~\cite{Ra:90} (based on priority queues) and the FMLP~\cite{BLBA:07,BA:08} (based on FIFO queues). However,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for task $\tau_2$ (i.e., four time units of execution, and at most two time units of blocking due to the critical section of $\tau_1$). This demonstrates that, under the first interpretation, adding period enforcement to suspension-based locks invalidates existing blocking analyses. Furthermore, it is clear that the devised repeating pattern can be used to construct schedules in which the response time of $\tau_2$  grows beyond any given implicit or constrained deadline.
+By construction, this example does not depend on a specific locking protocol; for instance, the effect occurs with both the MPCP~\cite{Ra:90} (based on priority queues) and the FMLP~\cite{BLBA:07,BA:08} (based on FIFO queues).  The response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for task $\tau_2$ (i.e., four time units of execution, and at most two time units of blocking due to the critical section of $\tau_1$). 
+This demonstrates that, under the first interpretation, adding period enforcement to suspension-based locks invalidates existing blocking analyses. Furthermore, it is clear that the devised repeating pattern can be used to construct schedules in which the response time of $\tau_2$  grows beyond any given implicit or constrained deadline.
 
-Next, we show that the second interpretation also leads to unbounded response-time growth.
 
 
 \subsection{Case 2: Locking Takes Effect Immediately}
-From now on, we assume the second interpretation, i.e, that all lock requests are processed immediately when they are made, even if this causes the shared resource to be locked by a task that is not yet eligible to execute according to  the rules of the period enforcer algorithm. We construct an example that demonstrates unbounded response-time growth.
+Next, we show that the second interpretation may lead to unbounded response-time growth.
+ From now on, we assume the second interpretation, i.e., all lock requests are processed immediately when they are made, even if this causes the shared resource to be locked by a task that is not yet eligible to execute according to  the rules of the period enforcer algorithm. We construct an example that demonstrates unbounded response-time growth.
 
-To this end, consider two tasks with identical parameters hosted on two processors. Task $\tau_1$ is hosted on processor~1; task $\tau_2$ is hosted on processor~2. Both tasks have a period and relative deadline of $T_1 = T_2 = D_1 = D_2 = 8$ and a WCET of $C_1 = C_2 = 4$. They both access a single shared resource for two time units each per job. Both tasks request the shared resource after executing for \emph{at most} one time unit. They both thus have two segments each with parameters $C_{1,1} = C_{2,1} = 1$ and $C_{1,2} = C_{2,2} = 3$. The example exploits that jobs may require \emph{less} service than their specified worst-case costs.
+Towards this, consider two tasks with identical parameters hosted on two processors. Task $\tau_1$ is hosted on processor~1; task $\tau_2$ is hosted on processor~2. Both tasks have the same period and relative deadline $T_1 = T_2 = D_1 = D_2 = 8$ and the same WCET of $C_1 = C_2 = 4$. They both access a single shared resource for two time units each per job. Both tasks request the shared resource after executing for \emph{at most} one time unit. They both thus have two segments each with parameters $C_{1,1} = C_{2,1} = 1$ and $C_{1,2} = C_{2,2} = 3$. 
 
-Figure~\ref{fig:locking-alt2} shows an example schedule assuming periodic job arrivals and that, for an arbitrarily small, positive $\epsilon <1$,
+The example exploits that the jobs may require \emph{less} service than their specified worst-case execution times. We will use a deterministic pattern of the actual execution times to ensure the ``deterministic behaviour'' for accessing and being granted to use the shared resources. Let $\epsilon$ be an arbitrarily small and positive real number with $\epsilon <1$. 
 \begin{itemize}
-	\item the first segment of the first job of $\tau_2$ executes for only $1-\epsilon$ time units,
-	\item the first segment of the second job of $\tau_1$ executes for only $1-\epsilon$ time units,
-	\item the first segment of the third job  of $\tau_2$ executes for only $1-\epsilon$ time units, and that
-	\item all other segments execute for their specified worst-case costs.
+	\item The first segment of the 1st, 3rd, 5th, $\ldots$, $(2i-1)$-th jobs of $\tau_2$ executes for only $1-\epsilon$ time units, $\forall i=1,2,\ldots$.
+	\item The first segment of the 2nd, 4th, 6th, $\ldots$, $(2i)$-th jobs of $\tau_2$ executes for only $1-\epsilon$ time units, $\forall i=1,2,\ldots$.
+	\item All the other segments execute for their specified worst-case costs.
 \end{itemize}
+Figure~\ref{fig:locking-alt2} shows an example schedule assuming periodic job arrivals and that, for an arbitrarily small, positive $\epsilon <1$,
 
 
 At time $1-\epsilon$, the first job of $\tau_2$ acquires the shared resource because $\tau_1$ does not issue its request until time $1$. Consequently, $\tau_1$ is blocked until time $a^2_{1,1} = 3 - \epsilon$, and we have
@@ -94,6 +95,7 @@ The third jobs of both tasks are released at time $16$. The roles are swapped ag
 	ET_{2,3}^2 & = \max\left(ET_{2,2}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,3})\right) =\max(13- \epsilon + 8,\ 16) = 21- \epsilon.
 \end{align*}
 This, however, means that $\tau_1$ cannot use the shared resource before time $23 - \epsilon$, which leaves insufficient time to complete the second segment of $\tau_1$'s third job before its deadline at time $24$.
+If we keep the above execution pattern, the period enforcer continues to further increase the response time of these two tasks. This, at the end, leads to unbounded worst-case response time. 
 
 As in the previous example,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking). The example thus demonstrates that, if lock requests take effect immediately, then the period enforcer is incompatible with existing blocking analyses because, under the second interpretation, it increases the effective lock-holding times.
 

@@ -35,32 +35,68 @@
 \citation{Raj:suspension1991}
 \citation{Raj:suspension1991}
 \citation{Raj:suspension1991}
-\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Questions answered in this report}{2}{subsection.1.2}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {1.2}Questions answered in this paper}{2}{subsection.1.2}}
 \citation{Raj:suspension1991}
 \citation{Raj:suspension1991}
 \citation{ecrts15nelissen}
 \citation{Raj:suspension1991}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:example-original}{{1}{3}{An illustrative example of the original self-suspending task set (without period enforcement) assuming periodic job arrivals.\relax }{figure.caption.1}{}}
 \@writefile{toc}{\contentsline {section}{\numberline {2}Period Enforcement Can Induce Deadline Misses}{3}{section.2}}
 \newlabel{sec:unschedulable}{{2}{3}{Period Enforcement Can Induce Deadline Misses}{section.2}{}}
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:example-original}{{1}{4}{An illustrative example of the original self-suspending task schedule.\relax }{figure.caption.1}{}}
+\newlabel{fig:example}{{2}{4}{An illustrative example demonstrating a deadline miss at time 22 under the period enforcer algorithm.\relax }{figure.caption.2}{}}
+\newlabel{eq:ET-def}{{1}{4}{Period Enforcement Can Induce Deadline Misses}{equation.2.1}{}}
 \citation{ecrts15nelissen}
 \citation{ecrts15nelissen}
 \citation{ecrts15nelissen}
-\citation{Raj:suspension1991}
-\citation{Raj:suspension1991}
-\citation{Raj:suspension1991}
-\citation{Raj:suspension1991}
-\citation{ecrts15nelissen}
-\newlabel{fig:example}{{2}{5}{An illustrative example demonstrating a deadline miss at time 22 under the period enforcer algorithm.\relax }{figure.caption.2}{}}
+\citation{Raj:91}
+\citation{Lak:11}
+\citation{LNR:09}
 \@writefile{toc}{\contentsline {section}{\numberline {3}Deriving a Corresponding Deferrable Task Set}{5}{section.3}}
 \newlabel{sec:convert}{{3}{5}{Deriving a Corresponding Deferrable Task Set}{section.3}{}}
-\@writefile{toc}{\contentsline {section}{\numberline {4}Concluding Remarks}{5}{section.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {4}Incompatibility with Suspension-Based Locking Protocols}{5}{section.4}}
+\newlabel{sec:locking}{{4}{5}{Incompatibility with Suspension-Based Locking Protocols}{section.4}{}}
+\citation{Raj:suspension1991}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.1}Combining Period Enforcement and Suspension-Based Locks}{6}{subsection.4.1}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.2}Case 1: Locking Takes Effect at Earliest Segment Eligibility Time}{6}{subsection.4.2}}
+\citation{Ra:90}
+\citation{BLBA:07}
+\citation{BA:08}
+\citation{Br:13}
+\citation{LNR:09}
+\citation{Br:13}
+\newlabel{fig:locking-alt1}{{3}{7}{Example schedule of two tasks $\tau _1$ and $\tau _2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect only when the critical section segment becomes eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the fourth job of task $\tau _2$ misses its deadline at time $28$.\relax }{figure.caption.3}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.3}Case 2: Locking Takes Effect Immediately}{8}{subsection.4.3}}
+\citation{Br:13}
+\citation{LNR:09}
+\citation{Br:13}
+\citation{Raj:suspension1991}
+\citation{Raj:91}
+\citation{Raj:91}
+\citation{Lak:11}
+\citation{LNR:09}
+\citation{BLBA:07}
+\citation{Br:13}
+\newlabel{fig:locking-alt2}{{4}{9}{Example schedule of two tasks $\tau _1$ and $\tau _2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect immediately, even if the critical section segment is not yet eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the third job of task $\tau _1$ misses its deadline at time $24$.\relax }{figure.caption.4}{}}
+\@writefile{toc}{\contentsline {subsection}{\numberline {4.4}Discussion}{9}{subsection.4.4}}
+\citation{Raj:suspension1991}
+\citation{Raj:suspension1991}
+\citation{Raj:suspension1991}
+\citation{Raj:suspension1991}
+\citation{ecrts15nelissen}
 \citation{Raj:suspension1991}
 \bibdata{../bibliography/biblio}
 \bibcite{ABRTW:93}{1}
-\bibcite{ecrts15nelissen}{2}
-\bibcite{Raj:suspension1991}{3}
-\newlabel{LastPage}{{}{6}{}{page.6}{}}
-\xdef\lastpage@lastpage{6}
-\xdef\lastpage@lastpageHy{6}
+\bibcite{BLBA:07}{2}
+\bibcite{Br:13}{3}
+\bibcite{BA:08}{4}
+\bibcite{Lak:11}{5}
+\bibcite{LNR:09}{6}
+\bibcite{ecrts15nelissen}{7}
+\bibcite{Ra:90}{8}
+\bibcite{Raj:suspension1991}{9}
+\bibcite{Raj:91}{10}
+\@writefile{toc}{\contentsline {section}{\numberline {5}Concluding Remarks}{10}{section.5}}
+\newlabel{LastPage}{{}{10}{}{page.10}{}}
+\xdef\lastpage@lastpage{10}
+\xdef\lastpage@lastpageHy{10}
