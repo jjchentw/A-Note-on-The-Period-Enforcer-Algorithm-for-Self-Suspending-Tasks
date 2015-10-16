@@ -92,6 +92,7 @@ To this end, consider a task system consisting of $2$ tasks. Let $\tau_1$ denote
 Figure \ref{fig:example-original} depicts an example schedule of the task set assuming periodic job arrivals.
 
 
+\ifbool{pdflatex}{
 \begin{figure}[t]
   \centering
   \input{../figures/example-original/example-body.tex}
@@ -105,6 +106,7 @@ Figure \ref{fig:example-original} depicts an example schedule of the task set as
     under the period enforcer algorithm.}
 \label{fig:example}  
 \end{figure}
+}
 
 Next, let us consider the same task set under control of the period enforcer algorithm.
 The period enforcer algorithm determines for each segment (i.e., for each converted single-segment deferrable task) an \emph{eligibility time}. If a segment resumes (i.e., a job of a single-segment deferrable task arrives) before its eligibility time, the execution of the segment (i.e., the single-segment job) is delayed until the eligibility time is reached.

@@ -23,6 +23,7 @@ Consider the following simple task set consisting of two tasks on two processors
 In contrast, with period enforcement, deadline misses are possible.
 Figure~\ref{fig:locking-alt1} depicts a schedule of the two tasks assuming periodic job arrivals and use of the period enforcer algorithm. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
 
+\ifbool{pdflatex}{
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/locking/legend}
@@ -30,7 +31,7 @@ Figure~\ref{fig:locking-alt1} depicts a schedule of the two tasks assuming perio
   \caption{Example schedule of two tasks $\tau_1$ and $\tau_2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect only when the critical section segment  becomes eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the fourth job of task $\tau_2$ misses its deadline at time $28$.}
   \label{fig:locking-alt1}
   \end{figure}
-
+}
 
 Since $\tau_2$'s first job requests the shared resource only after two time units of execution, it is blocked by $\tau_1$'s critical section, which commenced at time $1$. At time $3$, $\tau_1$ releases the shared resource and $\tau_2$ consequently resumes (i.e., $a^2_{2,1} = 3$). According to the period enforcer rules~\cite{Raj:suspension1991}, the second segment is immediately eligible because, according to Equation~\ref{eq:ET-def},
 \begin{align*}
@@ -102,6 +103,7 @@ Furthermore, if both tasks continue the illustrated execution pattern, the perio
 As in the previous example,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking). The example thus demonstrates that, if lock requests take effect immediately, then the period enforcer is incompatible with existing blocking analyses because, under the second interpretation, it increases the effective lock-holding times.
 
 
+\ifbool{pdflatex}{
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/locking/legend}
@@ -109,7 +111,7 @@ As in the previous example,  the response-time analyses for both the MPCP~\cite{
   \caption{Example schedule of two tasks $\tau_1$ and $\tau_2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect immediately, even if the critical section segment is not yet eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the third job of task $\tau_1$ misses its deadline at time $24$.}
   \label{fig:locking-alt2}
   \end{figure}
-
+}
 
 
 \subsection{Discussion}
