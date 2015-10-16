@@ -1,26 +1,27 @@
 \section{Incompatibility with Suspension-Based Locking Protocols}
 \label{sec:locking}
 
-\emph{Binary semaphores}, i.e., suspension-based locks used to realize mutually exclusive access to shared resources, are a common source of self-suspensions in multiprocessor real-time systems. When a task tries to use a resource that has already been locked, it self-suspends until the resource becomes available. Such self-suspensions due to lock contention, just like any other self-suspension, result in deferred execution and thus can detrimentally affect a task's interference on lower-priority tasks. It may thus seem natural to apply the period enforcer algorithm to control the negative effects of blocking-induced self-suspensions.\footnote{The use of  period enforcement in combination with suspension-based locks has indeed been assumed in prior work~\cite{Raj:91} and suggested as a potential improvement elsewhere~\cite{Lak:11,LNR:09}.} However, as we demonstrate with two examples, it is actually not safe to use the period enforcer algorithm in the presence of suspension-based locks.
+\emph{Binary semaphores}, i.e., suspension-based locks used to realize mutually exclusive access to shared resources, are a common source of self-suspensions in multiprocessor real-time systems. When a task tries to use a resource that has already been locked, it self-suspends until the resource becomes available. Such self-suspensions due to lock contention, just like any other self-suspension, result in deferred execution and thus can detrimentally affect a task's interference on lower-priority tasks. It may thus seem natural to apply the period enforcer  to control the negative effects of blocking-induced self-suspensions.\footnote{The use of  period enforcement in combination with suspension-based locks has indeed been assumed in prior work~\cite{Raj:91} and suggested as a potential improvement elsewhere~\cite{Lak:11,LNR:09}.} However, as we demonstrate with two examples, it is actually not safe to use the period enforcer in the presence of suspension-based locks.
 
 \subsection{Combining Period Enforcement and Suspension-Based Locks}
 
 Whenever a task attempts to lock a shared resource, it may potentially block and self-suspend. In the context of the multi-segmented self-suspending task model, each lock request hence marks the beginning of a new segment.
 
-The period enforcer algorithm may therefore be applied to determine the eligibility time of each such segment (which, again, all start with a critical section). There is, however, one complication: when does the task actually \emph{acquire} the lock? That is, if a task's execution is postponed due to the rules of the period enforcement algorithm, at which point is the lock request processed, with the consequence that the resource becomes unavailable to other tasks? 
+The period enforcer algorithm may therefore be applied to determine the eligibility time of each such segment (which, again, all start with a critical section). There is, however, one complication: when does a task actually \emph{acquire} a lock? That is, if a task's execution is postponed due to the period enforcement rules, at which point is the lock request processed, with the consequence that the resource becomes unavailable to other tasks? 
 
-There are two possible interpretations of how the period enforcer and locking rules may interact. Under the \textbf{first interpretation}, when a task requires a shared resource, which implies the beginning of a new segment, its lock request is processed \emph{only when its new segment is eligible for execution}, as determined by the period enforcer algorithm. Alternatively, under the \textbf{second interpretation}, a task's request is processed \emph{immediately} when it requires a shared resource.
+There are two possible interpretations of how period enforcement and locking rules may interact. Under the \textbf{first interpretation}, when a task requires a shared resource, which implies the beginning of a new segment, its lock request is processed \emph{only when its new segment is eligible for execution}, as determined by the period enforcer algorithm. Alternatively, under the \textbf{second interpretation}, a task's request is processed \emph{immediately} when it requires a shared resource.
 
 As a consequence of the first rule, a task may find a required shared resource unavailable when its new segment becomes eligible for execution even though the resource was available when the prior segment finished.  As a consequence of the second rule, a shared resource may be locked by a task that cannot currently use the resource  because the task is still ineligible to execute.
 
-We believe that the first interpretation is the more natural one, as it does not make much sense to allocate resources to tasks that cannot yet use them. However, for the sake of completeness, we show that either interpretation leads to potentially deadline misses even if the original task systems can be feasibly scheduled without any enforcement.
+We believe that the first interpretation is the more natural one, as it does not make much sense to allocate resources to tasks that cannot yet use them. However, for the sake of completeness, we show that either interpretation can lead to deadline misses even if the task set trivially schedulable without any enforcement.
 
 \subsection{Case 1: Locking Takes Effect at Earliest Segment Eligibility Time}
 In the following example, we assume the first interpretation, i.e., that the processing of lock requests is delayed until the point when a resuming segment would no longer be subject to any delay due to period enforcement. We show that this interpretation leads to a deadline miss in a task set that would otherwise be trivially schedulable.
 
-Towards this, consider a simple task set consisting of two tasks on two processors that share one resource. Task $\tau_1$, on processor~1, has a total execution cost of $C_1 = 4$ and a period and deadline of $T_1 = D_1 = 8$. After one time unit of execution, jobs of $\tau_1$ require the shared resource for two time units. $\tau_1$ thus consists of two segments with costs $C_{1,1} = 1$ and $C_{1,2} = 3$. Task $\tau_2$, on processor~2, has the same overall WCET ($C_2 = 4$), a slightly shorter period ($T_2 = D_2 = 7$), and requires the shared resource for one time unit after \emph{two} time units of execution ($C_{2,1} = 2$ and $C_{2,2} = 2$). We will explain later why these two tasks can be feasibly scheduled without any enforcement. 
+Consider the following simple task set consisting of two tasks on two processors that share one resource. Task $\tau_1$, on processor~1, has a total execution cost of $C_1 = 4$ and a period and deadline of $T_1 = D_1 = 8$. After one time unit of execution, jobs of $\tau_1$ require the shared resource for two time units. $\tau_1$ thus consists of two segments with costs $C_{1,1} = 1$ and $C_{1,2} = 3$. Task $\tau_2$, on processor~2, has the same overall WCET ($C_2 = 4$), a slightly shorter period ($T_2 = D_2 = 7$), and requires the shared resource for one time unit after \emph{two} time units of execution ($C_{2,1} = 2$ and $C_{2,2} = 2$). Without period enforcement (and under any reasonable locking protocol), the task set is trivially schedulable because, by construction, any job of $\tau_1$ incurs at most one time unit of blocking, and any job of $\tau_2$ incurs at most two time units of blocking.
 
-A schedule of the two tasks assuming periodic job arrivals and using the period enforcer is depicted in Figure~\ref{fig:locking-alt1}. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
+In contrast, with period enforcement, deadline misses are possible.
+Figure~\ref{fig:locking-alt1} depicts a schedule of the two tasks assuming periodic job arrivals and use of the period enforcer algorithm. We focus on the eligibility times $ET_{2,1}^2,ET_{2,2}^2,ET_{2,3}^2,\ldots$ of the second segment of $\tau_2$.
 
 \begin{figure}[t]
   \centering
@@ -54,24 +55,25 @@ The same pattern repeats for the fourth job of $\tau_2$, released at time $21$: 
 \end{align*}
 However, this leaves insufficient time to meet the job's deadline: as the second segment of $\tau_2$ requires $C_{2,2} = 2$ time units to complete, the job's deadline at time~$28$ is  missed.
 
-By construction, this example does not depend on a specific locking protocol; for instance, the effect occurs with both the MPCP~\cite{Ra:90} (based on priority queues) and the FMLP~\cite{BLBA:07,BA:08} (based on FIFO queues).  The response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for task $\tau_2$ (i.e., four time units of execution, and at most two time units of blocking due to the critical section of $\tau_1$). 
+By construction, this example does not depend on a specific locking protocol; for instance, the effect occurs with both the MPCP~\cite{Ra:90} (based on priority queues) and the FMLP~\cite{BLBA:07,BA:08} (based on FIFO queues).  The corresponding response-time analyses for both protocols~\cite{Br:13,LNR:09} predict a worst-case response time of $6$ for task $\tau_2$ (i.e., four time units of execution, and at most two time units of blocking due to the critical section of $\tau_1$). 
 This demonstrates that, under the first interpretation, adding period enforcement to suspension-based locks invalidates existing blocking analyses. Furthermore, it is clear that the devised repeating pattern can be used to construct schedules in which the response time of $\tau_2$  grows beyond any given implicit or constrained deadline.
 
-
+Next, we show that the second interpretation can also lead to deadline misses in otherwise trivially schedulable task sets.
 
 \subsection{Case 2: Locking Takes Effect Immediately}
-Next, we show that the second interpretation may lead to unbounded response-time growth.
- From now on, we assume the second interpretation, i.e., all lock requests are processed immediately when they are made, even if this causes the shared resource to be locked by a task that is not yet eligible to execute according to  the rules of the period enforcer algorithm. We construct an example that demonstrates unbounded response-time growth.
+ From now on, we assume the second interpretation: all lock requests are processed immediately when they are made, even if this causes the shared resource to be locked by a task that is not yet eligible to execute according to  the rules of the period enforcer algorithm. We construct an example that demonstrates \emph{unbounded} response-time growth.
 
-Towards this, consider two tasks with identical parameters hosted on two processors. Task $\tau_1$ is hosted on processor~1; task $\tau_2$ is hosted on processor~2. Both tasks have the same period and relative deadline $T_1 = T_2 = D_1 = D_2 = 8$ and the same WCET of $C_1 = C_2 = 4$. They both access a single shared resource for two time units each per job. Both tasks request the shared resource after executing for \emph{at most} one time unit. They both thus have two segments each with parameters $C_{1,1} = C_{2,1} = 1$ and $C_{1,2} = C_{2,2} = 3$. 
+To this end, consider two tasks with identical parameters hosted on two processors. Task $\tau_1$ is hosted on processor~1; task $\tau_2$ is hosted on processor~2. Both tasks have the same period and relative deadline $T_1 = T_2 = D_1 = D_2 = 8$ and the same WCET of $C_1 = C_2 = 4$. They both access a single shared resource for two time units each per job. Both tasks request the shared resource after executing for \emph{at most} one time unit. They both thus have two segments each with parameters $C_{1,1} = C_{2,1} = 1$ and $C_{1,2} = C_{2,2} = 3$. 
 
-The example exploits that the jobs may require \emph{less} service than their specified worst-case execution times. We will use a deterministic pattern of the actual execution times to ensure the ``deterministic behaviour'' for accessing and being granted to use the shared resources. Let $\epsilon$ be an arbitrarily small and positive real number with $\epsilon <1$. 
+The example exploits that a job may require \emph{less} service than its task's specified WCET. To ensure that the shared resource is acquired in a certain order, we assume the following deterministic pattern of the actual execution times. Let $\epsilon$ be an arbitrarily small, positive real number with $\epsilon <1$. 
 \begin{itemize}
-	\item The first segment of the 1st, 3rd, 5th, $\ldots$, $(2i-1)$-th jobs of $\tau_2$ executes for only $1-\epsilon$ time units, $\forall i=1,2,\ldots$.
-	\item The first segment of the 2nd, 4th, 6th, $\ldots$, $(2i)$-th jobs of $\tau_2$ executes for only $1-\epsilon$ time units, $\forall i=1,2,\ldots$.
-	\item All the other segments execute for their specified worst-case costs.
+	\item The first segment of even-numbered jobs  of $\tau_1$ executes for only $1-\epsilon$ time units.
+	\item The first segment of odd-numbered jobs of $\tau_2$ executes for only $1-\epsilon$ time units.
+%	the \nth{1}, \nth{3}, \nth{5}, \ldots, $(2i-1)$\xth job of , $\forall i=1,2,\ldots$.
+%	the \nth{2}, \nth{4}, \nth{6}, \ldots, $(2i)$\xth jobs, $\forall i=1,2,\ldots$.
+	\item All other segments execute for their specified worst-case costs.
 \end{itemize}
-Figure~\ref{fig:locking-alt2} shows an example schedule assuming periodic job arrivals and that, for an arbitrarily small, positive $\epsilon <1$,
+Figure~\ref{fig:locking-alt2} shows an example schedule assuming periodic job arrivals.
 
 
 At time $1-\epsilon$, the first job of $\tau_2$ acquires the shared resource because $\tau_1$ does not issue its request until time $1$. Consequently, $\tau_1$ is blocked until time $a^2_{1,1} = 3 - \epsilon$, and we have
@@ -95,7 +97,7 @@ The third jobs of both tasks are released at time $16$. The roles are swapped ag
 	ET_{2,3}^2 & = \max\left(ET_{2,2}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,3})\right) =\max(13- \epsilon + 8,\ 16) = 21- \epsilon.
 \end{align*}
 This, however, means that $\tau_1$ cannot use the shared resource before time $23 - \epsilon$, which leaves insufficient time to complete the second segment of $\tau_1$'s third job before its deadline at time $24$.
-If we keep the above execution pattern, the period enforcer continues to further increase the response time of these two tasks. This, at the end, leads to unbounded worst-case response time. 
+Furthermore, if both tasks continue the illustrated execution pattern, the period enforcer continues to increase their response times. As a result,  unbounded worst-case response times may arise. 
 
 As in the previous example,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking). The example thus demonstrates that, if lock requests take effect immediately, then the period enforcer is incompatible with existing blocking analyses because, under the second interpretation, it increases the effective lock-holding times.
 
@@ -109,6 +111,7 @@ As in the previous example,  the response-time analyses for both the MPCP~\cite{
   \end{figure}
 
 
+
 \subsection{Discussion}
 
 While it is intuitively appealing to combine period enforcement with suspension-based locking protocols, we observe that this causes non-trivial difficulties. In particular, our examples show that the addition of period enforcement invalidates all existing blocking analyses. They also suggest that devising a correct blocking analysis would be a substantial challenge due to the demonstrated feedback cycle between the period enforcer rules and blocking durations. 
@@ -117,3 +120,4 @@ While it is intuitively appealing to combine period enforcement with suspension-
 Fundamentally, the design of the period enforcer algorithm implicitly rests on the assumption that a segment \emph{can} execute as soon as it is eligible to do so. In the presence of locks, however, this assumption is invalidated. As demonstrated, the result can be a successive growth of self-suspension times that proceeds until a deadline is missed.  The period enforcer algorithm, at least as defined and used in the literature to date~\cite{Raj:suspension1991,Raj:91}, is therefore incompatible with the existing literature on suspension-based real-time locking protocols (e.g., \cite{Raj:91,Lak:11,LNR:09,BLBA:07,Br:13}). 
 
 
+Finally, it is worth noting that our examples can be trivially extended with lower-priority tasks to ensure that no processor idles before the described deadline misses occur. It is also not difficult to extend the second example with a task on a third processor such that all segments of $\tau_1$ and $\tau_2$ are separated by a non-zero self-suspension.
