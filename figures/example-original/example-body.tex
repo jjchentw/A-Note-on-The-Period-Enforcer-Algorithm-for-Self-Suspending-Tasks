@@ -49,23 +49,28 @@
 		
 		
 		\node[task7, minimum width=.5*\ux,
-		anchor=south west] at (1, 0){\tiny $C_2^1$};
+		anchor=south west] at (1, 0){}; \node[anchor=south
+                west]at (1, 1.05*\uy) {\tiny $C_{2,1}$};
 		\draw[(-), thin] (1.5, 0.3) -- (3, 0.3)
                 node[anchor=south]{\scriptsize suspension} -- (4.5, 0.3);
 		\node[task7, minimum width=.5*\ux,
-		anchor=south west] at (4.5, 0){\tiny $C_2^2$};
+		anchor=south west] at (4.5, 0) {}; \node[anchor=south
+                west]at (4.5, 1.05*\uy) {\tiny $C_{2,2}$};
 
 		\node[task7, minimum width=.5*\ux,
-		anchor=south west] at (6, 0){\tiny $C_2^1$};
+		anchor=south west] at (6, 0) {}; \node[anchor=south
+                west]at (6, 1.05*\uy) {\tiny $C_{2,1}$};
 		\draw[(-), thin] (6.5, 0.3) -- (8, 0.3)
                 node[anchor=south]{\scriptsize suspension} -- (9.5, 0.3);
 
 		\draw[->] (0,0)node[anchor=east] {$\tau_2$} -- coordinate (xaxis) (12.5,0);
 
 		\node[task7, minimum width=.5*\ux,
-		anchor=south west] at (9.5, 0){\tiny $C_2^2$};
+		anchor=south west] at (9.5, 0) {}; \node[anchor=south
+                west]at (9.5, 1.05*\uy) {\tiny $C_{2,2}$};
 		\node[task7, minimum width=.5*\ux,
-		anchor=south west] at (11, 0){\tiny $C_2^1$};
+		anchor=south west] at (11, 0) {}; \node[anchor=south
+                west]at (11, 1.05*\uy) {\tiny $C_{2,1}$};
 
                \foreach \x in {0,...,24}{
                         \draw[-](.5*\x,0.1) -- (.5*\x,-0.1)
