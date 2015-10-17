@@ -9,7 +9,7 @@ One key assumption in the original proposal \cite{Raj:suspension1991} is that a 
 
 Furthermore, the original proposal \cite{Raj:suspension1991} left open the question of how to convert a segmented self-suspending task set to a corresponding set of deferrable tasks. Taking into account recent developments~\cite{ecrts15nelissen}, we have observed that such a task set transformation is non-trivial in the general case.  
 
-Finally, we have demonstrated that substantial difficulties arise if one attempts to combine suspension-based locks with period enforcement. These difficulties stem from the fact that period enforcement can increase contention, which increases self-suspension times, which then in turn feeds back into the period enforcer's minimum suspension lengths. As a consequence, period enforcement invalidates all existing blocking analyses.
+Finally, we have demonstrated that substantial difficulties arise if one attempts to combine suspension-based locks with period enforcement. These difficulties stem from the fact that period enforcement can increase contention, which increases the lengths of self-suspension intervals, which then in turn feeds back into the period enforcer's minimum suspension lengths. As a consequence, period enforcement invalidates all existing blocking analyses.
 
 Nevertheless, Theorem 5 in \cite{Raj:suspension1991} could be useful for handling self-suspending tasks (that do not use suspension-based locks) if there exist \emph{efficient} schedulability tests for the corresponding deferrable task systems or the period enforcer algorithm. However, such tests have not been found yet and the development of a precise and efficient schedulability test for self-suspending tasks remains an open problem.
 
