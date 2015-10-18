@@ -124,7 +124,7 @@ Assuming this definition, Figure \ref{fig:example} shows the resulting schedule 
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, 9\right) ) = 9.
 \end{align*}
 
-In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, is interfered with for one time unit, and suspends at time $13$. The segment second of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
+In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, is interfered with for one time unit, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
 \begin{align*}
 	ET_{2,2}^1 & = \max\left(0 + 11,\ \mathit{busy}(\tau_2, 11)\right) = 11  \text{ and }
 \\
@@ -138,7 +138,7 @@ According to the rules of the period enforcer algorithm, the processor therefore
 This example shows that there exist sporadic segmented self-suspending task sets that   \textbf{(i)} are schedulable under fixed-priority scheduling without any enforcement, but \textbf{(ii)} are not schedulable under the period enforcer algorithm.
 
 
-One may consider to enrich the period enforcer with the following power: when the processor becomes idle, a task immediately becomes eligible to execute regardless of its eligibility time. However, even with this exension, the above example remains valid by introducing one additional lowest priority task $\tau_3$ with execution time $C_3=13$ (to be executed from time $3$ to time $9$ and time $13$ to time $20$) and $T_3=D_3=100$. With task $\tau_3$, the processor is always busy from time $0$ to time $23$ and consequently $\tau_2$ still misses its deadline at time $22$.
+One may consider to enrich the period enforcer with the following power: when the processor becomes idle, a task immediately becomes eligible to execute regardless of its eligibility time. However, even with this extension, the above example remains valid by introducing one additional lowest priority task $\tau_3$ with execution time $C_3=13$ (to be executed from time $3$ to time $9$ and time $13$ to time $20$) and $T_3=D_3=100$. With task $\tau_3$, the processor is always busy from time $0$ to time $23$ and consequently $\tau_2$ still misses its deadline at time $22$.
 
 
 Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism: if we convert the two computation segments of task $\tau_2$ into two deferrable tasks $\tau_2^1$ and $\tau_2^2$, where  task $\tau_2^1$ never defers its execution and task $\tau_2^2$ defers its execution by at most \emph{$9$} time units,  then it is immediately obvious that the resulting single-segment deferrable task set $\{\tau_1, \tau_2^1, \tau_2^2\}$ is in fact not schedulable under a rate-monotonic priority assignment since we can time the release of a job of $\tau_1$ to coincide with the arrival of a job of $\tau_2^2$ after it has maximally deferred its execution, which clearly results in a deadline miss.

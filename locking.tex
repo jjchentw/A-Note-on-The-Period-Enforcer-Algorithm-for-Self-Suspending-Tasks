@@ -33,14 +33,14 @@ Figure~\ref{fig:locking-alt1} depicts a schedule of the two tasks assuming perio
   \end{figure}
 \fi
 
-Since $\tau_2$'s first job requests the shared resource only after two time units of execution, it is blocked by $\tau_1$'s critical section, which commenced at time $1$. At time $3$, $\tau_1$ releases the shared resource and $\tau_2$ consequently resumes (i.e., $a^2_{2,1} = 3$). According to the period enforcer rules~\cite{Raj:suspension1991}, the second segment is immediately eligible because, according to Equation~\ref{eq:ET-def},
+Since $\tau_2$'s first job requests the shared resource only after two time units of execution, it is blocked by $\tau_1$'s critical section, which commenced at time $1$. At time $3$, $\tau_1$ releases the shared resource and $\tau_2$ consequently resumes (i.e., $a^2_{2,1} = 3$). According to the period enforcer rules~\cite{Raj:suspension1991}, the second segment is immediately eligible because, according to Equation~\ref{eq:ET-def} (in Section~\ref{sec:unschedulable}),
 \begin{align*}
 	ET_{2,1}^2 & = \max\left(ET_{2,0}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,1})\right) =\max(-T_2 + T_2,\ 3) = 3.
 \end{align*}
 (Recall that $ET_{2,0}^2 = -T_2$, and interpret $\mathit{busy}(\tau_2, a^2_{2,1})$ with respect to $\tau_2$'s processor.)
 
 
-At time $7$, the second job of $\tau_2$ is released. Its first segment ends at time $9$. However, its second segment is not eligible to be scheduled before time $10$ since $ET_{2,2}^2 \geq ET_{2,1}^2 + T_2 = 3 + 7 = 10$. At time $9$, the second job of $\tau_1$, released at time $8$, can thus lock the shared resource without contention. Consequently, when $\tau_2$'s request for the shared resource takes effect at time $10$, the resource is no longer available and $\tau_2$ must wait until time $a^2_{2,2} = 11$ before it can proceed in its execution. We thus have
+At time $7$, the second job of $\tau_2$ is released. Its first segment ends at time $9$. However, its second segment is not eligible to be scheduled before time $10$ since $ET_{2,2}^2 \geq ET_{2,1}^2 + T_2 = 3 + 7 = 10$. At time $9$, the second job of $\tau_1$, released at time $8$, can thus lock the shared resource without contention. Consequently, when $\tau_2$'s request for the shared resource takes effect at time $10$, the resource is no longer available and $\tau_2$ must wait until time $a^2_{2,2} = 11$ before it can proceed to execute. We thus have
 \begin{align*}
 	ET_{2,2}^2 & = \max\left(ET_{2,1}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,2})\right) =\max(10,\ 11) = 11.
 \end{align*}
