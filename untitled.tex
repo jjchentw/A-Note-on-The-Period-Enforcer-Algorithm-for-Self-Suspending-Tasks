@@ -50,7 +50,7 @@ Recall that the scheduling penalty associated with self-suspensions is maximized
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/not-ok-without-period-enforcer/not-ok.pdf}
-  \caption{Example schedule (\emph{without} period enforcement) of three tasks $\tau_1 = $, $\tau_2$, and $\tau_3$ with periods $T_1 = T_2 = T_3 = 10$. Tasks $\tau_1$ and $\tau_3$ consist of a single computation segment ($C_1^1 = C_3^1 = 3$); task $\tau_2$ consists of two computation and one suspension segment ($C_2^1 = 1$, $S_2^1 = 4$, $C_2^2 = 2$). Jobs of tasks $\tau_1$ and $\tau_3$ are released just as $\tau_2$ resumes from its self-suspension at time~$5$. Without period enforcement, task $\tau_3$ misses a deadline at time~$15$ because the second job of  task $\tau_2$ suspends only briefly (for one time unit rather than four).}
+  \caption{Example uniprocessor schedule (\emph{without} period enforcement) of three tasks $\tau_1 = $, $\tau_2$, and $\tau_3$ with periods $T_1 = T_2 = T_3 = 10$. Tasks $\tau_1$ and $\tau_3$ consist of a single computation segment ($C_1^1 = C_3^1 = 3$); task $\tau_2$ consists of two computation and one suspension segment ($C_2^1 = 1$, $S_2^1 = 4$, $C_2^2 = 2$). Jobs of tasks $\tau_1$ and $\tau_3$ are released just as $\tau_2$ resumes from its self-suspension at time~$5$. Without period enforcement, task $\tau_3$ misses a deadline at time~$15$ because the second job of  task $\tau_2$ suspends only briefly (for one time unit rather than four).}
   \label{fig:not-ok-without-period-enforcement}
   \end{figure}
 \fi
@@ -83,7 +83,7 @@ Hence, the execution of $\tau_2$'s second computation segment does not start unt
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/ok-with-period-enforcer/ok.pdf}
-  \caption{Example schedule \emph{with} period enforcement assuming the same scenario as depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. With period enforcement, task $\tau_3$ does not miss a deadline because task $\tau_2$'s second computation segment is delayed until it no longer imposes undue interference (i.e., it is prevented from resuming ``too soon'').}
+  \caption{Example uniprocessor schedule \emph{with} period enforcement assuming the same scenario as depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. With period enforcement, task $\tau_3$ does not miss a deadline because task $\tau_2$'s second computation segment is delayed until it no longer imposes undue interference (i.e., it is prevented from resuming ``too soon'').}
   \label{fig:ok-with-period-enforcement}
   \end{figure}
 \fi
@@ -130,7 +130,7 @@ Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspendin
 
 \begin{enumerate}
 \setcounter{enumi}{1}
-	\item How to derive a single-segment deferrable task set corresponding to a given set of sporadic segmented self-suspending tasks in polynomial time is an open problem. Recent findings by Nelissen et al.~\cite{ecrts15nelissen} can be applied, but their method takes exponential time.
+	\item Deriving a single-segment deferrable task set corresponding to a given set of sporadic segmented self-suspending tasks in polynomial time is an open problem. Recent findings by Nelissen et al.~\cite{ecrts15nelissen} can be applied, but their method takes exponential time.
 \end{enumerate}
 
 Finally, we make a third observation concerning the use of the period enforcer in conjunction with suspension-based multiprocessor locking protocols for partitioned fixed-priority scheduling (such as the MPCP~\cite{LNR:09,Ra:90} or the FMLP~\cite{BLBA:07,BA:08}). While it is certainly tempting to apply period enforcement with the intention of avoiding the negative effects of deferred execution due to lock contention (as previously suggested elsewhere~\cite{Raj:91,Lak:11,LNR:09}), we ask: \emph{Does existing blocking analysis remain safe when combined with the period enforcer algorithm?} In Section \ref{sec:locking}, we show that this is not the case.
@@ -157,13 +157,13 @@ Figure \ref{fig:example-original} depicts an example schedule of the task set as
 \ifpaper
 \begin{figure}[t]
   \centering
-  \input{../figures/example-original/example-body.tex}
+  \includegraphics[scale=1]{../figures/example-original/example-original.pdf}
   \caption{An illustrative example of the original self-suspending task set (without period enforcement) assuming periodic job arrivals on a uniprocessor. Task $\tau_1$ has higher priority than task $\tau_2$.}
   \label{fig:example-original}
   \end{figure}
 \begin{figure}[t]
   \centering
-  \input{../figures/example/example-body.tex}
+  \includegraphics[scale=1]{../figures/example/example.pdf}
   \caption{An illustrative example demonstrating a deadline miss at time 22
     under the period enforcer algorithm. At time~19, $\tau_2$ resumes, but it remains ineligible to execute until time~20 when $\tau_1$ is released.}
 \label{fig:example}  
