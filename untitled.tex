@@ -27,16 +27,16 @@ The period enforcer algorithm~\cite{Raj:suspension1991} applies to self-suspendi
 \label{sec:taskmodel}
 
 To date, the real-time literature on self-suspensions has focused on two task models: the \emph{dynamic} and the \emph{segmented} (or \emph{multi-segment}) self-suspension model. 
-The dynamic self-suspension sporadic task model characterizes each
+The dynamic self-suspending sporadic task model characterizes each
 task $\tau_i$ as a four-tuple $(C_i,S_i,T_i,D_i)$: 
 $C_i$ denotes an upper bound on the total execution time of any job of $\tau_i$,
 $S_i$ denotes an upper bound on the total self-suspension time of any job of $\tau_i$,
 $T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ is the relative deadline. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur.
 
-In contrast, the segmented sporadic task model extends the above four-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
+In contrast, the segmented self-suspending sporadic task model extends the above four-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
 $(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. Any suspension before the first computation segment is equivalent to \emph{release jitter}~\cite{ABRTW:93}.
 
-The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on control flow. The advantage of the segmented model is that is allows for more accurate analysis. The period enforcer algorithm and its analysis fundamentally applies (only) to the segmented model.
+The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on control flow. The advantage of the segmented model is that is allows for more accurate analysis. The period enforcer algorithm and its analysis applies (only) to the segmented model.
 
 We say that a segment \emph{arrives} when it becomes available for execution. The first computation segment arrives immediately when the job is released; the second computation segment (if any) arrives when the job resumes from its first self-suspension, \textit{etc.} For simplicity, we assume that tasks are indexed in order of decreasing priority (i.e., $\tau_1$ is the highest-priority task). A \emph{level-$i$ busy interval} is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
 
@@ -70,7 +70,7 @@ By definition, we have $ET_{2,0}^2 = -T_2 = -10$. At time~5, when the second com
 \begin{align*}
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, a_{2,1}^2\right) ) = \max(0, 5) = 5
 \end{align*}
-since the arrival of $\tau_2$'s second segment (and the release of $\tau_1$) starts a new level-2 busy interval at time $a_{2,1}^2 = 5$. The second second segment of $\tau_2$'s first job is hence immediately eligible to execute; however, due to the presence of a pending higher-priority job $\tau_2$ is not actually scheduled until time~8 (just as without period enforcement as depicted in Figure \ref{fig:not-ok-without-period-enforcement}).
+since the arrival of $\tau_2$'s second segment (and the release of $\tau_1$) starts a new level-2 busy interval at time $a_{2,1}^2 = 5$. The second segment of $\tau_2$'s first job is hence immediately eligible to execute; however, due to the presence of a pending higher-priority job, $\tau_2$ is not actually scheduled until time~8 (just as without period enforcement as depicted in Figure \ref{fig:not-ok-without-period-enforcement}).
 
 The second segment of the second job of $\tau_2$ arrives at time $a_{2,2}^2 = 12$. In this case, the segment is \emph{not} immediately eligible to execute since
 \begin{align*}
