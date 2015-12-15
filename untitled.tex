@@ -34,7 +34,7 @@ $S_i$ denotes an upper bound on the total self-suspension time of any job of $\t
 $T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ is the relative deadline. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur.
 
 In contrast, the segmented sporadic task model extends the above four-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
-$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. The arguments can be easily extended to handle tasks that start with a self-suspension.
+$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. Any suspension before the first computation segment is equivalent to \emph{release jitter}~\cite{ABRTW:93}.
 
 The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on control flow. The advantage of the segmented model is that is allows for more accurate analysis. The period enforcer algorithm and its analysis fundamentally applies (only) to the segmented model.
 
@@ -76,7 +76,7 @@ The second segment of the second job of $\tau_2$ arrives at time $a_{2,2}^2 = 12
 \begin{align*}
 	ET_{2,2}^2 & = \max\left(ET_{2,1}^2 + T_2,\ \mathit{busy}(\tau_2, a_{2,2}^2\right) ) = \max(5 + 10, 12) = 15.
 \end{align*}
-Hence, the execution of $\tau_2$'s second computation segment does not start until time $ET_{2,2}^2 = 15$, which gives $\tau_3$ sufficient time to finish before its deadline at time~$20$.
+Hence, the execution of $\tau_2$'s second computation segment does not start until time $ET_{2,2}^2 = 15$, which gives $\tau_3$ sufficient time to finish before its deadline at time~$15$.
 
 
 \ifpaper
@@ -105,9 +105,9 @@ Central to Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{task set tra
 	 Without any loss of generality, we shall assume that a task $\tau_i$ can defer its entire execution time but not parts of it. That is, a task $\tau_i$ executes for $C_i$ units with no suspensions once it begins execution. Any task that does suspend after it executes for a while can be considered to be two or more tasks each with its own worst-case execution time. The only difference is that if a task $\tau_i$ is split into two tasks $\tau_i'$ followed by $\tau_i''$, then $\tau_i''$ has the same deadlines as $\tau_i{{'}}$. 
 \end{quote}
 %
-In other words, the transformation can be understood as splitting each self-suspending task into a matching number of non-self-suspending sporadic tasks subject to \emph{release jitter}, which can be easily analyzed with classic fixed-priority response-time analysis~\cite{ABRTW:93}.
+In other words, the transformation can be understood as splitting each self-suspending task into a matching number of non-self-suspending sporadic tasks subject to release jitter, which can be easily analyzed with classic fixed-priority response-time analysis~\cite{ABRTW:93}.
 
-It is well known that uncontrolled deferred execution (i.e, release jitter) can impose a scheduling penalty because of the potential for ``back-to-back'' execution~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}. That is, if a job of a deferrable task that maximally defers its execution is directly followed by a job that executes immediately without deferring its execution, then lower-priority tasks may suffer increased interference. 
+It is well known that uncontrolled deferred execution (i.e, release jitter) can impose  increased interference on lower-priority tasks because of the potential for ``back-to-back'' execution~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}, as illustrated in Figure \ref{fig:not-ok-without-period-enforcement}. 
 
 The purpose of the period enforcer algorithm is to reduce such penalties for lower-priority tasks without detrimentally affecting the schedulability of self-suspending, higher-priority tasks. The latter aspect --- no detrimental effects for self-suspending tasks --- is captured concisely by Theorem 5 in the original analysis of the period enforcer algorithm \cite{Raj:suspension1991}.
 \begin{quote}
@@ -117,22 +117,23 @@ The purpose of the period enforcer algorithm is to reduce such penalties for low
 \subsection{Questions Answered in This Paper}
 \label{sec:questions}
 
-Theorem 5 in \cite{Raj:suspension1991} provides a very positive result for the analysis of deferrable task sets subject to period enforcement: if the corresponding transformed task set can be shown to be schedulable under fixed-priority scheduling using \emph{any} applicable analysis, then the period enforcer algorithm also yields a correct schedule. 
+Theorem 5 (in \cite{Raj:suspension1991}) is a strong result that seemingly enables a powerful analysis approach: if the corresponding transformed set of non-self-suspending tasks (subject to release jitter, without period enforcement) can be shown to be schedulable under fixed-priority scheduling using \emph{any} applicable analysis (e.g.,~\cite{ABRTW:93}), then the period enforcer algorithm also yields a correct schedule.
 
-However, we note that Theorem 5 in \cite{Raj:suspension1991} applies only to the \emph{transformed} task set: recall that, in the original analysis~\cite{Raj:suspension1991}, deferrable tasks are assumed to defer their entire execution time either completely or not at all (but not parts of it).  Therefore, if we would like to apply the period enforcer to segmented self-suspending task sets, we first have to answer the following question: ``\emph{Given a set of sporadic segmented self-suspending tasks, what is the corresponding set of (single-segment) deferrable tasks?}'' That is, how do we convert given self-suspension segments into equivalent bounds on release jitter such that we may apply Theorem 5 to conclude that the system remains schedulable despite period enforcement? 
+However, recall that, in the original analysis~\cite{Raj:suspension1991}, deferrable tasks are assumed to defer their  execution either completely or not at all (but not parts of it). It is hence important to realize that Theorem 5 in \cite{Raj:suspension1991} applies only to the \emph{transformed} task set---Theorem 5 in \cite{Raj:suspension1991} does \emph{not} apply to the \emph{original} set of segmented self-suspending tasks. This leads to the first question: \emph{Does schedulability of the transformed set of non-self-suspending tasks (subject to release jitter, without period enforcement) also imply schedulability of the original set of segmented self-suspending tasks (under period enforcement)?} In Section \ref{sec:unschedulable}, we answer this question in the negative.
 
-
-
-
-In this paper, which is motivated by the fact that the original proposal \cite{Raj:suspension1991} does not provide an answer to this central question, 
-we make two pertinent observations.
 \begin{enumerate}
 	\item There exist sporadic segmented self-suspending task sets that are schedulable under fixed-priority scheduling without any enforcement, but the corresponding schedule by using the period enforcer algorithm is not feasible. This shows that Theorem 5 in \cite{Raj:suspension1991} has to be  used with care --- it may be applied only in the context of the transformed single-segment deferrable task set, and not in the context of the original segmented self-suspending task set.
-
-	\item Deriving a single-segment deferrable task set corresponding to a given set of sporadic segmented self-suspending tasks in polynomial time is an open problem. Recent findings by Nelissen et al. \cite{ecrts15nelissen} can be applied, but their method takes exponential time.
 \end{enumerate}
-%
-Finally, we make a third observation concerning the use of the period enforcer in conjunction with suspension-based multiprocessor locking protocols for partitioned fixed-priority scheduling (such as the MPCP~\cite{LNR:09,Ra:90} or the FMLP~\cite{BLBA:07,BA:08}): while it is certainly tempting to apply period enforcement with the intention of avoiding the negative effects of deferred execution due to lock contention, it is actually unsafe to do so.
+
+
+Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to answer the following question: \emph{Given a set of sporadic segmented self-suspending tasks, how do we obtain a corresponding set of (single-segment) deferrable tasks?} That is, the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert self-suspension segments into equivalent bounds on release jitter, but it remains unclear \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
+
+\begin{enumerate}
+\setcounter{enumi}{1}
+	\item How to derive a single-segment deferrable task set corresponding to a given set of sporadic segmented self-suspending tasks in polynomial time is an open problem. Recent findings by Nelissen et al.~\cite{ecrts15nelissen} can be applied, but their method takes exponential time.
+\end{enumerate}
+
+Finally, we make a third observation concerning the use of the period enforcer in conjunction with suspension-based multiprocessor locking protocols for partitioned fixed-priority scheduling (such as the MPCP~\cite{LNR:09,Ra:90} or the FMLP~\cite{BLBA:07,BA:08}). While it is certainly tempting to apply period enforcement with the intention of avoiding the negative effects of deferred execution due to lock contention (as previously suggested elsewhere~\cite{Raj:91,Lak:11,LNR:09}), we ask: \emph{Does existing blocking analysis remain safe when combined with the period enforcer algorithm?} In Section \ref{sec:locking}, we show that this is not the case.
 \begin{enumerate}
 \setcounter{enumi}{2}
 	\item The period enforcer algorithm invalidates all existing blocking analyses as there exist non-trivial feedback cycles between the period enforcer rules and blocking durations.
