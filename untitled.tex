@@ -4,7 +4,7 @@
 \section{Introduction} 
 When real-time tasks suspend themselves (due to blocking I/O, lock contention, etc.), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}. This penalty, which is maximized when a task defers the completion of one job just until the release of the next job, can manifest as response-time increases and thus may lead to deadline misses.
 
-To avoid such detrimental effects,  Rajkumar \cite{Raj:suspension1991} proposed the \emph{period enforcer} algorithm,  a technique to control (or shape) the processor demand of self-suspending tasks under \emph{fixed-priority} scheduling. In a nutshell, the period enforcer algorithm artificially increases the length of certain suspensions whenever a task's activation pattern carries the risk of inducing undue interference in lower-priority tasks.
+To avoid such detrimental effects,  Rajkumar \cite{Raj:suspension1991} proposed the \emph{period enforcer} algorithm,  a technique to control (or shape) the processor demand of self-suspending tasks on uniprocessors and partitioned multiprocessors under preemptive fixed-priority scheduling. In a nutshell, the period enforcer algorithm artificially increases the length of certain suspensions whenever a task's activation pattern carries the risk of inducing undue interference in lower-priority tasks. 
 
 The period enforcer algorithm is worth a second look for a number of reasons. First, in the words of Rajkumar, it ``forces tasks to behave like ideal periodic tasks from the scheduling point of view with no associated scheduling penalties''~\cite{Raj:suspension1991}, which is obviously highly desirable in many practical applications in which self-suspensions are inevitable (e.g., when offloading computations to co-processors such as GPUs or DSPs). Second, the later-proposed, but more widely-known \emph{released guard} algorithm~\cite{SL:96} uses a technique quite similar to period enforcement to control scheduling penalties due to release jitter in distributed systems. The period enforcer algorithm has also attracted renewed attention in recent years and has been discussed in several current works  (e.g.,~\cite{DBLP:conf/rtss/ChenL14,LNR:09,LR:10,Lak:11,LC:14,KANR:13,HY:11,CA:09,CA:10,CA:10b}), at times controversially~\cite{BA:08a}. And last but not least, the period enforcer algorithm plays a significant role in Rajkumar's seminal book on   real-time  synchronization~\cite{Raj:91}. 
 
@@ -23,12 +23,12 @@ We briefly introduce the needed background in Section~\ref{sec:prelim}, restate 
 
 To date, the real-time literature on self-suspensions has focused on two task models: the \emph{dynamic} and the \emph{segmented} (or \emph{multi-segment}) self-suspension model. 
 The dynamic self-suspension sporadic task model characterizes each
-task $\tau_i$ as a $4$-tuple $(C_i,S_i,T_i,D_i)$: 
+task $\tau_i$ as a four-tuple $(C_i,S_i,T_i,D_i)$: 
 $C_i$ denotes an upper bound on the total execution time of any job of $\tau_i$,
 $S_i$ denotes an upper bound on the total self-suspension time of any job of $\tau_i$,
 $T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ is the relative deadline. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur.
 
-In contrast, the segmented sporadic task model extends the above $4$-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
+In contrast, the segmented sporadic task model extends the above four-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
 $(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For the simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. The arguments can be easily extended to handle tasks that start with a self-suspension.
 
 The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on control flow. The advantage of the segmented model is that is allows for more accurate analysis. The period enforcer algorithm and its analysis fundamentally applies (only) to the segmented model.
