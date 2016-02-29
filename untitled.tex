@@ -196,10 +196,6 @@ This example shows that there exist sporadic segmented self-suspending task sets
 
 One may consider to enrich the period enforcer with the following property: when the processor becomes idle, a task immediately becomes eligible to execute regardless of its eligibility time. However, even with this extension, the above example remains valid by introducing one additional lowest priority task $\tau_3$ with execution time $C_3=13$ (to be executed from time $3$ to time $9$ and time $13$ to time $20$) and $T_3=D_3=100$. With task $\tau_3$, the processor is always busy from time $0$ to time $23$ and consequently $\tau_2$ still misses its deadline at time $22$.
 
-We can now examine why task $\tau_2$ misses the deadline by the period enforcer algorithm. 
-
-Clearly, the suspension time of task $\tau_2^1$ is $0$. The suspension time of task $\tau_2^2$ is $C_2^1+C_1+S_2^1=9$. In the worst case response time analysis, we can easily see that the worst-case response time of task $\tau_2^2$ is $2+1$ after the second computation segment arrives.
-
 
 
 Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism. Recall that the analysis in Theorem 5 in~\cite{Raj:suspension1991} was only compatible with the deferrable task model. For the above example, we need to convert the segmented-suspending sporadic task $\tau_2$ into two deferrable tasks, called $\tau_2^1$ and $\tau_2^2$.
