@@ -36,9 +36,10 @@ $T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ 
 In contrast, the segmented self-suspending sporadic task model extends the above four-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
 $(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. Any suspension before the first computation segment is equivalent to \emph{release jitter}~\cite{ABRTW:93}.
 
-A special case of the segmented self-suspending sporadic task model is the deferrable sporadic task model, in which each task $\tau_i$ starts with a self-suspension interval followed by one computation segment. The deferrable sporadic task model is the central notation in Rajkumar's analysis~\cite{Raj:suspension1991}. We will explicitly explain the link in Section~\ref{sec:classic-analysis}.
+A special case of the segmented self-suspending sporadic task model is the deferrable sporadic task model, in which each task $\tau_i$ starts with a self-suspension interval followed by one computation segment. The deferrable sporadic task model is the central notation in Rajkumar's analysis~\cite{Raj:suspension1991}. We will explicitly explain the link in Section~\ref{sec:classic-analysis}. A deferrable sporadic task is equivalent to 
+an ordinary sporadic task with \emph{release jitter}. 
 
-The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on the task control flow. The advantage of the segmented model is that it allows for more accurate analysis. The period enforcer algorithm and its analysis applies (only) to the segmented model.
+The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on the task control flow. The advantage of the segmented model is that it allows for more accurate analysis. The period enforcer algorithm and its analysis applies (only) to the segmented model, to be explained in Section~\ref{sec:classic-analysis}.
 
 We say that a segment \emph{arrives} when it becomes available for execution. The first computation segment arrives immediately when the job is released; the second computation segment (if any) arrives when the job resumes from its first self-suspension, \textit{etc.} For simplicity, we assume that tasks are indexed in order of decreasing priority (i.e., $\tau_1$ is the highest-priority task). A \emph{level-$i$ busy interval} is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
 
@@ -98,8 +99,11 @@ The examples in Figures \ref{fig:not-ok-without-period-enforcement} and \ref{fig
 
 The central notation in Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{deferrable task}, which matches our notion of segmented tasks.  Specifically, Rajkumar states that:
 \begin{quote}
-With deferred execution, a task $\tau_i$ can execute its $C_i$ units of execution in discrete amounts $C_i^1, C_i^2$, $\ldots$ with suspension in between $C_i^j$ and $C_i^{j+1}$. \cite[Section 3]{Raj:suspension1991}\footnote{The notation has been altered here for the sake of consistency.} 
+With deferred execution, a task $\tau_i$ can execute its $C_i$ units of execution in discrete amounts $C_i^1, C_i^2$, $\ldots$ with suspension in between $C_i^j$ and $C_i^{j+1}$. \cite[Section 3]{Raj:suspension1991}\footnote{The notation has been altered here for the sake of consistency. } 
 \end{quote}
+
+Note that it is not possible to convert a dynamic self-suspending task into the notion of deferred execution defined in \cite[Section 3]{Raj:suspension1991}, since the definition of a dynamic self-suspending task creates dynamic execution amounts for different jobs of a task. A simple example can explain why the period enforcer algorithm is not compatible with the dynamic self-suspending task model. Suppose that the system has only one task with execution time $C_1=1$, $S_1=1$, and $D_1=T_1=2$. The first job of task $\tau_1$ arrives at time $0$, suspends itself for one time unit, and then executes for one time unit. The second job of task $\tau_1$ arrives at time $2$, first executes for $0.5$ time unit, then suspends for $1$ time unit, and executes for $0.5$ time unit. With the period enforcer algorithm, the second job of task $\tau_1$ starts its execution at time $3$ and will clearly miss the deadline at time $4$.
+
 %
 Central to Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{task set transformation} that splits each deferrable task with multiple segments into a corresponding number of single-segment deferrable tasks.  In the words of Rajkumar~\cite[Section 3]{Raj:suspension1991}:
 
@@ -180,13 +184,13 @@ Figure \ref{fig:example} shows the resulting schedule for a periodic release pat
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, 9\right) ) = 9.
 \end{align*}
 
-In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, is interfered with for one time unit, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
+In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, is interfered for one time unit, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
 \begin{align*}
 	ET_{2,2}^1 & = \max\left(0 + 11,\ \mathit{busy}(\tau_2, 11)\right) = 11  \text{ and }
 \\
 	ET_{2,2}^2 & = \max\left(9 + 11,\ \mathit{busy}(\tau_2, 19\right) ) = 20.
 \end{align*}
-According to the rules of the period enforcer algorithm, the processor therefore remains idle at time $19$ because the segment is not eligible to execute until time $ET_{2,2}^2 = 20$. However, at time $20$, the third job of $\tau_1$ is released. As a result, the second job of $\tau_2$ incurs additional interference and misses its deadline at time $22$.
+According to the rules of the period enforcer algorithm, the processor therefore remains idle at time $19$ because the segment is not eligible to execute until time $ET_{2,2}^2 = 20$. However, at time $20$, the third job of $\tau_1$ is released. As a result, the second job of $\tau_2$ suffers from additional interference and misses its deadline at time $22$.
 
 
 
