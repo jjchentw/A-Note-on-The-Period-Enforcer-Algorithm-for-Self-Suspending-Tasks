@@ -1,7 +1,9 @@
 \section{Incompatibility with Suspension-Based Locking Protocols}
 \label{sec:locking}
 
-\emph{Binary semaphores}, i.e., suspension-based locks used to realize mutually exclusive access to shared resources, are a common source of self-suspensions in multiprocessor real-time systems. When a task tries to use a resource that has already been locked, it self-suspends until the resource becomes available. Such self-suspensions due to lock contention, just like any other self-suspension, result in deferred execution and thus can detrimentally affect a task's interference on lower-priority tasks. It may thus seem natural to apply the period enforcer  to control the negative effects of blocking-induced self-suspensions.\footnote{The use of  period enforcement in combination with suspension-based locks has indeed been assumed in prior work~\cite{Raj:91} and suggested as a potential improvement elsewhere~\cite{Lak:11,LNR:09}.} However, as we demonstrate with two examples, it is actually not safe to use the period enforcer in the presence of suspension-based locks.
+\emph{Binary semaphores}, i.e., suspension-based locks used to realize mutually exclusive access to shared resources, are a common source of self-suspensions in multiprocessor real-time systems. When a task tries to use a resource that has already been locked, it self-suspends until the resource becomes available. Such self-suspensions due to lock contention, just like any other self-suspension, result in deferred execution and thus can detrimentally affect a task's interference on lower-priority tasks. It may thus seem natural to apply the period enforcer  to control the negative effects of blocking-induced self-suspensions.\footnote{The use of  period enforcement in combination with suspension-based locks has indeed been assumed in prior work~\cite{Raj:91} and suggested as a potential improvement elsewhere~\cite{Lak:11,LNR:09}. As we show in this paper, this is unsafe.} However, as we demonstrate with two examples, it is actually not safe to apply period enforcement to lock-induced self-suspensions. 
+
+
 
 \subsection{Combining Period Enforcement and Suspension-Based Locks}
 
@@ -97,7 +99,7 @@ The third jobs of both tasks are released at time $16$. The roles are swapped ag
 	ET_{2,3}^2 & = \max\left(ET_{2,2}^2 + T_2,\ \mathit{busy}(\tau_2, a^2_{2,3})\right) =\max(13- \epsilon + 8,\ 16) = 21- \epsilon.
 \end{align*}
 This, however, means that $\tau_1$ cannot use the shared resource before time $23 - \epsilon$, which leaves insufficient time to complete the second segment of $\tau_1$'s third job before its deadline at time $24$.
-Furthermore, if both tasks continue the illustrated execution pattern, the period enforcer continues to increase their response times. As a result, the pattern may be repeated to construct schedules in which an arbitrarily large implicit or constrained deadline is violated.
+Furthermore, if both tasks continue the illustrated execution pattern, the period enforcer continues to increase their response times. As a result, the pattern may be repeated to construct schedules in which any arbitrarily large implicit or constrained deadline is violated.
 
 As in the previous example,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking). The example thus demonstrates that, if lock requests take effect immediately, then the period enforcer is incompatible with existing blocking analyses because, under the second interpretation, it increases the effective lock-holding times.
 
@@ -112,7 +114,7 @@ As in the previous example,  the response-time analyses for both the MPCP~\cite{
 
 \subsection{Discussion}
 
-While it is intuitively appealing to combine period enforcement with suspension-based locking protocols, we observe that this causes non-trivial difficulties. In particular, our examples show that the addition of period enforcement invalidates all existing blocking analyses. They also suggest that devising a correct blocking analysis would be a substantial challenge due to the demonstrated feedback cycle between the period enforcer rules and blocking durations. 
+While it is intuitively appealing to combine period enforcement with suspension-based locking protocols~\cite{Raj:91,Lak:11,LNR:09}, we observe that this causes non-trivial difficulties. In particular, our examples show that the addition of period enforcement invalidates all existing blocking analyses. They also suggest that devising a correct blocking analysis would be a substantial challenge due to the demonstrated feedback cycle between the period enforcer rules and blocking durations. 
 
 
 Fundamentally, the design of the period enforcer algorithm implicitly rests on the assumption that a segment \emph{can} execute as soon as it is eligible to do so. In the presence of locks, however, this assumption is invalidated. As demonstrated, the result can be a successive growth of self-suspension times that proceeds until a deadline is missed.  The period enforcer algorithm, at least as defined and used in the literature to date~\cite{Raj:suspension1991,Raj:91}, is therefore incompatible with the existing literature on suspension-based real-time locking protocols (e.g., \cite{Raj:91,Lak:11,LNR:09,BLBA:07,Br:13}). 
