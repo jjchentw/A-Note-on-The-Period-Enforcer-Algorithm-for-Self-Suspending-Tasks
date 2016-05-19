@@ -25,4 +25,4 @@ clean:
 COMPARE_TO ?= HEAD
 
 diff:
-	 git latexdiff  --ignore-latex-errors --whole-tree --main ${MAIN}.tex --latexmk  -o diff-to-${COMPARE_TO}.pdf ${COMPARE_TO} --latexopt --force
+	 git latexdiff  --ignore-latex-errors --whole-tree --main ${MAIN}.tex --latexmk  -o diff-to-${COMPARE_TO}.pdf ${COMPARE_TO} --latexopt --force --exclude-textcmd=section --exclude-textcmd=subsection
