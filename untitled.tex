@@ -49,14 +49,12 @@ We say that a segment \emph{arrives} when it becomes available for execution. Th
 
 Recall that the scheduling penalty associated with self-suspensions is maximized when a task defers the completion of one job just until the release of the next job. For example, this effect is illustrated in Figure \ref{fig:not-ok-without-period-enforcement}, which shows a case in which the self-suspension of the higher-priority task $\tau_2$  results in a deadline miss of the lower-priority task $\tau_3$. The root cause is increased interference due to the ``back-to-back'' execution effect~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}, where two jobs of $\tau_2$ execute in close succession (i.e, separated by less than a period) because the second job self-suspended for a (much) shorter duration than the first job. That is, $\tau_3$ misses its deadline because $\tau_2$ resumed ``too soon.''
 
-\ifpaper
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/not-ok-without-period-enforcer/not-ok.pdf}
   \caption{Example uniprocessor schedule (\emph{without} period enforcement) of three tasks $\tau_1 = $, $\tau_2$, and $\tau_3$ with periods $T_1 = T_2 = T_3 = 10$. Tasks $\tau_1$ and $\tau_3$ consist of a single computation segment ($C_1^1 = C_3^1 = 3$); task $\tau_2$ consists of two computation and one suspension segment ($C_2^1 = 1$, $S_2^1 = 4$, $C_2^2 = 2$). Jobs of tasks $\tau_1$ and $\tau_3$ are released just as $\tau_2$ resumes from its self-suspension at time~$5$. Without period enforcement, task $\tau_3$ misses a deadline at time~$15$ because the second job of  task $\tau_2$ suspends only briefly (for one time unit rather than four).}
   \label{fig:not-ok-without-period-enforcement}
-  \end{figure}
-\fi
+\end{figure}
 
 
 The key idea underlying the period enforcer algorithm is to artificially delay the execution of computation segments if a job resumes ``too soon.'' To this end,  the period enforcer algorithm determines for each computation segment an \emph{eligibility time}. If a segment resumes  before its eligibility time, the execution of the segment is delayed until the eligibility time is reached.
@@ -82,14 +80,12 @@ The second segment of the second job of $\tau_2$ arrives at time $a_{2,2}^2 = 12
 Hence, the execution of $\tau_2$'s second computation segment does not start until time $ET_{2,2}^2 = 15$, which gives $\tau_3$ sufficient time to finish before its deadline at time~$15$.
 
 
-\ifpaper
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/ok-with-period-enforcer/ok.pdf}
   \caption{Example uniprocessor schedule \emph{with} period enforcement assuming the same scenario as depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. With period enforcement, task $\tau_3$ does not miss a deadline because task $\tau_2$'s second computation segment is delayed until it no longer imposes undue interference (i.e., it is prevented from resuming ``too soon'').}
   \label{fig:ok-with-period-enforcement}
-  \end{figure}
-\fi
+\end{figure}
 
 The examples in Figures \ref{fig:not-ok-without-period-enforcement} and \ref{fig:ok-with-period-enforcement} suggest an intuition for the benefits provided by period enforcement: computation segments of a self-suspending task $\tau_i$ are forced to execute at least $T_i$ time units apart (hence the name), which ensures that it causes no more interference than a regular (non-self-suspending) sporadic task. Next, we revisit the original analysis of this technique.
 
@@ -160,7 +156,6 @@ To this end, consider a task system consisting of $2$ tasks. Let $\tau_1$ denote
 Figure \ref{fig:example-original} depicts an example schedule of the task set assuming periodic job arrivals.
 
 
-\ifpaper
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/example-original/example-original.pdf}
@@ -174,7 +169,7 @@ Figure \ref{fig:example-original} depicts an example schedule of the task set as
     under the period enforcer algorithm. At time~19, $\tau_2$ resumes, but it remains ineligible to execute until time~20 when $\tau_1$ is released.}
 \label{fig:example}  
 \end{figure}
-\fi
+
 
 Next, let us consider the same task set under control of the period enforcer algorithm, as defined in Section \ref{sec:pe}.
 Figure \ref{fig:example} shows the resulting schedule for a periodic release pattern. The first job of task $\tau_2$ (which arrives at time $a^1_{2,1} =  0$) is executed as if there is no period enforcement since the definition $ET_{2,0}^1 = ET_{2,0}^2 = -T_2$ ensures that both segments are immediately eligible. Note that the first segment of $\tau_2$'s first job is delayed due to interference from $\tau_1$. As a result, the second segment of $\tau_2$'s first job does not resume until time $a^2_{2,1} = 9$. Thus, we have
