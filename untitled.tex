@@ -2,7 +2,7 @@
 
 
 \section{Introduction} 
-When real-time tasks suspend themselves (due to blocking I/O, lock contention, etc.), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}. This penalty, which is maximized when a task defers the completion of one job just until the release of the next job, can manifest as response-time increases and thus may lead to deadline misses.
+When real-time tasks suspend themselves (due to blocking I/O, lock contention, etc.), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95,WC16-suspend-DATE,ecrts15nelissen}. This penalty, which is maximized when a task defers the completion of one job just until the release of the next job, can manifest as response-time increases and thus may lead to deadline misses.
 
 To avoid such detrimental effects,  Rajkumar \cite{Raj:suspension1991} proposed the \emph{period enforcer} algorithm,  a technique to control (or shape) the processor demand of self-suspending tasks on uniprocessors and partitioned multiprocessors under preemptive fixed-priority scheduling. In a nutshell, the period enforcer algorithm artificially increases the length of certain suspensions whenever a task's activation pattern carries the risk of inducing undue interference in lower-priority tasks. 
 
@@ -204,3 +204,9 @@ By converting the two computation segments of task $\tau_2$ into two deferrable 
 
 
 %\clearpage
+
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "LITES/LITES-Paper.tex"
+%%% End:
