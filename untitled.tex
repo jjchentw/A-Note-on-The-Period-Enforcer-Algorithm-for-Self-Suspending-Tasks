@@ -2,7 +2,7 @@
 
 
 \section{Introduction} 
-When real-time tasks suspend themselves (due to blocking I/O, lock contention, etc.), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95,WC16-suspend-DATE,ecrts15nelissen}. This penalty, which is maximized when a task defers the completion of one job just until the release of the next job, can manifest as response-time increases and thus may lead to deadline misses.
+When real-time tasks suspend themselves (due to blocking I/O, lock contention, \textit{etc.}), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95,WC16-suspend-DATE,ecrts15nelissen}. This penalty, which is maximized when a task defers the completion of one job just until the release of the next job, can manifest as response-time increases and thus may lead to deadline misses.
 
 To avoid such detrimental effects,  Rajkumar \cite{Raj:suspension1991} proposed the \emph{period enforcer} algorithm,  a technique to control (or shape) the processor demand of self-suspending tasks on uniprocessors and partitioned multiprocessors under preemptive fixed-priority scheduling. In a nutshell, the period enforcer algorithm artificially increases the length of certain suspensions whenever a task's activation pattern carries the risk of inducing undue interference in lower-priority tasks. 
 
@@ -21,27 +21,96 @@ We briefly introduce the needed background in Section~\ref{sec:prelim}, restate 
 \section{Preliminaries}
 \label{sec:prelim}
 
-The period enforcer algorithm~\cite{Raj:suspension1991} applies to self-suspending tasks on uniprocessors under fixed-priority scheduling, and hence by extension also to multiprocessors under partitioned fixed-priority scheduling (where tasks are statically assigned to processors and each processor is scheduled as a uniprocessor). In this section, we review the underlying task model (Section \ref{sec:taskmodel}), introduce the period enforcer algorithm (Section \ref{sec:pe}), summarize its analysis (Section \ref{sec:classic-analysis}), and finally restate our observations (Section \ref{sec:questions}).
+The period enforcer algorithm~\cite{Raj:suspension1991} applies to self-suspending tasks on uniprocessors under fixed-priority scheduling, and hence by extension also to multiprocessors under partitioned fixed-priority scheduling (where tasks are statically assigned to processors and each processor is scheduled as a uniprocessor). In this section, we review the underlying task model (Section \ref{sec:taskmodel}), introduce the period enforcer algorithm (Section \ref{sec:pe}), summarize its analysis (Section \ref{sec:classic-analysis}), and finally restate our observations in more precise terms (Section \ref{sec:questions}).
 
-\subsection{Self-Suspending Tasks}
+\subsection{Task Models}
 \label{sec:taskmodel}
 
-To date, the real-time literature on self-suspensions has focused on two task models: the \emph{dynamic} and the \emph{segmented} (or \emph{multi-segment}) self-suspension model. 
-The dynamic self-suspending sporadic task model characterizes each
-task $\tau_i$ as a four-tuple $(C_i,S_i,T_i,D_i)$: 
-$C_i$ denotes an upper bound on the total execution time of any job of $\tau_i$,
-$S_i$ denotes an upper bound on the total self-suspension time of any job of $\tau_i$,
-$T_i$ denotes the minimum inter-arrival time (or period) of $\tau_i$, and $D_i$ is the relative deadline. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur.
+Since the analysis of the period enforcer requires reasoning about different task models and their relationships, we carefully introduce and precisely define the relevant models in this section.
 
-In contrast, the segmented self-suspending sporadic task model extends the above four-tuple by characterizing each self-suspending task as a (fixed) finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
-$(C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i-1$ suspension intervals. For simplicity of presentation, we assume that a task $\tau_i$ always starts with a computation segment. Any suspension before the first computation segment is equivalent to \emph{release jitter}~\cite{ABRTW:93}.
 
-A special case of the segmented self-suspending sporadic task model is the deferrable sporadic task model, in which each task $\tau_i$ starts with a self-suspension interval followed by one computation segment. The deferrable sporadic task model is the central notation in Rajkumar's analysis~\cite{Raj:suspension1991}. We will explicitly explain the link in Section~\ref{sec:classic-analysis}. A deferrable sporadic task is equivalent to 
-an ordinary sporadic task with \emph{release jitter}. 
+\subsubsection{Periodic Tasks}
 
-The advantage of the dynamic model is that it is more flexible since it does not impose any assumptions on the task control flow. The advantage of the segmented model is that it allows for more accurate analysis. The period enforcer algorithm and its analysis applies (only) to the segmented model, to be explained in Section~\ref{sec:classic-analysis}.
+The most basic and best understood task model is the \emph{periodic task model} due to Liu and Layland~\cite{LL:73}. In this model, each task $\tau_i$ is characterized as a tuple $(C_i,T_i)$, where $C_i$ denotes an upper bound on the total execution time of any job of $\tau_i$ and $T_i$ denotes the (exact) \emph{inter-arrival time} (or \emph{period}) of $\tau_i$. Each such periodic task $\tau_i$ releases a job at time~0, and periodically every $T_i$ units thereafter. Each job must finish by the time the next arrives. Importantly, Liu and Layland assumed both that the $k$\xth job of $\tau_i$ arrives \emph{exactly} at time $(k-1)\times T_i$, and that an incomplete job is \emph{always} available for execution (i.e., jobs never block on I/O or locks).
 
-We say that a segment \emph{arrives} when it becomes available for execution. The first computation segment arrives immediately when the job is released; the second computation segment (if any) arrives when the job resumes from its first self-suspension, \textit{etc.} For simplicity, we assume that tasks are indexed in order of decreasing priority (i.e., $\tau_1$ is the highest-priority task). A \emph{level-$i$ busy interval} is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
+A straightforward generalization of the periodic task model is to introduce an explicit \emph{relative deadline} parameter $D_i$. In this case, each task is represented by a three-tuple $(C_i, T_i, D_i)$, with the interpretation that every job of $\tau_i$ must finish within $D_i$ time units after its release. Task $\tau_i$ is said to have an \emph{implicit deadline}  if $D_i = T_i$, a \emph{constrained deadline} if $D_i \leq T_i$, and an \emph{arbitrary deadline} otherwise. We primarily consider implicit deadlines in this note.
+
+\subsubsection{Sporadic Tasks}
+
+Mok~\cite{Mo:83} introduced the \emph{sporadic task model}, in which each task $\tau_i$ is still specified by a tuple $(C_i, T_i, D_i)$. However, the sporadic task model relaxes the inter-arrival constraint $T_i$ to specify a \emph{minimum} (rather than an exact) separation between jobs. In this interpretation, the first job is not necessarily released at time~0, and the exact release times of future jobs cannot be predicted, which is an appropriate modeling assumption for event-triggered tasks.
+
+On uniprocessors, this relaxation does not introduce additional pessimism: since any two jobs of a sporadic task $\tau_i$ are  known to be released \emph{at least} $T_i$ time units apart, the sporadic task model~\cite{Mo:83} still allows for schedulability analysis that is as accurate as Liu and Layland's analysis of periodic tasks~\cite{LL:73}. 
+
+Mok retained the assumption that incomplete jobs are always ready for execution (i.e., no suspensions), and that jobs, once released, are \emph{immediately} available for execution. 
+
+
+\subsubsection{Release Jitter}
+\label{sec:jitter}
+
+The latter assumption --- immediate availability for execution --- is inappropriate in many practical systems (especially in networked systems) if events (e.g., messages) that trigger job releases can incur non-negligible delays (e.g., network congestion). Such delays in task activation can accounted for by introducing a notion of \emph{release jitter}. To this end, each task is represented by a four-tuple $(C_i, J_i, T_i, D_i)$, where the parameter $J_i$ is a bound on the maximum time that a job remains unavailable for execution after it should have started to run. Release jitter can be incorporated in both the periodic and the sporadic task models.
+
+In the presence of release jitter, the terms ``job arrival'' and ``job release,'' which are often used interchangeably, take on distinct meanings: a job's \emph{arrival time} denotes the point in time when it actually becomes available for execution, whereas a job's \emph{release time} is the instant that is relevant for the (minimum) inter-arrival time constraint. Any job of task $\tau_i$ thus arrives at most $J_i$ time units after it is released.
+
+Notably, non-zero release jitter \emph{does} cause additional pessimism: in the worst case, two consecutive jobs of a task $\tau_i$ can be separated by as little as $T_i - J_i$ time units (if the earlier job incurs maximum release jitter and the successor job incurs none). As a result, a task may ``carry in'' some additional work into a given analysis interval. Taking this effect into account, Audsley et al.~\cite{ABRTW:93} developed a response-time analysis for sporadic and periodic constrained-deadline tasks subject to release jitter under preemptive fixed-priority scheduling.
+
+However, even in the presence of release jitter, a key assumption remains that jobs do not self-suspend (e.g., wait for I/O).\footnote{Audsley et al.~\cite{ABRTW:93} do present a response-time analysis that takes into account a limited form of suspensions due to semaphores (``blocking''). However, their analysis does not apply to general self-suspensions (i.e., the kind of self-suspensions targeted by period enforcer algorithm)  and is not relevant in the context of this paper.} That is, it is assumed that, once a job has arrived, it continuously remains available for dispatching until it completes. This restriction is removed next.
+
+
+\subsubsection{Self-Suspending Tasks}
+\label{sec:dynamic}
+
+When a job \emph{self-suspends}, it becomes unavailable for execution until some external event occurs (e.g., a disk I/O operation completes, a network packet arrives, a co-processor signals completion, \textit{etc.}). This has the effect of \emph{deferring} (a part of) the job's processing requirement until the time that it \emph{resumes} from its suspension, which causes massive analytical difficulties~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95,WC16-suspend-DATE,ecrts15nelissen,Ri:04}. 
+
+To date, the real-time literature on self-suspensions has focused on two task models: the \emph{dynamic} self-suspension model, which we discuss first,  and the \emph{segmented} (or \emph{multi-segment}) suspension model, which we discuss next in Section~\ref{sec:segmented}.  Self-suspensions can arise in both periodic and sporadic tasks (i.e, both interpretations of the $T_i$ parameter are possible); in this note we focus on sporadic tasks.
+
+The dynamic self-suspending task model characterizes each
+task $\tau_i$ as a four-tuple $(C_i,S_i,T_i,D_i)$: the parameters $C_i$, $T_i$, and $D_i$ have their usual meaning (i.e., as in the periodic and sporadic task models), and $S_i$ denotes an upper bound on the total self-suspension time of any job of $\tau_i$. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur. That is, how often a job defers its execution, when it does so, and how much it defers varies unpredictably from job to job.
+
+Allowing tasks to self-suspend can impose substantial scheduling penalties (an example is provided shortly in Section~\ref{sec:pe}) and greatly complicates  schedulability analysis (e.g., see~\cite{ecrts15nelissen,Ri:04,Chen2016}). In particular, release jitter and self-suspensions are not interchangeable concepts and it is not safe~\cite{Chen2016,ecrts15nelissen} to simply substitute $J_i$ with $S_i$ in Audsley et al.'s analysis~\cite{ABRTW:93}. However, under the dynamic suspension model, it is possible for jobs of self-suspending tasks to defer their entire execution requirement.
+
+The period enforcer algorithm aims to mitigate the negative effects of self-suspensions. However, for reasons that will be explained in Section~\ref{sec:pe}, the period enforcer algorithm cannot be meaningfully combined with the dynamic suspension model. Instead, it requires a segmented suspension model, which we discuss next.
+
+
+\subsubsection{Segmented Self-Suspending Tasks (aka Deferrable Tasks)}
+\label{sec:segmented}
+
+The (multi-)segmented self-suspending sporadic task model extends the  four-tuple $(C_i,S_i,T_i,D_i)$ by characterizing each self-suspending task as a fixed, finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
+$(S_{i}^0,C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i$ suspension intervals.
+
+The first self-suspension segment $S_i^0$, prior to the first execution segment, is equivalent to release jitter ($J_i$, Section~\ref{sec:jitter}). However, in many works on the segmented self-suspending task model, the segment $S_i^0$ assumed to be absent (i.e., $S_i^0 = 0$), such that there are only $m_i - 1$ suspension intervals (and jobs arrive jitter-free). Unless noted otherwise we adopt this convention.
+
+We say that a segment \emph{arrives} when it becomes available for execution. The first computation segment arrives immediately when the job is released (unless $S_i^0 \neq 0$); the second computation segment (if any) arrives when the job resumes from its first self-suspension, \textit{etc.}
+
+
+The advantage of the dynamic model (Section~\ref{sec:dynamic}) is that it is more flexible since it does not impose any assumptions on the task control flow. The advantage of the segmented model is that it allows for more accurate analysis. The period enforcer algorithm and its analysis~\cite{Raj:suspension1991} applies (only) to the segmented model, as explained in Section~\ref{sec:classic-analysis}. 
+
+A note on terminology: for the sake of consistency with the recent literature on self-suspensions in real-time systems, we favor the term ``segmented self-suspending tasks'' to refer to tasks under the just-introduced model. However,  Rajkumar's original description of the period enforcer~\cite{Raj:suspension1991} refers to such tasks as  \emph{deferrable tasks}, as it predates the widespread adoption of the former term. We use the former terminology in this note, unless when quoting Rajkumar~\cite{Raj:suspension1991}, in which case we use Rajkumar's original terminology.
+
+
+\subsubsection{Single-Segment Self-Suspending (aka Deferrable) Tasks}
+\label{sec:single-segmented}
+
+Segmented self-suspending tasks with exactly one self-suspension interval followed by exactly one computation segment ($m_i = 1$, $S_i^0 \neq 0$) are an important special case, which we refer to as \emph{single-segment self-suspending tasks}.  This special case is central to Rajkumar's original analysis of the period enforcer~\cite{Raj:suspension1991},  as we will explain in Section~\ref{sec:classic-analysis}.
+Regarding terminology, Rajkumar~\cite{Raj:suspension1991} does not use a special term for single-segment self-suspending tasks, simply referring to them as deferrable tasks. To avoid ambiguity, we instead explicitly mention the ``single-segment'' qualifier.  
+
+Note also that single-segment self-suspending sporadic tasks, which are  ``suspended'' only prior to commencing execution, are analytically fully equivalent to sporadic task subject to release jitter (i.e., the model described in Section~\ref{sec:jitter}). We nonetheless use the term ``single-segment self-suspending sporadic task'' to remain close to Rajkumar's original description~\cite{Raj:suspension1991}, and to highlight the connection to the (multi-)segmented self-suspending task model (Section~\ref{sec:segmented}).
+
+This concludes our review of relevant task models. Before reviewing the period enforcer and its original analysis, we briefly introduce to some essential concepts.
+
+\subsubsection{Assumptions, Busy Periods, and Task Set Transformations}
+\label{sec:misc-defs}
+
+We focus exclusively on preemptive fixed-priority scheduling in this note, as the period enforcer is explicitly designed for this setting. For simplicity, we assume that tasks are indexed in order of decreasing priority (i.e., $\tau_1$ is the highest-priority task). 
+
+A key concept in the period enforcer's runtime rules (discussed next) is the notion of a \emph{level-$i$ busy interval}, which is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
+
+Finally, Rajkumar's original analysis~\cite{Raj:suspension1991} of the period enforcer is rooted in the concept of a \emph{task set transformation}. In general, such a task set transformation is simply a function $f$ that maps a given task set $\tau$ to a transformed task set $\tau' = f(\tau)$ \emph{such that $\tau'$ is schedulable \textbf{only if} the original task set $\tau$ is schedulable}, too. The basic idea is that such a transformation allows a form of reduction: $\tau$ can now \emph{indirectly} be shown to be schedulable by establishing that $\tau'$ is schedulable.
+
+Importantly, the tasks in $\tau$ and $\tau'$ do \emph{not} have to be of the same task model, nor does the number of tasks have to remain constant (i.e.,  $|\tau| \neq |\tau'|$ is possible). Specifically, the task set transformation underlying the analysis of the period enforcer maps each \emph{multi-}segmented self-suspending task $\tau_i \in \tau$  to $m_i$ \emph{single-}segmented self-suspending tasks in $\tau'$ (i.e., $|\tau'| = \sum_{\tau} m_i$ ).
+
+With these definitions in place, we can now introduce the period enforcer. We first introduce the actual algorithms (i.e., the rules enforced at runtime) in Section~\ref{sec:pe} and then review the corresponding original analysis in Section~\ref{sec:classic-analysis}.
+ 
+
 
 
 \subsection{The Period Enforcer Algorithm}
