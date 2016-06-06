@@ -104,9 +104,13 @@ We focus exclusively on preemptive fixed-priority scheduling in this note, as th
 
 A key concept in the period enforcer's runtime rules (discussed next) is the notion of a \emph{level-$i$ busy interval}, which is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
 
-Finally, Rajkumar's original analysis~\cite{Raj:suspension1991} of the period enforcer is rooted in the concept of a \emph{task set transformation}. In general, such a task set transformation is simply a function $f$ that maps a given task set $\tau$ to a transformed task set $\tau' = f(\tau)$ \emph{such that $\tau'$ is schedulable \textbf{only if} the original task set $\tau$ is schedulable}, too. The basic idea is that such a transformation allows a form of reduction: $\tau$ can now \emph{indirectly} be shown to be schedulable by establishing that $\tau'$ is schedulable.
+\newcommand{\tset}[0]{\mathcal{T}}
 
-Importantly, the tasks in $\tau$ and $\tau'$ do \emph{not} have to be of the same task model, nor does the number of tasks have to remain constant (i.e.,  $|\tau| \neq |\tau'|$ is possible). Specifically, the task set transformation underlying the analysis of the period enforcer maps each \emph{multi-}segmented self-suspending task $\tau_i \in \tau$  to $m_i$ \emph{single-}segmented self-suspending tasks in $\tau'$ (i.e., $|\tau'| = \sum_{\tau} m_i$ ).
+Finally, Rajkumar's original analysis~\cite{Raj:suspension1991} of the period enforcer is rooted in the concept of a \emph{task set transformation}. In general, such a task set transformation is simply a function $f$ that maps a given task set $\tset$ to a transformed task set $\tset' = f(\tset)$ \emph{such that $\tset'$ is schedulable \textbf{only if} the original task set $\tset$ is schedulable}, too. The basic idea is that such a transformation allows a form of reduction: $\tset$ can now \emph{indirectly} be shown to be schedulable by establishing that $\tset'$ is schedulable.
+
+
+
+Importantly, the tasks in $\tset$ and $\tset'$ do \emph{not} have to be of the same task model, nor does the number of tasks have to remain constant (i.e.,  $|\tset| \neq |\tset'|$ is possible). Specifically, the task set transformation underlying the analysis of the period enforcer maps each \emph{multi-}segmented self-suspending task $\tau_i \in \tset$  to $m_i$ \emph{single-}segmented self-suspending tasks in $\tset'$ (i.e., $|\tset'| = \sum_{\tset} m_i$).
 
 With these definitions in place, we can now introduce the period enforcer. 
 
@@ -222,7 +226,7 @@ This leads to the first question: \emph{Does schedulability of the  original set
 \end{enumerate}
 
 
-Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to answer the task-set transformation question: \emph{given a set of sporadic segmented self-suspending tasks $\tau$, how do we obtain a corresponding set of single-segment deferrable tasks $\tau'$ such that $\tau'$ is schedulable  only if $\tau$ is schedulable?} That is, as discussed in Section~\ref{sec:classic-analysis} the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert multi-segmented self-suspending tasks into corresponding sets of single-segment deferrable tasks, but it remains unclear in~\cite{Raj:suspension1991}  \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
+Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to answer the task-set transformation question: \emph{given a set of sporadic segmented self-suspending tasks $\tset$, how do we obtain a corresponding set of single-segment deferrable tasks $\tset'$ such that $\tset'$ is schedulable  only if $\tset$ is schedulable?} That is, as discussed in Section~\ref{sec:classic-analysis} the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert multi-segmented self-suspending tasks into corresponding sets of single-segment deferrable tasks, but it remains unclear in~\cite{Raj:suspension1991}  \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
 
 \begin{enumerate}
 \setcounter{enumi}{1}

@@ -31,22 +31,35 @@ Based on these considerations, it appears that the transformation problem is  --
 However, deriving an exact bound $W_k^j$ for $j=1,2,\ldots,m_k-1$ for task $\tau_k$ is not easy at all: 
 even for the above ``simple'' case, Nelissen et al.'s solution~\cite{ecrts15nelissen} for calculating the exact worst-case response time requires exponential time complexity if $j \geq 2$. Furthermore, Nelissen et al. \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be a very challenging problem indeed.\footnote{In fact, in ongoing work, this problem has recently been shown to be coNP-hard in the strong sense~\cite{Chen2016b}.}
 
-In the context of the period enforcer, we consequently observe that the only existing solution for deriving the \emph{precise} bound $W_k^{j}$ (and hence $\rho_k^j$), due to Nelissen et al.\ \cite{ecrts15nelissen},  has exponential time complexity (even for the considered special case of a single self-suspending task). If over-approximations can be tolerated, finding a safe upper bound on $W_k^j$ for $j=1,2,\ldots,m_k-1$ can be done in pseudo-polynomial time \cite{PH:rtss98,Huang:multiseg}, albeit at a loss of accuracy and hence generality. 
+In the context of the period enforcer, we consequently observe that the only existing solution for deriving the \emph{precise} bound $W_k^{j}$ (and hence $\rho_k^j$), due to Nelissen et al.\ \cite{ecrts15nelissen},  has exponential time complexity (even for the special case of a single self-suspending task). If over-approximations can be tolerated, finding a safe upper bound on $W_k^j$ for $j=1,2,\ldots,m_k-1$ can be done in pseudo-polynomial time \cite{PH:rtss98,Huang:multiseg}, albeit at a loss of accuracy and hence generality. 
+
+Next, we consider another problem that arises once a suitable set of single-segment deferrable tasks has been found. 
 
 
 \subsection{Schedulability Test for A Corresponding Deferrable Task Set}
 \label{sec:schedulability-test-deferrable}
 
-Suppose that the corresponding deferrable task set can be derived precisely by ignoring the complexity issues raised in Section~\ref{sec:transformation-exponential}. The next question is whether there is any information loss, with respect to the schedulability test, by inspecting only the corresponding deferrable task set. We will demonstrate an example to explain the information loss.
+Ignoring the complexity issues raised in Section~\ref{sec:transformation-exponential}, suppose that we have an oracle for precisely deriving the corresponding single-segment deferrable task set $\tset'$ for any given set of multi-segmented self-suspending tasks $\tset$. The next question is then how to analyze $\tset'$.
 
-Consider a task system consisting of $2$ tasks. Let $\tau_1$ denote a sporadic task without self-suspensions, in which $C_1 = 2$ and $T_1=D_1=10$. Let $\tau_2$ denote a self-suspending task consisting of three computation segments with parameters  $C_2^1 = 1$,  $S_2^1 = 6$, $C_2^2=1$, $S_2^2=8$, $C_2^3=1$, and $ T_2=D_2=21$. That is, this task set is pretty similar to the task set used in Section~\ref{sec:unschedulable}. One additional computation
-segment is created to illustrate the potential concerns. This task set is schedulable by fixed-priority preemptive scheduling without any enforcement since the worst-case response time of the second computation segment is $10$ and the third computation segment will suffer from the interference by at most one job from task $\tau_1$. Moreover, by using the analysis in Section~\ref{sec:transformation-exponential}, we can conclude that
-\begin{equation*}
-  \rho_2^1 = 0, \rho_2^2 = 9, \rho_2^3 = 18.
-\end{equation*}
-Therefore, in the corresponding deferrable task set, there are $2$ sporadic tasks $\tau_1$ and $\tau_2^1$ (with execution time $1$ and period $21$), and two deferrable tasks $\tau_2^2$ (with deferrable length $9$, period $21$, and execution time $1$) and $\tau_2^3$ (with deferrable length $18$, period $21$, and execution time $1$).  
+Recall from Section~\ref{sec:classic-analysis} that a set single-segment deferrable tasks (i.e., a set of sporadic tasks subject to release jitter) can be analyzed with Audsley et al.'s response-time analysis~\cite{ABRTW:93}. However, when analyzing the response time of a single-segment deferrable task that corresponds to the  $j^{\mathrm{th}}$ computation segment of a multi-segmented self-suspending task $\tau_k$, it seems needlessly pessimistic to take into account interference from other single-segment deferrable tasks \emph{that also correspond to segments of $\tau_k$} --- after all, they reflect the same \emph{sequential} task, and  the execution of earlier segments of the same job is already reflected in $\rho_k^j$ .
+When analyzing a single-segment deferrable task in $\tset'$, one may thus be tempted to disregard any tasks stemming from the same multi-segmented self-suspending task (in $\tset$). We show with an example that this is generally not safe.
 
-Suppose that we are interested to analyze the worst-case response time of the deferrable task $\tau_2^3$ (in the corresponding deferrable task set) under fixed-priority scheduling. The question is \emph{whether we should ignore or should include the interference due to $\tau_2^1$ and $\tau_2^2$}.
+
+Consider a task system $\tset$ consisting of two tasks. Let $\tau_1$ denote a sporadic task without self-suspensions, with parameters $C_1 = 2$ and $T_1=D_1=10$. Further, let $\tau_2$ denote a self-suspending task consisting of three computation segments with parameters $S_2^0 = 0$, $C_2^1 = 1$,  $S_2^1 = 6$, $C_2^2=1$, $S_2^2=8$, $C_2^3=1$, and $ T_2=D_2=21$. 
+This task set is similar to the task set used in Section~\ref{sec:unschedulable}; one additional computation segment has been added to illustrate the potential concerns. 
+
+By design, this task set is schedulable under fixed-priority preemptive scheduling without any enforcement since the worst-case response time of $\tau_2$'s second computation segment is $10$ and the third computation segment will suffer interference due to at most one job of task $\tau_1$.
+
+
+Moreover, by using Nelissen et al.'s worst-case response time analysis~\cite{ecrts15nelissen} and the relationship discussed in Section~\ref{sec:transformation-exponential}, we can conclude that
+$\rho_2^1 = 0$, $\rho_2^2 = 9$, and $\rho_2^3 = 18$.
+Therefore, in the corresponding task set $\tset'$, there are two sporadic tasks $\tau_1$ (with  $C_1 = 2$ and $T_1=D_1=10$) and $\tau_2^1$ (with  $C_2^1 = 1$ and $T^1_2=D^1_2=21$), and two single-segment deferrable tasks $\tau_2^2$ (with  $C_2^2 = 1$, $T^2_2=D^2_2=21$, and $S_2^{0,2} = \rho_2^2 = 9$) and $\tau_2^3$ (with  $C_2^3 = 1$, $T^3_2=D^3_2=21$, and $S_2^{0,3} = \rho_2^3 = 18$).
+
+Suppose that we seek to analyze the worst-case response time of the deferrable task $\tau_2^3 \in \tset'$. The question is: \emph{can we safely ignore the interference due to $\tau_2^1$ and $\tau_2^2$}, as they reflect computation of the same sequential task $\tau_2 \in \tset$?
+
+
+XXX stopped editing here XXX
+
 Since the computation segments that are used to create $\tau_2^1, \tau_2^2$, and $\tau_2^3$ do not have any overlap in their available time to be executed, it may be seemingly correct at beginning that we do not have to consider the interference from $\tau_2^1$ and $\tau_2^2$ when analyzing the response time of the deferrable task $\tau_2^3$. However, this statement is in fact incorrect.
 
 
