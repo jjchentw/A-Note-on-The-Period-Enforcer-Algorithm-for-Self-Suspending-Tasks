@@ -1,5 +1,5 @@
 
-\section{Deriving a Corresponding Deferrable Task Set and Schedulability Test}
+\section{Deriving a Corresponding Deferrable Task Set}
 \label{sec:convert}
 
 The example in Section~\ref{sec:unschedulable} can be easily converted to a corresponding deferrable task set, as explained at the end of Section~\ref{sec:unschedulable}.  Due to Theorem 5 in~\cite{Raj:suspension1991}, the feasibility of the schedule by the period enforcer algorithm depends on whether the corresponding deferrable task set can be feasibly scheduled. Therefore, before applying the period enforcer algorithm to handle segmented self-suspending sporadic tasks, we need to first derive the corresponding deferrable task set and perform the schedulability test for the deferrable task set. To reduce the pessimism of the transformation to the corresponding deferrable task set, it would be the best to have a precise transformation and an exact schedulability test. Furthermore, as demonstrated with the example shown in Figure~\ref{fig:example}, even if the conversion is done precisely, the transformed single-segment deferrable task set can admit more pessimism than the original self-suspending task set with respect to schedulability.

@@ -222,7 +222,7 @@ This leads to the first question: \emph{Does schedulability of the  original set
 \end{enumerate}
 
 
-Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to solve the task-set transformation problem: \emph{given a set of sporadic segmented self-suspending tasks, how do we obtain a corresponding set of (single-segment) deferrable tasks?} That is, as discussed in Section~\ref{sec:classic-analysis} the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert multi-segmented self-suspending tasks into corresponding sets of single-segment deferrable tasks, but it remains unclear in~\cite{Raj:suspension1991}  \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
+Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to answer the task-set transformation question: \emph{given a set of sporadic segmented self-suspending tasks $\tau$, how do we obtain a corresponding set of single-segment deferrable tasks $\tau'$ such that $\tau'$ is schedulable  only if $\tau$ is schedulable?} That is, as discussed in Section~\ref{sec:classic-analysis} the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert multi-segmented self-suspending tasks into corresponding sets of single-segment deferrable tasks, but it remains unclear in~\cite{Raj:suspension1991}  \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
 
 \begin{enumerate}
 \setcounter{enumi}{1}
@@ -241,7 +241,7 @@ Finally, we consider the use of the period enforcer in conjunction with suspensi
 \section{Period Enforcement Can Induce Deadline Misses}
 \label{sec:unschedulable}
 
-In this section, we demonstrate with an example that there exist sporadic  segmented self-suspending task sets that both \textbf{(i)} are schedulable \emph{without} period enforcement and \textbf{(ii)} are not schedulable with period enforcement.
+In this section, we demonstrate with an example that there exist sets of sporadic  segmented self-suspending tasks that both \textbf{(i)} are schedulable \emph{without} period enforcement and \textbf{(ii)} are not schedulable with period enforcement.
 
 To this end, consider a task system consisting of $2$ tasks. Let $\tau_1$ denote a sporadic task without self-suspensions and parameters $C_1 = 2$ and $T_1=D_1=10$, and let $\tau_2$ denote a self-suspending task consisting of two segments with parameters  $C_2^1 = 1$,  $S_2^1 = 6$, $C_2^2=1$, and $ T_2=D_2=11$. Suppose that we use the rate-monotonic priority assignment, i.e., $\tau_1$ has higher priority than $\tau_2$. This task set is schedulable without any enforcement since at most one computation segment of a job of $\tau_2$ can be delayed by $\tau_1$: 
 \begin{itemize}
@@ -274,7 +274,7 @@ Figure \ref{fig:example} shows the resulting schedule for a periodic release pat
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, 9\right) ) = 9.
 \end{align*}
 
-In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, is interfered for one time unit, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
+In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, incurs interference for one time unit during $[11, 12)$, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
 \begin{align*}
 	ET_{2,2}^1 & = \max\left(0 + 11,\ \mathit{busy}(\tau_2, 11)\right) = 11  \text{ and }
 \\
@@ -288,15 +288,12 @@ According to the rules of the period enforcer algorithm, the processor therefore
 This example shows that there exist sporadic segmented self-suspending task sets that   \textbf{(i)} are schedulable under fixed-priority scheduling without any enforcement, but \textbf{(ii)} are not schedulable under the period enforcer algorithm.
 
 
-One may consider to enrich the period enforcer with the following property: when the processor becomes idle, a task immediately becomes eligible to execute regardless of its eligibility time. However, even with this extension, the above example remains valid by introducing one additional lowest priority task $\tau_3$ with execution time $C_3=13$ (to be executed from time $3$ to time $9$ and time $13$ to time $20$) and $T_3=D_3=100$. With task $\tau_3$, the processor is always busy from time $0$ to time $23$ and consequently $\tau_2$ still misses its deadline at time $22$.
+One may consider to enrich the period enforcer with the following scheduling rule: when the processor becomes idle, a task immediately becomes eligible to execute regardless of its eligibility time. However, even with this extension, the above example remains valid by introducing one additional lower-priority task $\tau_3$ with execution time $C_3=13$ (to be executed from time $3$ to time $9$ and time $13$ to time $20$) and $T_3=D_3=100$. With task $\tau_3$, the processor is always busy from time $0$ to time $23$ and consequently $\tau_2$ still misses its deadline at time $22$.
 
 
 
-Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism. Recall that the analysis in Theorem 5 in~\cite{Raj:suspension1991} was only compatible with the deferrable task model. For the above example, we need to convert the segmented-suspending sporadic task $\tau_2$ into two deferrable tasks, called $\tau_2^1$ and $\tau_2^2$.
-By converting the two computation segments of task $\tau_2$ into two deferrable tasks $\tau_2^1$ and $\tau_2^2$, we can conclude that  task $\tau_2^1$ never defers its execution and task $\tau_2^2$ defers its execution by at most \emph{$9$} time units.  Then the resulting single-segment deferrable task set $\{\tau_1, \tau_2^1, \tau_2^2\}$ is in fact not schedulable under the given fixed-priority scheduling since we can time the release of a job of $\tau_1$ to coincide with the arrival of a job of $\tau_2^2$ after it has maximally deferred its execution. We can easily see that the worst-case response time of the computation segment represented by task $\tau_2^2$ is $3$ time units after the second computation segment of task $\tau_2$ arrives. Together with the maximum deferred time $9$ time units, we know that the corresponding deferrable task set in fact has deadline misses since $9+3=12 > 11$. Therefore, the period enforcer algorithm may also cause a deadline miss.
 
-
-
+Furthermore, the example also demonstrates that the conversion to single-segment deferrable tasks does incur a loss of generality since it introduces pessimism. In the context of the above example, if we convert the multi-segmented suspending task $\tau_2$ into two single-segment deferrable tasks, called $\tau_2^1$ and $\tau_2^2$, where task $\tau_2^1$ never defers its execution and task $\tau_2^2$ defers its execution by at most \emph{$9$} time units, the resulting single-segment deferrable task set $\{\tau_1, \tau_2^1, \tau_2^2\}$ is in fact not schedulable under the given priority assignment: if a job of $\tau_1$ coincides with the arrival of a job of $\tau_2^2$ after it has maximally deferred its execution, the job of $\tau_2^2$ has a response time of $9 + 2 + 1$ time units, which exceeds its relative deadline of 11 time units. This shows that any restriction to single-segment deferrable tasks (i.e., assuming that ``a task $\tau_i$ can defer its entire execution time but not parts of it''~\cite{Raj:suspension1991}, recall Section~\ref{sec:classic-analysis}) inherently comes with a loss of generality.
 
 %\clearpage
 
