@@ -170,6 +170,7 @@ The examples in Figures \ref{fig:not-ok-without-period-enforcement} and \ref{fig
 
 
 \subsubsection{Incompatibility with the Dynamic Self-Suspension Model}
+\label{sec:incompat}
 
 Before reviewing the classic analysis based on this intuition, we briefly comment on the difficulty of combining period enforcement with the dynamic self-suspension model (Section~\ref{sec:dynamic}).
 
@@ -185,26 +186,27 @@ Next, we revisit the original analysis of the period enforcer algorithm.
 \subsection{Classic Analysis of the Period Enforcer Algorithm}
 \label{sec:classic-analysis}
 
-The central notation in Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{deferrable task}, which matches our notion of segmented tasks.  Specifically, Rajkumar states that:
+The central notation in Rajkumar's analysis~\cite{Raj:suspension1991} is a deferrable task, which matches our notion of segmented tasks, as already discussed in Section~\ref{sec:segmented}.  Specifically, Rajkumar states that:
 \begin{quote}
 With deferred execution, a task $\tau_i$ can execute its $C_i$ units of execution in discrete amounts $C_i^1, C_i^2$, $\ldots$ with suspension in between $C_i^j$ and $C_i^{j+1}$. \cite[Section 3]{Raj:suspension1991}\footnote{The notation has been altered here for the sake of consistency. } 
 \end{quote}
 
 
-Central to Rajkumar's analysis~\cite{Raj:suspension1991} is a \emph{task set transformation} that splits each deferrable task with multiple segments into a corresponding number of single-segment deferrable tasks.  In the words of Rajkumar~\cite[Section 3]{Raj:suspension1991}:
+Central to Rajkumar's analysis~\cite{Raj:suspension1991} is a task set transformation (recall Section~\ref{sec:misc-defs}) that splits each deferrable task with multiple segments (Section~\ref{sec:segmented}) into a corresponding number of single-segment deferrable tasks (Section~\ref{sec:single-segmented}).  In the words of Rajkumar~\cite[Section 3]{Raj:suspension1991}:
 
 \begin{quote}
 	 Without any loss of generality, we shall assume that a task $\tau_i$ can defer its entire execution time but not parts of it. That is, a task $\tau_i$ executes for $C_i$ units with no suspensions once it begins execution. Any task that does suspend after it executes for a while can be considered to be two or more tasks each with its own worst-case execution time. The only difference is that if a task $\tau_i$ is split into two tasks $\tau_i'$ followed by $\tau_i''$, then $\tau_i''$ has the same deadlines as $\tau_i{{'}}$. 
 \end{quote}
 %
-In other words, the transformation can be understood as splitting each self-suspending task into a matching number of non-self-suspending sporadic tasks subject to release jitter, which can be easily analyzed with classic fixed-priority response-time analysis~\cite{ABRTW:93}. 
+In other words, the transformation can be understood as splitting each self-suspending task into a matching number of single-segment deferrable tasks (Section~\ref{sec:single-segmented}), which are equivalent to non-self-suspending sporadic tasks subject to release jitter (Section~\ref{sec:jitter}), which can be easily analyzed with classic fixed-priority response-time analysis~\cite{ABRTW:93}. To constitute an effective schedulability analysis, the transformation must ensure that, if the transformed set of single-segment deferrable tasks can be shown to be schedulable (e.g., with response-time analysis~\cite{ABRTW:93}), then the original set of multi-segment deferrable tasks is also schedulable under period enforcement.
 
-It is well known that uncontrolled deferred execution (i.e, release jitter) can impose  increased interference on lower-priority tasks because of the potential for ``back-to-back'' execution~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}, as illustrated in Figure \ref{fig:not-ok-without-period-enforcement}. 
-
-The purpose of the period enforcer algorithm is to reduce such penalties for lower-priority tasks without detrimentally affecting the schedulability of self-suspending, higher-priority tasks. The latter aspect --- no detrimental effects for self-suspending tasks --- is captured concisely by Theorem 5 in the original analysis of the period enforcer algorithm \cite{Raj:suspension1991}.
+To summarize, as illustrated in Figure \ref{fig:not-ok-without-period-enforcement},
+uncontrolled deferred execution can impose  increased interference on lower-priority tasks because of the potential for ``back-to-back'' execution~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}. The purpose of the period enforcer algorithm is to reduce such penalties for lower-priority tasks without detrimentally affecting the schedulability of self-suspending, higher-priority tasks. The latter aspect --- no detrimental effects for self-suspending tasks --- is captured concisely by Theorem 5 in the original analysis of the period enforcer algorithm \cite{Raj:suspension1991}.
 \begin{quote}
-{\bf Theorem 5}: A deferrable task that is schedulable under its worst-case conditions is also schedulable under the period enforcer algorithm.  \cite{Raj:suspension1991}
+{\bf Theorem 5}: A [single-segment] deferrable task that is schedulable under its worst-case conditions is also schedulable under the period enforcer algorithm \cite{Raj:suspension1991}. 
 \end{quote}
+The ``worst-case conditions'' mentioned in the theorem simply correspond to the case when \textbf{(i)}~a job of a single-segment deferrable task defers its execution for the maximally allowed time $S_i^0$ (i.e., when it incurs maximal release jitter) and \textbf{(ii)} it incurs maximum higher-priority interference (i.e., when its start of execution coincides with a critical instant~\cite{LL:73}).
+
 
 \subsection{Questions Answered in This Paper}
 \label{sec:questions}
