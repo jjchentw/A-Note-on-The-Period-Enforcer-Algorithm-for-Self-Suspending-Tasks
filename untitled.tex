@@ -108,22 +108,22 @@ Finally, Rajkumar's original analysis~\cite{Raj:suspension1991} of the period en
 
 Importantly, the tasks in $\tau$ and $\tau'$ do \emph{not} have to be of the same task model, nor does the number of tasks have to remain constant (i.e.,  $|\tau| \neq |\tau'|$ is possible). Specifically, the task set transformation underlying the analysis of the period enforcer maps each \emph{multi-}segmented self-suspending task $\tau_i \in \tau$  to $m_i$ \emph{single-}segmented self-suspending tasks in $\tau'$ (i.e., $|\tau'| = \sum_{\tau} m_i$ ).
 
-With these definitions in place, we can now introduce the period enforcer. We first introduce the actual algorithms (i.e., the rules enforced at runtime) in Section~\ref{sec:pe} and then review the corresponding original analysis in Section~\ref{sec:classic-analysis}.
- 
+With these definitions in place, we can now introduce the period enforcer. 
 
 
 
 \subsection{The Period Enforcer Algorithm}
 \label{sec:pe}
 
+The period enforcer consists of two parts: a runtime rule that governs when a self-suspending task may be scheduled, and an (offline) analysis that may be used to assess the temporal correctness of a set of segmented self-suspending tasks (Section~\ref{sec:segmented}) subject to period enforcement. Initially, we focus on the runtime rule (i.e., the actual period enforcer algorithm) and then review the corresponding original analysis thereafter in Section~\ref{sec:classic-analysis}.  We begin with a simple example that highlights the effect that the period enforcer is designed to control.
+ 
 
-XXX
 
 \subsubsection{The Problem: Back-to-Back Execution}
 
-The scheduling penalty associated with self-suspensions is maximized when a task defers the completion of one job just until the release of the next job.  For example, this effect is illustrated in Figure \ref{fig:not-ok-without-period-enforcement}, which shows a case in which the self-suspension of the higher-priority task $\tau_2$  results in a deadline miss of the lower-priority task $\tau_3$.
+The scheduling penalty associated with self-suspensions is maximized when a task defers the completion of one job just until the release of the next job.  This effect is illustrated in Figure \ref{fig:not-ok-without-period-enforcement}, which shows a case in which the self-suspension of the higher-priority task $\tau_2$ from time~1 until time~5  results in a deadline miss of the lower-priority task $\tau_3$ at time~15.
 
-The root cause is increased interference due to the ``back-to-back'' execution effect~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}, where two jobs of $\tau_2$ execute in close succession (i.e, separated by less than a period) because the second job self-suspended for a (much) shorter duration than the first job. In the example shown in Figure \ref{fig:not-ok-without-period-enforcement},  $\tau_3$ misses its deadline because of this effect as $\tau_2$ resumed ``too soon.''
+The root cause is increased interference due to the ``back-to-back'' execution effect~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95}, where two jobs of $\tau_2$ execute in close succession (i.e, separated by less than a period) because the second job self-suspended for a (much) shorter duration than the first job. In the example shown in Figure \ref{fig:not-ok-without-period-enforcement},  $\tau_3$ misses its deadline at time~15 because of this effect as $\tau_2$'s second job resumes ``too soon'' (i.e, already at time~12 after having been suspended for only one time unit, rather than four time units like the first job of $\tau_2$). 
 
 \begin{figure}[t]
   \centering
@@ -134,19 +134,19 @@ The root cause is increased interference due to the ``back-to-back'' execution e
 
 \subsubsection{The Period Enforcement Rule}
 
-The key idea underlying the period enforcer algorithm is to artificially delay the execution of computation segments if a job resumes ``too soon.'' To this end,  the period enforcer algorithm determines for each computation segment an \emph{eligibility time}. If a segment resumes  before its eligibility time, the execution of the segment is delayed until the eligibility time is reached.
+The key idea underlying the period enforcer algorithm is to artificially delay the execution of computation segments if a job resumes ``too soon.'' To this end,  the period enforcer determines for each computation segment an \emph{eligibility time}. If a segment resumes  before its eligibility time, the execution of the segment is delayed until the eligibility time is reached.
 
-A segment's eligibility time is determined according to the following rule. Let $ET_{i,j}^k$ denote the eligibility time of the $k$\xth computation segment of the $j$\xth job of task $\tau_i$. Further, let $a^k_{i,j}$ denote the segment's arrival time. Finally, let $\mathit{busy}(\tau_i, t')$ denote the last time that a level-$i$ busy interval began on or prior to time $t'$ (i.e., the processor executes only $\tau_i$ or higher-priority tasks throughout the interval $[\mathit{busy}(\tau_i, t'), t']$). According to Section 3.1 in \cite{Raj:suspension1991}, the period enforcer algorithm defines the segment eligibility time of the $k$\xth segment as
+A segment's eligibility time is determined according to the following rule. Let $ET_{i,j}^k$ denote the eligibility time of the $k$\xth computation segment of the $j$\xth job of task $\tau_i$. Further, let $a^k_{i,j}$ denote the segment's arrival time. Finally, let $\mathit{busy}(\tau_i, t')$ denote the last time that a level-$i$ busy interval began on or prior to time $t'$ (i.e., the processor executes only $\tau_i$ or higher-priority tasks throughout the interval $[\mathit{busy}(\tau_i, t'), t']$). The period enforcer algorithm defines the segment eligibility time of the $k$\xth segment as
 \begin{align}\label{eq:ET-def}
 	ET_{i,j}^k & = \max\left(ET_{i,j-1}^k + T_i,\ \mathit{busy}(\tau_i, a^k_{i,j})\right),
 \end{align}
-where $ET_{i,0}^k = -T_i$. 
+where $ET_{i,0}^k = -T_i$~\cite[Section 3.1]{Raj:suspension1991}. This simple and elegant rule has the desirable effect of avoiding all back-to-back execution, which can be easily observed with an example.
 
-\subsubsection{Example: Hiding the Effects of Deferred Execution}
+\subsubsection{Example: Avoiding Back-to-Back Execution}
 
 Figure \ref{fig:ok-with-period-enforcement} illustrates how the definition of eligibility time in Equation~\ref{eq:ET-def} restores the schedulability of the task set depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. Consider the eligibility times of the second segment of task $\tau_2$.
 
-By definition, we have $ET_{2,0}^2 = -T_2 = -10$. At time~5, when the second computation segment of the first job resumes ($a_{2,1}^2 = 5$), we thus have
+By definition,  $ET_{2,0}^2 = -T_2 = -10$. At time~5, when the second computation segment of the first job resumes ($a_{2,1}^2 = 5$), we thus have
 \begin{align*}
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, a_{2,1}^2\right) ) = \max(0, 5) = 5
 \end{align*}
@@ -162,20 +162,24 @@ Hence, the execution of $\tau_2$'s second computation segment does not start unt
 \begin{figure}[t]
   \centering
   \includegraphics[scale=1]{../figures/ok-with-period-enforcer/ok.pdf}
-  \caption{Example uniprocessor schedule \emph{with} period enforcement assuming the same scenario as depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. With period enforcement, task $\tau_3$ does not miss a deadline because task $\tau_2$'s second computation segment is delayed until it no longer imposes undue interference (i.e., it is prevented from resuming ``too soon'').}
+  \caption{Example uniprocessor schedule \emph{with} period enforcement assuming the same scenario as depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. With period enforcement, task $\tau_3$ does not miss a deadline because task $\tau_2$'s second computation segment is delayed until time~15 when it no longer imposes undue interference (i.e., it is prevented from resuming ``too soon'' at time~12).}
   \label{fig:ok-with-period-enforcement}
 \end{figure}
 
 The examples in Figures \ref{fig:not-ok-without-period-enforcement} and \ref{fig:ok-with-period-enforcement} suggest an intuition for the benefits provided by period enforcement: computation segments of a self-suspending task $\tau_i$ are forced to execute at least $T_i$ time units apart (hence the name), which ensures that it causes no more interference than a regular (non-self-suspending) sporadic task.
 
-\subsection{Incompatibility with the Dynamic Self-Suspension Model}
 
+\subsubsection{Incompatibility with the Dynamic Self-Suspension Model}
 
-Note that it is not possible to convert a dynamic self-suspending task into the notion of deferred execution defined in \cite[Section 3]{Raj:suspension1991}, since the definition of a dynamic self-suspending task creates dynamic execution amounts for different jobs of a task. A simple example can explain why the period enforcer algorithm is not compatible with the dynamic self-suspending task model. Suppose that the system has only one task with execution time $C_1=1$, $S_1=1$, and $D_1=T_1=2$. The first job of task $\tau_1$ arrives at time $0$, suspends itself for one time unit, and then executes for one time unit. The second job of task $\tau_1$ arrives at time $2$, first executes for $0.5$ time unit, then suspends for $1$ time unit, and executes for $0.5$ time unit. With the period enforcer algorithm, the second job of task $\tau_1$ starts its execution at time $3$ and will clearly miss the deadline at time $4$.
+Before reviewing the classic analysis based on this intuition, we briefly comment on the difficulty of combining period enforcement with the dynamic self-suspension model (Section~\ref{sec:dynamic}).
 
+In short, the period enforcer fundamentally requires the segmented self-suspension model~(Section~\ref{sec:segmented}) to be effective because a job of a dynamic self-suspending task exhibits unpredictable execution times between its unpredictably many self-suspensions. 
 
+A simple example can explain why the period enforcer algorithm is not compatible with the dynamic self-suspending task model. Consider a trivial system that has only one task with a total execution time $C_1=1$, a total self-suspension length $S_1=1$, and a period and relative deadline of $D_1=T_1=2$. Suppose the first job of task $\tau_1$ arrives at time~$0$, suspends itself for one time unit, and then executes for one time unit. Further suppose the second job of task $\tau_1$ arrives at time $2$, first executes for $0.5$ time units, then suspends for $1$ time unit, and finally executes for $0.5$ time units. With the period enforcer algorithm in place, the second job of task $\tau_1$ starts its execution at time $3$, at which point it will clearly miss its deadline at time $4$.
 
- Next, we revisit the original analysis of this technique.
+In this example, the problem is that the eligibility time of the first computation ``segment'' of the second job is determined by the self-suspension pattern of the first job, even though the first job deferred all of its execution, whereas the second job deferred only a part of its execution. Under the more restrictive segmented self-suspension model~(Section~\ref{sec:segmented}), the pattern of self-suspension and computation times is statically fixed by the model; such a mismatch is hence not possible.
+
+Next, we revisit the original analysis of the period enforcer algorithm.
 
 
 \subsection{Classic Analysis of the Period Enforcer Algorithm}
