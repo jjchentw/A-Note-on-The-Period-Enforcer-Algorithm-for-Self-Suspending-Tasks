@@ -39,7 +39,7 @@ A straightforward generalization of the periodic task model is to introduce an e
 
 Mok~\cite{Mo:83} introduced the \emph{sporadic task model}, in which each task $\tau_i$ is still specified by a tuple $(C_i, T_i, D_i)$. However, the sporadic task model relaxes the inter-arrival constraint $T_i$ to specify a \emph{minimum} (rather than an exact) separation between jobs. In this interpretation, the first job is not necessarily released at time~0, and the exact release times of future jobs cannot be predicted, which is an appropriate modeling assumption for event-triggered tasks.
 
-On uniprocessors, this relaxation does not introduce additional pessimism: since any two jobs of a sporadic task $\tau_i$ are  known to be released \emph{at least} $T_i$ time units apart, the sporadic task model~\cite{Mo:83} still allows for schedulability analysis that is as accurate as Liu and Layland's analysis of periodic tasks~\cite{LL:73}. 
+On uniprocessors, the relaxation from periodic to sporadic job arrivals does not introduce additional pessimism:\footnote{Assuming that all periodic tasks release a job synchronously at time zero.} since any two jobs of a sporadic task $\tau_i$ are  known to be released \emph{at least} $T_i$ time units apart, the sporadic task model~\cite{Mo:83} still allows for schedulability analysis that is as accurate as Liu and Layland's analysis of periodic tasks~\cite{LL:73}. 
 
 Mok retained the assumption that incomplete jobs are always ready for execution (i.e., no suspensions), and that jobs, once released, are \emph{immediately} available for execution. 
 
@@ -237,7 +237,7 @@ Finally, we consider the use of the period enforcer in conjunction with suspensi
 
 \begin{enumerate}
 \setcounter{enumi}{2}
-	\item The period enforcer algorithm invalidates all existing blocking analyses for shared-memory real-time semaphore protocols as there exist non-trivial feedback cycles between the period enforcer rules and blocking durations.
+	\item The period enforcer algorithm invalidates all existing blocking analyses for real-time semaphore protocols as there exist non-trivial feedback cycles between the period enforcer rules and blocking durations.
 \end{enumerate}
 
 
