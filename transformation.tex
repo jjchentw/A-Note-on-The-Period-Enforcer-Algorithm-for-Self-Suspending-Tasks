@@ -1,5 +1,5 @@
 
-\section{Deriving and Analyzing a Corresponding Deferrable Task Set}
+\section{Deriving a Corresponding Deferrable Task Set}
 \label{sec:convert}
 
 To apply an analysis of the period enforcer based on Theorem 5 in~\cite{Raj:suspension1991}, we first need to convert a given set of multi-segment self-suspending tasks into a corresponding set of single-segment deferrable tasks. This raises the question: how can we efficiently derive the corresponding set of single-segment deferrable tasks? 
@@ -24,19 +24,20 @@ How can we compute $\rho_k^j$? Suppose that the worst-case response time of the 
 $$
 	\rho_k^j = W_k^{j-1}+S_k^{j-1},
 $$
-where $W_k^0 = 0$.  Therefore, if we can derive the exact segment worst-case response time $W_k^j$ for $j=1,2,\ldots,m_k-1$ for task $\tau_k$, we can easily compute $\rho_k^j$  for $j=1,2,\ldots,m_k$. And conversely, if we can somehow obtain $\rho_k^j$  for $j=2,\ldots,m_k$, we  can trivially infer $W_k^j$ for $j=1,2,\ldots,m_k-1$.
+where $W_k^0 = 0$.  Therefore, if we can derive the exact segment worst-case response time $W_k^j$ for $j=1,2,\ldots,m_k-1$, we can easily compute $\rho_k^j$  for $j=1,2,\ldots,m_k$. And conversely, if we can somehow obtain $\rho_k^j$  for $j=2,\ldots,m_k$, we  can trivially infer $W_k^j$ for $j=1,2,\ldots,m_k-1$.
 Based on these considerations, it appears that the transformation problem is  --- at least in the considered special case --- equivalent to the  worst-case response time analysis of a multi-segmented self-suspending task. 
 
 However, deriving an exact bound $W_k^j$ for $j=1,2,\ldots,m_k-1$ for task $\tau_k$ is not easy: 
 even for the above ``simple'' case, Nelissen et al.'s solution~\cite{ecrts15nelissen} for calculating the exact worst-case response time requires exponential time complexity if $j \geq 2$. Furthermore, Nelissen et al. \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that the problem of deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be very challenging indeed.\footnote{In fact, in ongoing work, this problem has recently been shown to be coNP-hard in the strong sense~\cite{Chen2016b}.}
 
-Nelissen et al. \cite{ecrts15nelissen} did not study the period enforcer; rather, they considered unrestricted self-suspensions. However, given that the period enforcer has no effect on tasks that do not self-suspend~\cite{Raj:suspension1991}, and given that in the considered special case only the lowest-priority task self-suspends, we believe that these observations apply to the period enforcement case, too.
+Nelissen et al.~\cite{ecrts15nelissen} did not study the period enforcer; rather, they considered unrestricted self-suspensions. However, given that the period enforcer has no effect on tasks that do not self-suspend~\cite{Raj:suspension1991}, and given that in the considered special case only the lowest-priority task self-suspends, we believe that these observations transfer to the period enforcement case.
 
-To summarize, to analyze the period enforcer based on Theorem~5 in~\cite{Raj:suspension1991}, a procedure for transforming multi-segmented self-suspending tasks into sets of single-segment deferrable tasks is needed, but no such procedure was given in the original proposal~\cite{Raj:suspension1991}. Based on the presented considerations, we conclude that this missing step is non-trivial and observe that the closest known solution by Nelissen et al. \cite{ecrts15nelissen} requires exponential time even in the greatly simplified special case of a single self-suspending task. It thus remains unclear how Theorem~5 in~\cite{Raj:suspension1991} can be used in the schedulability analysis of sets of multi-segmented self-suspending tasks. 
+To summarize, to analyze the period enforcer based on Theorem~5 in~\cite{Raj:suspension1991}, a procedure for transforming multi-segmented self-suspending tasks into sets of single-segment deferrable tasks is needed, but no such procedure is given in the original proposal~\cite{Raj:suspension1991}.
+%
+Based on the presented considerations, we conclude that filling in this missing step is non-trivial and observe that the closest known solution by Nelissen et al. \cite{ecrts15nelissen} requires exponential time even in the greatly simplified special case of a single self-suspending task. It thus remains unclear how Theorem~5 in~\cite{Raj:suspension1991} can be used for schedulability analysis of sets of multi-segmented self-suspending tasks. 
+While we did search for alternative analysis approaches that do not rely on Theorem 5, we did not find a simple or efficient schedulability test for the period enforcer without introducing substantial additional pessimism.  The problem remains open. 
 
-We further note that we did seek alternatives, but we did not find a simple or efficient schedulability test for the period enforcer without introducing additional pessimism.
-
-Next, we take a look at the period enforcer in the context of lock contention.
+Next, we take a look at the period enforcer in the context of synchronization protocols.
 
 
 
