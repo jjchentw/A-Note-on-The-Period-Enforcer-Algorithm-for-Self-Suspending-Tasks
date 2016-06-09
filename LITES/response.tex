@@ -1,5 +1,5 @@
 \documentclass[12pt]{article}
-\usepackage{fullpage}
+\usepackage[margin=2cm,a4paper]{geometry} 
 
 \usepackage{times}
 \usepackage{graphicx}
@@ -18,73 +18,48 @@
 \usetikzlibrary{shadows,patterns,shapes,arrows,decorations.pathmorphing,backgrounds,positioning,fit,plotmarks}
 
 
+\newenvironment{response}[0]{\textcolor{red}{\emph{Response: }}\color{blue}}{\medskip}
 
- \def\myendproof{{\ \vbox{\hrule\hbox{%
-   \vrule height1.3ex\hskip0.8ex\vrule}\hrule }}\par}
- \newenvironment{proof}{\noindent{\bf Proof. }}{\myendproof}
 
-\newcommand{\response}[1]{\textcolor{red}{\emph{Response: }} \textcolor{blue}{#1}\vspace{0.25in}}
-\newcommand{\action}[1]{\textcolor{blue}{\emph{\bf Actions Taken: }} \emph{#1}\myendproof \vspace{0.25in}}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{6pt}
+
+
+\newcommand{\action}[1]{\textcolor{red}{\emph{\it Actions taken: }}{\color{blue}#1}\medskip}
 
 \begin{document}
 
-{\bf Reviewer A}:
+\pagestyle{empty}
 
-	The paper discusses the application of the period enforcer algorithm to
-segmented self-suspending tasks in a unicore/partitioned-multicore settings.
-In particular, the authors contrived multiple scenarios and task sets to
-exemplify situations where (1) schedulability is achieved without using the
-period enforcer but deadlines are missed if the enforcer is used, and (2)
-the enforcer is not compatible with multicore resource sharing mechanisms in
-the sense that it invalidates the analyses currently employed. As an extra
-contribution, the authors also show that converting sporadic segmented
-self-suspending tasks into single-segment deferrable tasks (i.e. tasks with
-release jitters) incurs extra pessimism in the analysis (which means that
-the original task set may be schedulable whereas its corresponding
-deferrable tasks set is not), and doing the conversion in polynomial time
-is an open problem.
+\section*{Reviewer A}
 
-The problem is relevant and interesting and I believe the paper fits very
-well in the scope of Lites. The structure of the paper is good and the
-presentation is excellent, both in terms of language, and general structure.
-The paper is easy and pleasant to read and presents very pedagogic content.
-I warmly recommend its publication.
-
-{\bf Q:A.1}:    
-I only have a few very minor comments:\\
-- p2, line 60: assumptions on control flow $\rightarrow$ assumptions on
-the task control flow\\
-- p2, line 60: the segmented model is that is allows for $\rightarrow$ the
-segmented model is that **it** allows for\\
-- p4, line112: I would say segmented self-suspending tasks rather than
+\begin{itemize}
+	\item p2, line 60: assumptions on control flow $\rightarrow$ assumptions on
+the task control flow
+	\item p2, line 60: the segmented model is that is allows for $\rightarrow$ the
+segmented model is that **it** allows for
+	\item p4, line112: I would say segmented self-suspending tasks rather than
 multi-segment tasks to remain consistent with the naming introduced in
-the system model.\\
-- p7, line 212:  to enrich the period enforcer with the following
+the system model.
+	\item p7, line 212:  to enrich the period enforcer with the following
 power, consider replacing power with ``property'' or
-``scheduling rule''.\\
-- p7, line 221: ``it is immediately obvious that'' $\rightarrow$ I would simply
+``scheduling rule''.
+	\item p7, line 221: ``it is immediately obvious that'' $\rightarrow$ I would simply
 remove that part of the sentence since nothing is obvious with
 self-suspending tasks and particularly for the problem addressed in this
 paper.
 
+\begin{response}
+Thanks you for the suggestions. We have rephrased those parts accordingly.
+	
+\end{response}
 
-\vskip 0.1in\noindent
-\response{Thanks for the suggestions and comments. We have rephrased those parts accordingly.}
+\end{itemize}
 
-{\bf Reviewer B}:
 
-	This work makes the following observations
-(i) period enforcement is not strictly superior to scheduling without
-enforcement
-(ii) period enforcement is incompatible with existing analysis of
-suspension-based locking protocols.
-
-The observations described above are valid. However, there are some unstated
-assumptions about the period enforcer in how the technique is being applied,
-which should be clarified in this paper.
-
-{\bf Q:B.1}:    
-First, the period enforcer analysis only applies to the case where a task
+\section*{Reviewer B}
+\begin{itemize}
+	\item  First, the period enforcer analysis only applies to the case where a task
 defers its entire execution time but not parts of it. Tasks that suspend
 after executing for a while should be considered as two or more tasks with
 their own worst-case execution time. It is known that if tasks are broken up
@@ -93,24 +68,42 @@ original deadline, the schedulability is no longer guaranteed. For example,
 a task set (C,T,D), with tasks (4, 5, 5) and (2, 10, 10) is schedulable,
 whereas breaking up the (2, 10, 10) into (1.5, 10, 7.5) and (0.5, 10, 2.5)
 is not schedulable.
-
-Section 3 should address the above clarification and the task $\tau_2$ should
+	\item Section 3 should address the above clarification and the task $\tau_2$ should
 be statically broken up before applying the period enforcer. It is true that
 transforming a task set by breaking up tasks into sub tasks with sub
 deadlines can lead to unschedulability on an otherwise schedulable task set.
 
-\response{
-Reviewer B was partially correct. Since the period enforcer analysis only applies to the case where a task defers its entire execution time but not parts of it, we should create the corresponding deferrable task set. However, it is not necessary that we need to create those deferrable task sets before using the period enforcer algorithm. Since the computation segments of a segmented self-suspending task are independent from each other, we can simply use the period enforcer algorithm without knowing the corresponding deferrable task set. This is actually how we demonstrate the examples in Section 2 and Section 3. However, there is a risk that the resulting schedule may not be feasible. Therefore, one would need to verify the feasibility of the corresponding deferrable task set before applying the period enforcer algorithm. Such a step was assumed in [21], and we explain the difficulty in this paper. The period enforcement in the example in Section 3 is only used to enforce the periodic behavior of the 2nd computation segment of task $\tau_2$. We do not specifically discuss the schedulability test over there. Our intention is to show that the period enforcer algorithm is not always superior to the original fixed-priority scheduling. That is, the enforcement makes this segment miss the deadline, but, in the fixed-priority scheduling there is no deadline miss. We leave the discussions about the task transformation and the schedulability test in Section 4. To be more precise about the above statement, we have rewritten Section 4 to answer two fundamental questions: First, how can we derive the corresponding deferrable task set efficiently? Second, how should we perform the schedulability test on the corresponding deferrable task set correctly?
-}
 
-\action{Section 4 was completely rewritten to be more clear.}
+\begin{response}
+We must distinguish two cases: the period enforcer \emph{runtime rules}, and the \emph{classic analysis} of the period enforcer.
 
-{\bf Q:B.2}:    
+Section 3 is concerned only with the runtime rules. Specifically, it shows that the runtime rules may cause otherwise schedulable sets of multi-segment self-suspending tasks to become unschedulable. Importantly, the runtime rules do not require a conversion to single-segment deferrable tasks.
+
+The conversion to multi-segment deferrable tasks is relevant \emph{only} in the context of schedulability analysis. However, section 3 does not discuss schedulability analysis.
+
+To elaborate a bit more, since the period enforcer \emph{analysis} only applies to the case where a task defers its entire execution time but not parts of it, we should create the corresponding deferrable task set to carry out schedulability analysis. However, it is \emph{not} necessary to create those deferrable task sets for \emph{using} the period enforcer algorithm at runtime: since the computation segments of a segmented self-suspending task are independent from each other, we can simply use the period enforcer algorithm without knowing the corresponding deferrable task set. This is actually how we were able to create the examples in Section 2 and Section 3.
+
+%However, there is a risk that the resulting schedule may not be feasible. Therefore, one would need to verify the feasibility of the corresponding deferrable task set before applying the period enforcer algorithm. Such a step was assumed in [21], and we explain the difficulty in this paper. The period enforcement in the example in Section 3 is only used to enforce the periodic behavior of the 2nd computation segment of task $\tau_2$. We do not specifically discuss the schedulability test over there. Our intention is to show that the period enforcer algorithm is not always superior to the original fixed-priority scheduling. That is, the enforcement makes this segment miss the deadline, but, in the fixed-priority scheduling there is no deadline miss. We leave the discussions about the task transformation and the schedulability test in Section 4. To be more precise about the above statement, we have rewritten Section 4 to answer two fundamental questions: First, how can we derive the corresponding deferrable task set efficiently? Second, how should we perform the schedulability test on the corresponding deferrable task set correctly?
+\end{response}
+
+\action{Section 2 was rewritten and expanded to clearly distinguish between the runtime rule (Section 2.2) and the classic analysis (Section 2.3). The runtime rule --- Equation (1) --- is stated in terms of multi-segmented deferrable tasks. }
+
+\action{Section 4 was completely rewritten to more clearly explain that the problem of finding a suitable corresponding task set is open, and likely difficult.}
+
+
+	\item 
 Section 4 should be reworded. 'precisely converting a self-suspending task
 system into a corresponding single-segment deferrable task set is not an
 easy problem'  $\rightarrow$  'converting a self-suspending tasks system into a
 single-segment deferrable task set introduced pessimism due to period
-enforcement'. It is unclear how the Nelissen paper helps since it does not
+enforcement'. 
+
+\begin{response}
+We do not fully understand this recommendation. In any case, we have completely rewritten this section, which we hope addresses this point as well.
+\end{response}
+
+\item 
+It is unclear how the Nelissen paper helps since it does not
 assume period enforcement. If each self-suspending task is broken into
 deferrable sub tasks (considering all the higher priority tasks as
 non-suspending), why is the Nelissen analysis needed? Also, It should be
@@ -118,9 +111,18 @@ clarified as to why the problem of precisely computing $W_k^{j}$ is useful in
 the first place since period enforcement would introduce pessimism anyway
 (as shown in Section 3).
 
-\response{We do not fully capture the first sentence here from the reviewer. There is no additional pessimism due to the period enforcer algorithm. The pessimism is due to the assumption made by the period enforcer algorithm to allow only a set of deferrable tasks (that only suspend once at beginning). In the revision, we completely rewrote Section 4 to explain the gap between the segmented self-suspending task model and the corresponding deferrable sporadic task set. We need the analysis from Nelissen et al. to precisely break a self-suspending task into multiple deferrable subtasks so that we can calculate the worst-case release jitter of a computation segment. The new structure of Section 4 first explains why it is difficult to precisely calculate the release jitter of the computation segments and then explains that it is rather important to also perform the schedulability test correctly. We show that the schedulability test can be wrong if the test is not done well. }
 
-{\bf Q:B.3}:    
+
+\begin{response}
+We need the analysis from Nelissen et al.\ to precisely break a self-suspending task into multiple deferrable subtasks so that we can calculate the worst-case release jitter of a computation segment. Section 4 explains why it is difficult to precisely calculate the release jitter of the computation segments and clearly points out the connection to Nelissen et al.'s analysis.
+
+%There is no additional pessimism due to the period enforcer algorithm. The pessimism is due to the assumption made by the period enforcer algorithm to allow only a set of deferrable tasks (that only suspend once at beginning). 	
+\end{response}
+
+\action{In the revision, we completely rewrote Section 4 to explain the gap between the segmented self-suspending task model and the corresponding deferrable sporadic task set, and to precisely state the equivalence of the conversion to the worst-case response-time analysis of individual computation segments (i.e., Nelissen et al.'s analysis).
+}
+
+	\item 
 Section 5 should also include the scenario where period enforcement is only
 applicable to the normal execution segments. It seems practical to not
 enforce critical sections since they are usually short in most systems i.e.
@@ -130,43 +132,50 @@ is period enforcement applied to execution segment after the critical
 section, without enforcing the critical section and just including its
 back-to-back execution penalty in the worst-case analysis.
 
-\response{ leave to Bj\"orn}
+
+\begin{response}
+Thank you for the suggestion; this is indeed an interesting option to explore. However, we believe this to be out of the scope of this paper. 
+
+Prior work has explicitly suggested to use the period enforcer to control self-suspensions caused by the MPCP and the DPCP such that there is \emph{no} scheduling penalty, which is only possible if the period enforcer is applied to critical sections. Specifically, this is assumed in Rajkumar's 1991 book [27], and also mentioned in more recent works by his group. In fact, Rajkumar writes in the original period enforcer proposal (emphasis added):
+
+\begin{quote}
+	``The scheduling penalty of deferred execution [when using synchronization protocols] can be enormous to the extent that it can make such protocols almost useless in several cases. \emph{The development of the period enforcer algorithm was primarily motivated by the need to reduce or eliminate this penalty} with a small, if not negligible, overhead. If tasks using these synchronization protocols use the period enforcer, their worst-case blocking durations would be considerably smaller and the schedulable utilization correspondingly higher.'' [26, Section 5.1]
+\end{quote}
 
 
-{\bf Reviewer C}:
+Our intention here is to document that this simply does not work. We do not claim to evaluate all possible ways in which the period enforcer might be used otherwise.
+	
+\end{response}
 
-{\bf Q:C.1}:    
+\action{Section 5.4 has been extended to briefly comment on this third possible interpretation. We now also comment on distributed semaphore protocols (e.g., DPCP, DFLP).}
+
+\end{itemize}
+
+
+\section*{Reviewer C}
+
+\begin{itemize}
+	\item   
 This reviewer was not able to download a complete version of [20] including
 the figures (the .ps available online is highly corrupted). Please provide a
 precise link to the full version of this paper or a way to access to it. 
 
-\response{We are not able to provide a complete version of the paper since the paper is not from us. We also used the same version (without figures) to study the period enforcer algorithm. In the revision, we have decided to detail more steps to improve the consistency of our paper. }
-
-{\bf Reviewer D}:
-
-	The period enforcer algorithm (proposed by Rajkumar [20]) was designed to
-reduce the scheduling penalty caused by self-suspending tasks. This paper
-presents three important observations regarding the applicability of period
-enforcer algorithm and its schedulability analysis to multi-segment
-self-suspending tasks. First, it is shown that period enforcement may cause
-deadline miss in multi-segment self-suspending tasks that are schedulable
-without period enforcement. The original analysis of period enforcer
-algorithm [20] shows that if a set of single-segment (deferrable) tasks is
-schedulable, then the task set is also schedulable under period enforcement.
-Therefore, to apply this result from [20] to a set of multi-segment
-self-suspending tasks, a transformation from multi-segment to single-segment
-task set is needed. Second, it is shown that such transformation is quite
-difficult (i.e., currently only exponential time solution is known). Third,
-it is shown that period enforcer algorithm requires new analysis of existing
-suspension-based locking protocol to compute blocking factor. In other
-words, period enforcer algorithm is incompatible with all existing analyses
-of suspension-based locking protocols. All these three (negative)
-observations show the limitations of the applicability of period enforcer
-algorithm to multi-segment self-suspending task set. These limitations are
-demonstrated using examples that are easy to follow (Section 3, 4 and 5).  
+\begin{response}We are not able to provide a complete version of the original paper since we are not its authors. In the preparation of the paper under review, we also relied on the same online version (without figures) to study the period enforcer algorithm. While figures are indeed missing, they can be inferred from the accompanying detailed  descriptions; the rest of the paper is not corrupted.
+	
+\end{response}
 
 
-{\bf Q:D.1}:  
+\action{In the revision, we have expanded and improved the description of the background material in Section 2 to make our paper much more self-contained.}
+
+
+\end{itemize}
+
+
+\section*{Reviewer D}
+
+
+\begin{itemize}
+	\item   
 This paper is heavily dependent on the assumptions and analysis of the
 original period enforcer algorithm in [20]. Although the authors highlighted
 some of the assumptions and important result (e.g., Theorem 5) from [20], it
@@ -177,9 +186,9 @@ discussion in section 2.3 and section 2.4 becomes clearer. Important details
 from [20] need to be added to this paper to make it more readable and
 self-contained.
 
-\response{leave this to Bj\"orn}
+\action{We have expanded the discussion of necessary background in Section 2. Sections 2.3 and 2.4 have been edited and clarified to make the discussion self-contained.}
 
-{\bf Q:D.2}:  
+	\item   
 There are some terms in section 2.3 and 2.4 that the authors have used
 assuming that readers are already familiar with those terms. For example,
 the terms “deferrable task”, “task set transformation”,
@@ -190,46 +199,63 @@ set of transformed non-self-suspending tasks subject to release jitter
 uses the term deferrable task, the relationship between transformed task set
 and deferrable task set may be explicitly stated for better understanding. 
 
-\response{leave this to Bj\"orn as well}
+\action{We added Section 2.2, which reviews in detail all relevant task models  and clearly defines the terminology used in the paper.}
+	
 
 
-{\bf Q:D.3}:  
+
+	\item   
 Theorem 5 (page 5) mentions about “worst-case” condition. What does it
 mean by worst-case condition for deferrable tasks? Paper [20] explains the
 worst-case. The authors could explain the worst-case or restate the theorem
 in a different way so that reader does not need to seek for the worst-case
 in [20].   
 
-\response{leave this to Bj\"orn as well.
-message from JJ:
-Can you think how to improve that? I think a table would be nice. We may need to put more words from Raj’s paper.. 
-But, let’s assume that Raj decides to take the paper down from his website. Then, no one knows what we are talking about precisely. So, maybe it is a good idea to make Section 2 more self-contained?
-}
+\action{We added an explanation of the term ``worst-case conditions'' immediately after Theorem 5.}
 
-{\bf Q:D.4}:  
+	\item  
 Is there any way to quantify (theoretically or using simulation) the
 schedulability loss/gain using period enforcer algorithm for multi-segment
 self-suspending tasks? The reviewer is curious to learn the impact of the
 negative (theoretical) results of period enforcer algorithm on randomly
 generated multi-segment self-suspending task sets.  
 
-\response{We are not able to provide the (theoretical or simulated) loss/gain due to the following reasons. 1) We are not able to convert a segmented self-suspending task set into the corresponding deferrable task set efficiently and without any information loss. In Section 4.1, we explain the task set transformation for a special case. If there are multiple self-suspending tasks, there is no existing solution to exactly construct the deferrable task set. 2) There is no clear evidence on how such schedulability tests for the corresponding deferrable task set should be designed precisely. We have demonstrated in Section 4.2 that all the deferrable tasks (even constructed from the same self-suspending task) should be considered for analyzing the interference. But, this implies that the worst-case behaviour of the last computation segment can be very pessimistic. Based on the example provided in Section 4.2, one can imagine that the calculation of the deferrable time already considers the earlier computation segments and the calculation of the worst-case interference has to account for the earlier computation segments as well (even if there is no overlap). We are not sure whether this is due to the design or due to the pessimistic analysis. Please refer to Section 4.2 for this. 3) There are also other methods that have been developed recently to handle the self-suspensions, and we are not sure what to compare with. }
+\begin{response}We are not able to provide a meaningful empirical characterization of the loss/gain because there is neither a precise baseline to compare against, nor a practical analysis for the period enforcer. 
+\begin{enumerate}
+	\item We would be curious to learn this, too, but unfortunately we are not able to convert a segmented self-suspending task set into the corresponding deferrable task set efficiently and without  information loss. In Section 4, we explain the task set transformation for a limited special case. If there are multiple self-suspending tasks, there is no existing solution for exactly constructing the deferrable task set: the original proposal [26] failed to define such a conversion, and we did not find one that is both efficient and not too pessimistic. 
+	
+%\item There is no clear evidence on how such schedulability tests for the corresponding deferrable task set should be designed precisely. We have demonstrated in Section 4.2 that all the deferrable tasks (even constructed from the same self-suspending task) should be considered for analyzing the interference. But, this implies that the worst-case behaviour of the last computation segment can be very pessimistic. Based on the example provided in Section 4.2, one can imagine that the calculation of the deferrable time already considers the earlier computation segments and the calculation of the worst-case interference has to account for the earlier computation segments as well (even if there is no overlap). 
+%We are not sure whether this is due to the design or due to the pessimistic analysis. Please refer to Section 4.2 for this. 
 
-\action{Section 4 has been completely rewritten to explain the difficulty.}
+\item There are also no other known methods or analyses to handle self-suspensions in the general case without incurring a potentially large degree of pessimism; we are hence not sure what to use as a fair baseline.
+\end{enumerate}
 
+	
+\end{response}
 
-{\bf Q:D.5}:   
+\action{Section 4 has been rewritten to  more clearly explain the difficulty of analyzing self-suspensions (both with or without the period enforcer).}
+
+\end{itemize}
+
+\begin{itemize}
+	\item 
 Based on the notes of this paper, it is not clear whether one should consider period enforcer algorithm or not for self-suspending tasks.
 
-\response{From our note, we can only support the period enforcer algorithm as stated in the conclusion: ``\emph{Nevertheless, Theorem 5 in [21] could be useful for handling self-suspending tasks (that do not use suspension-based locks) if there exist \emph{efficient} schedulability tests for the corresponding deferrable task systems or the period enforcer algorithm. However, such tests have not been found yet and the development of a precise and efficient schedulability test for self-suspending tasks remains an open problem.}'' However, there are several drawbacks that were never discussed earlier, as pointed out at the end of Section 1. The period enforcer algorithm can still be potentially used with cares. }
+\begin{response}
+	There is currently no known schedulability analysis for the period enforcer (if any task has more than one computation segment).  Until future work finds such an analysis, the period enforcer should not be considered as a solution for handling self-suspensions.
+\end{response}
 
-{\bf Q:D.6}:   
+\action{We have rephrased the last paragraph of the conclusion to make this point more clearly.}
+
+
+	\item    
 Why the dynamic self-suspension model is presented and compared with
 segmented model in section 2.1? It is not clear why period enforcer
 algorithm applies only to the segmented model. Is there any reference or
 argument to support this claim in line 61-62?
 
-\response{There was no reference to support this claim. We explain the reason in Section 2.3 in the revision.}
+\action{We added Section 2.2.4 to explain this limitation.}
+\end{itemize}
 
-\action{The following paragraph is added to Section 2.3.  Note that it is not possible to convert a dynamic self-suspending task into the notion of deferred execution defined in [21], since the definition of a dynamic self-suspending task creates dynamic execution amounts for different jobs of a task. A simple example can explain why the period enforcer algorithm is not compatible with the dynamic self-suspending task model. Suppose that the system has only one task with execution time $C_1=1$, $S_1=1$, and $D_1=T_1=2$. The first job of task $\tau_1$ arrives at time $0$, suspends itself for one time unit, and then executes for one time unit. The second job of task $\tau_1$ arrives at time $2$, first executes for $0.5$ time unit, then suspends for $1$ time unit, and executes for $0.5$ time unit. With the period enforcer algorithm, the second job of task $\tau_1$ starts its execution at time $3$ and will clearly miss the deadline at time $4$.}
+
 \end{document}
