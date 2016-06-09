@@ -11,7 +11,7 @@ The period enforcer algorithm is worth a second look for a number of reasons. Fi
 In this note, we revisit the period enforcer \cite{Raj:suspension1991} to carefully re-examine and explain its underlying assumptions and limitations, and to point out potential misconceptions.  The main contributions are three observations that, to the best of our knowledge, have not been previously reported in the literature on real-time systems:
 \begin{enumerate}
 	\item period enforcement can be a cause of deadline misses in self-suspending task sets that are otherwise schedulable (Section~\ref{sec:unschedulable}); 
-	\item to match the assumptions underlying the analysis of the period enforcer, a schedulability analysis of self-suspending tasks subject to period enforcement requires a task set  transformation that, with current techniques, is subject to exponential time complexity (Section~\ref{sec:convert}); and
+	\item to match the assumptions underlying the analysis of the period enforcer, a schedulability analysis of self-suspending tasks subject to period enforcement requires a task set  transformation for which no solution is known  in the general case, and which  is subject to exponential time complexity (with current techniques)  in the limited case of a single self-suspending task (Section~\ref{sec:convert}); and
 	\item the period enforcer algorithm is incompatible with all existing analyses of suspension-based locking protocols, and can in fact cause ever-increasing suspension times until a deadline is missed (Section~\ref{sec:locking}).
 \end{enumerate}
 
