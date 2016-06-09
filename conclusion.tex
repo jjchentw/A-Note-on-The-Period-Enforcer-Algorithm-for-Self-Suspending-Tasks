@@ -4,14 +4,14 @@
 
 We have revisited the underlying assumptions and limitations of the period enforcer algorithm, which Rajkumar \cite{Raj:suspension1991} introduced to handle segmented self-suspending real-time tasks. 
 
-One key assumption in the original proposal \cite{Raj:suspension1991} is that a deferrable task $\tau_i$ can defer its entire execution time but not parts of it. This creates some mismatches between the original self-suspending task set and the corresponding deferrable task set, which we have demonstrated with an example that shows that Theorem 5 in \cite{Raj:suspension1991} does not reflect the schedulability of the original self-suspending task system. 
+One key assumption in the original proposal \cite{Raj:suspension1991} is that a deferrable task $\tau_i$ can defer its entire execution time but not parts of it. This creates some mismatches between the original segmented self-suspending task set and the corresponding single-segment deferrable task set, which we have demonstrated with an example that shows that Theorem 5 in \cite{Raj:suspension1991} does not reflect the schedulability of the original segmented self-suspending task system. 
 
 
-The original proposal \cite{Raj:suspension1991} further left open the question of how to convert a segmented self-suspending task set to a corresponding set of deferrable tasks. Taking into account recent developments~\cite{ecrts15nelissen}, we have observed that such a transformation is non-trivial in the general case.  
+The original proposal \cite{Raj:suspension1991} further left open the question of how to convert a segmented self-suspending task set to a corresponding set of single-segment deferrable tasks. This problem remains open. Taking into account recent developments~\cite{ecrts15nelissen}, we have observed that such a transformation is non-trivial in the general case.  
 
 Finally, we have demonstrated that substantial difficulties arise if one attempts to combine suspension-based locks with period enforcement. These difficulties stem from the fact that period enforcement can increase contention or lock-holding times, which increases the lengths of self-suspension intervals, which then in turn feeds back into the period enforcer's minimum suspension lengths. As a consequence, period enforcement invalidates all existing blocking analyses.
 
-Nevertheless, the period enforcer algorithm \emph{per se}, and Theorem 5 in \cite{Raj:suspension1991},  could still prove to be useful for handling self-suspending tasks (that do not use suspension-based locks) if  \emph{efficient} schedulability tests or methods for constructing sets of single-segment deferrable tasks can be found. However, such tests or transformations have not yet been found  and the development of a precise and efficient schedulability test for self-suspending tasks remains an open problem.
+Nevertheless, the period enforcer algorithm \emph{per se}, and Theorem 5 in \cite{Raj:suspension1991},  could still prove to be useful for handling self-suspending tasks (that do not use suspension-based locks) if  \emph{efficient} schedulability tests or methods for constructing sets of single-segment deferrable tasks can be found. However, such tests or transformations have not yet been obtained  and the development of a precise and efficient schedulability test for self-suspending tasks remains an open problem.
 
 
 \section*{Acknowledgements}
