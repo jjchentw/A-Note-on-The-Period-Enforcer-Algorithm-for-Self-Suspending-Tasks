@@ -99,7 +99,7 @@ This concludes our review of relevant task models. Before reviewing the period e
 \subsubsection{Assumptions, Busy Periods, and Task Set Transformations}
 \label{sec:misc-defs}
 
-We focus exclusively on preemptive fixed-priority scheduling in this note, as the period enforcer is explicitly designed for this setting. For simplicity, we assume that the given tasks are indexed in a decreasing order with respect to their priorities (i.e., $\tau_1$ is the highest-priority task). 
+We focus exclusively on preemptive fixed-priority scheduling in this note, as the period enforcer is explicitly designed for this setting. For simplicity, we assume that tasks are indexed in order of decreasing priority (i.e., $\tau_1$ is the highest-priority task). 
 
 A key concept in the period enforcer's runtime rules (discussed next) is the notion of a \emph{level-$i$ busy interval}, which is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
 
@@ -218,7 +218,7 @@ Theorem 5 (in \cite{Raj:suspension1991}) is a strong result: it implies that the
 
 However, recall that, in the original analysis~\cite{Raj:suspension1991}, deferrable tasks are assumed to defer their  execution either completely or not at all (but not parts of it). It is hence important to realize that Theorem 5 in \cite{Raj:suspension1991} applies only to the transformed set of \emph{single-segment} deferrable tasks, and that it does \emph{not} apply to the \emph{original} set of multi-segmented self-suspending tasks. 
 
-This leads to the first question: \emph{Does the schedulability of the  original set of segmented self-suspending tasks (without period enforcement) imply the schedulability under period enforcement?} That is, can Theorem 5 (in \cite{Raj:suspension1991}) be generalized to multi-segmented self-suspending tasks? In Section \ref{sec:unschedulable}, we answer this question in the negative.
+This leads to the first question: \emph{If the  original set of segmented self-suspending tasks is schedulable without period enforcement, is it then also schedulable under period enforcement?} That is, can Theorem 5 (in \cite{Raj:suspension1991}) be generalized to multi-segmented self-suspending tasks? In Section \ref{sec:unschedulable}, we answer this question in the negative.
 
 \begin{enumerate}
 	\item There exist sets of segmented self-suspending tasks that are schedulable under fixed-priority scheduling without any enforcement, but that are infeasible under period enforcement. This shows that Theorem 5 in \cite{Raj:suspension1991} has to be  used with care --- it may be applied only in the context of the transformed single-segment deferrable task set, but not in the context of the original multi-segmented self-suspending task set.
