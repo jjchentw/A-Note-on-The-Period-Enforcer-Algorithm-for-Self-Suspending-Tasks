@@ -79,6 +79,14 @@ The example exploits that a job may require \emph{less} service than its task's 
 \end{itemize}
 Figure~\ref{fig:locking-alt2} shows an example schedule assuming periodic job arrivals.
 
+\begin{figure}[t]
+  \centering
+  \includegraphics[scale=1]{../figures/locking/legend.pdf}
+  \includegraphics[scale=1]{../figures/locking/sched-locking-alt2.pdf}
+  \caption{Example schedule of two tasks $\tau_1$ and $\tau_2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect immediately, even if the critical section segment is not yet eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the third job of task $\tau_1$ misses its deadline at time $24$.}
+  \label{fig:locking-alt2}
+\end{figure}
+
 
 At time $1-\epsilon$, the first job of $\tau_2$ acquires the shared resource because $\tau_1$ does not issue its request until time $1$. Consequently, $\tau_1$ is blocked until time $a^2_{1,1} = 3 - \epsilon$, and we have
 \begin{align*}
@@ -106,13 +114,6 @@ Furthermore, if both tasks continue the illustrated execution pattern, the perio
 As in the previous example,  the response-time analyses for both the MPCP~\cite{Br:13,LNR:09} and the   FMLP~\cite{Br:13} predict a worst-case response time of $6$ for both tasks (i.e., four time units of execution, and at most two time units of blocking). The example thus demonstrates that, if lock requests take effect immediately, then the period enforcer is incompatible with existing blocking analyses because, under the second interpretation, it increases the effective lock-holding times.
 
 
-\begin{figure}[t]
-  \centering
-  \includegraphics[scale=1]{../figures/locking/legend.pdf}
-  \includegraphics[scale=1]{../figures/locking/sched-locking-alt2.pdf}
-  \caption{Example schedule of two tasks $\tau_1$ and $\tau_2$ on two processors sharing one lock-protected resource. The example assumes that lock requests take effect immediately, even if the critical section segment is not yet eligible to be scheduled according to the rules of the period enforcer algorithm. Under this interpretation, the third job of task $\tau_1$ misses its deadline at time $24$.}
-  \label{fig:locking-alt2}
-\end{figure}
 
 \subsection{Discussion}
 
