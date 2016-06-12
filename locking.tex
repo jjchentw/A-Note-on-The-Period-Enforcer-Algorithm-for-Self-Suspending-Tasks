@@ -1,6 +1,7 @@
 \section{Incompatibility with Suspension-Based Locking Protocols}
 \label{sec:locking}
 
+In this section, we take a look at the period enforcer in the context of synchronization protocols.
 Binary semaphores, i.e., suspension-based locks used to realize mutually exclusive access to shared resources, are a common source of self-suspensions in multiprocessor real-time systems. When a task tries to use a resource that has already been locked, it self-suspends until the resource becomes available. Such self-suspensions due to lock contention, just like any other self-suspension, result in deferred execution and thus can detrimentally affect a task's interference on lower-priority tasks. It may thus seem natural to apply the period enforcer  to control the negative effects of blocking-induced self-suspensions.\footnote{The use of  period enforcement in combination with suspension-based locks has indeed been assumed in prior work~\cite{Raj:91}, stated as a motivation and possible use case in the original period enforcer proposal~\cite{Raj:suspension1991}, and suggested as a potential improvement elsewhere~\cite{Lak:11,LNR:09}. As we show here, this is actually unsafe.} However, as we demonstrate with two examples, it is actually unsafe to apply period enforcement to lock-induced self-suspensions. 
 
 

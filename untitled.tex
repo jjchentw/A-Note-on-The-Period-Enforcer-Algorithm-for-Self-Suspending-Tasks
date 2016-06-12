@@ -99,7 +99,7 @@ This concludes our review of relevant task models. Before reviewing the period e
 \subsubsection{Assumptions, Busy Periods, and Task Set Transformations}
 \label{sec:misc-defs}
 
-We focus exclusively on preemptive fixed-priority scheduling in this note, as the period enforcer is explicitly designed for this setting. For simplicity, we assume that tasks are indexed in order of decreasing priority (i.e., $\tau_1$ is the highest-priority task). 
+We focus exclusively on preemptive fixed-priority scheduling in this note, as the period enforcer is explicitly designed for this setting. For simplicity, we assume that the given tasks are indexed in a decreasing order with respect to their priorities (i.e., $\tau_1$ is the highest-priority task). 
 
 A key concept in the period enforcer's runtime rules (discussed next) is the notion of a \emph{level-$i$ busy interval}, which is a maximal interval during which  the processor executes only segments of tasks with priority $i$ or higher.
 
@@ -109,7 +109,7 @@ Finally, Rajkumar's original analysis~\cite{Raj:suspension1991} of the period en
 
 
 
-Importantly, the tasks in $\tset$ and $\tset'$ do \emph{not} have to be of the same task model, nor does the number of tasks have to remain constant (i.e.,  $|\tset| \neq |\tset'|$ is possible). Specifically, the task set transformation underlying the analysis of the period enforcer maps each \emph{multi-}segmented self-suspending task $\tau_i \in \tset$  to $m_i$ \emph{single-}segmented self-suspending tasks in $\tset'$ (i.e., $|\tset'| = \sum_{\tset} m_i$).
+Importantly, the tasks in $\tset$ and $\tset'$ do \emph{not} have to be of the same task model, nor does the number of tasks have to remain the same (i.e.,  $|\tset| \neq |\tset'|$ is possible). Specifically, the task set transformation underlying the analysis of the period enforcer maps each \emph{multi-}segmented self-suspending task $\tau_i \in \tset$  to $m_i$ \emph{single-}segmented self-suspending tasks in $\tset'$ (i.e., $|\tset'| = \sum_{\tset} m_i$).
 
 With these definitions in place, we can now introduce the period enforcer. 
 
@@ -139,7 +139,7 @@ The root cause is increased interference due to the ``back-to-back'' execution e
 
 The key idea underlying the period enforcer algorithm is to artificially delay the execution of computation segments if a job resumes ``too soon.'' To this end,  the period enforcer determines for each computation segment an \emph{eligibility time}. If a segment resumes  before its eligibility time, the execution of the segment is delayed until the eligibility time is reached.
 
-A segment's eligibility time is determined according to the following rule. Let $ET_{i,j}^k$ denote the eligibility time of the $k$\xth computation segment of the $j$\xth job of task $\tau_i$. Further, let $a^k_{i,j}$ denote the segment's arrival time. Finally, let $\mathit{busy}(\tau_i, t')$ denote the last time that a level-$i$ busy interval began on or prior to time $t'$ (i.e., the processor executes only $\tau_i$ or higher-priority tasks throughout the interval $[\mathit{busy}(\tau_i, t'), t']$). The period enforcer algorithm defines the segment eligibility time of the $k$\xth segment as
+A segment's eligibility time is determined according to the following rule. Let $ET_{i,j}^k$ denote the eligibility time of the $k$\xth computation segment of the $j$\xth job of task $\tau_i$. Further, let $a^k_{i,j}$ denote the segment's arrival time. Finally, let $\mathit{busy}(\tau_i, t')$ denote the last time that a level-$i$ busy interval begins on or prior to time $t'$ (i.e., the processor executes only $\tau_i$ or higher-priority tasks throughout the interval $[\mathit{busy}(\tau_i, t'), t']$). The period enforcer algorithm defines the segment eligibility time of the $k$\xth segment as
 \begin{align}\label{eq:ET-def}
 	ET_{i,j}^k & = \max\left(ET_{i,j-1}^k + T_i,\ \mathit{busy}(\tau_i, a^k_{i,j})\right),
 \end{align}
@@ -147,7 +147,7 @@ where $ET_{i,0}^k = -T_i$~\cite[Section 3.1]{Raj:suspension1991}. This simple an
 
 \subsubsection{Example: Avoiding Back-to-Back Execution}
 
-Figure \ref{fig:ok-with-period-enforcement} illustrates how the definition of eligibility time in Equation~\ref{eq:ET-def} restores the schedulability of the task set depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. Consider the eligibility times of the second segment of task $\tau_2$.
+Figure \ref{fig:ok-with-period-enforcement} illustrates how the definition of eligibility time in Equation~\eqref{eq:ET-def} restores the schedulability of the task set depicted in Figure~\ref{fig:not-ok-without-period-enforcement}. Consider the eligibility times of the second segment of task $\tau_2$.
 
 By definition,  $ET_{2,0}^2 = -T_2 = -10$. At time~5, when the second computation segment of the first job resumes ($a_{2,1}^2 = 5$), we thus have
 \begin{align*}
@@ -218,14 +218,14 @@ Theorem 5 (in \cite{Raj:suspension1991}) is a strong result: it implies that the
 
 However, recall that, in the original analysis~\cite{Raj:suspension1991}, deferrable tasks are assumed to defer their  execution either completely or not at all (but not parts of it). It is hence important to realize that Theorem 5 in \cite{Raj:suspension1991} applies only to the transformed set of \emph{single-segment} deferrable tasks, and that it does \emph{not} apply to the \emph{original} set of multi-segmented self-suspending tasks. 
 
-This leads to the first question: \emph{Does schedulability of the  original set of segmented self-suspending tasks (without period enforcement) imply schedulability under period enforcement?} That is, can Theorem 5 (in \cite{Raj:suspension1991}) be generalized to multi-segmented self-suspending tasks? In Section \ref{sec:unschedulable}, we answer this question in the negative.
+This leads to the first question: \emph{Does the schedulability of the  original set of segmented self-suspending tasks (without period enforcement) imply the schedulability under period enforcement?} That is, can Theorem 5 (in \cite{Raj:suspension1991}) be generalized to multi-segmented self-suspending tasks? In Section \ref{sec:unschedulable}, we answer this question in the negative.
 
 \begin{enumerate}
-	\item There exist sets of segmented self-suspending tasks that are schedulable under fixed-priority scheduling without any enforcement, but that are infeasible under period enforcement. This shows that Theorem 5 in \cite{Raj:suspension1991} has to be  used with care --- it may be applied only in the context of the transformed single-segment deferrable task set, and not in the context of the original multi-segmented self-suspending task set.
+	\item There exist sets of segmented self-suspending tasks that are schedulable under fixed-priority scheduling without any enforcement, but that are infeasible under period enforcement. This shows that Theorem 5 in \cite{Raj:suspension1991} has to be  used with care --- it may be applied only in the context of the transformed single-segment deferrable task set, but not in the context of the original multi-segmented self-suspending task set.
 \end{enumerate}
 
 
-Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to answer the task-set transformation question: \emph{given a set of segmented self-suspending tasks $\tset$, how do we obtain a corresponding set of single-segment deferrable tasks $\tset'$ such that $\tset'$ is schedulable (without period enforcement)  only if $\tset$ is schedulable (with period enforcement)?} That is, as discussed in Section~\ref{sec:classic-analysis}, the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert multi-segmented self-suspending tasks into corresponding sets of single-segment deferrable tasks, but it is left undefined in~\cite{Raj:suspension1991}  \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
+Therefore, to apply Theorem 5 to conclude that a set of segmented self-suspending task sets remains schedulable despite period enforcement, we first have to answer the task-set transformation question: \emph{given a set of segmented self-suspending tasks $\tset$, how do we obtain a corresponding set of single-segment deferrable tasks $\tset'$ such that $\tset'$ is schedulable (without period enforcement)  only if $\tset$ is schedulable (with period enforcement)?} That is, as discussed in Section~\ref{sec:classic-analysis}, the classic analysis of the period enforcer \cite{Raj:suspension1991} presumes that it is possible to convert a set of multi-segmented self-suspending tasks into a corresponding set of single-segment deferrable tasks, but it is left undefined in~\cite{Raj:suspension1991}  \emph{how} this central step should be accomplished. In Section \ref{sec:convert}, we make a pertinent observation.
 
 \begin{enumerate}
 \setcounter{enumi}{1}
