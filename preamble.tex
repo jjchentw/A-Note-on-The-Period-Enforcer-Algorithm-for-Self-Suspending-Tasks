@@ -1,13 +1,24 @@
-\documentclass[a4paper,USenglish]{lites}
+%\documentclass[a4paper,USenglish]{lites}
+\documentclass{article}
   %for A4 paper format use option "a4paper"
   %for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
  % for section-numbered lemmas etc., use "numberwithinsect"
  
+ 
+\usepackage[left=25mm,right=25mm,top=25mm,bottom=25mm,a4paper]{geometry}
+%\usepackage{fullpage}
+ 
 \usepackage{microtype}%if unwanted, comment out or use option "draft"
 \usepackage{textcomp}
+\usepackage{times}
 
 % Citation style
 \usepackage[sort&compress,numbers]{natbib}	
+
+% Math
+\usepackage{amsthm}
+\usepackage{amsmath}
+\usepackage{amssymb}
 
 
 \usepackage{xspace}
@@ -17,7 +28,7 @@
 %\bibliographystyle{plain}% the recommended bibstyle
 \bibliographystyle{abbrv}% the recommended bibstyle
 
-%\usepackage{graphicx}
+\usepackage{graphicx}
 \usepackage[super]{nth}
 
 
