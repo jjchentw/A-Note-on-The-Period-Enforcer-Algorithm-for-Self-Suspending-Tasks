@@ -6,14 +6,18 @@ To apply an analysis of the period enforcer based on Theorem 5 in~\cite{Raj:susp
 
 The original period enforcer proposal~\cite{Raj:suspension1991} is silent on this issue and does not spell out a procedure for converting a multi-segmented self-suspending task to a corresponding set of single-segment deferrable tasks. However, in our opinion, performing such a transformation without introducing additional pessimism is not at all easy in the general case.
 
-In the following, we illustrate the inherent difficulty of the problem by focusing on a special case to which we can apply a recent result of Nelissen et al. \cite{ecrts15nelissen}, which allows analyzing the exact worst-case response time of multi-segmented self-suspending sporadic tasks, albeit with exponential time complexity. 
-Nelissen et al.'s worst-case response time analysis~\cite{ecrts15nelissen} is exact under the following conditions:\footnote{We refer to the characteristics of the worst-case release pattern provided in Lemma 2 in \cite{ecrts15nelissen}. The exact worst-case response time can be obtained by exploring all  release patterns that satisfy these conditions.} 
+In the following, we illustrate the inherent difficulty of the problem by focusing on a special case to which we can apply a recent result of Nelissen et al. \cite{ecrts15nelissen}, which allows analyzing the worst-case response time of multi-segmented self-suspending sporadic tasks, albeit with exponential time complexity. 
+Nelissen et al.'s worst-case response time analysis~\cite{ecrts15nelissen} can be applied under the following conditions:
 \begin{enumerate}
 	\item the task set contains only one self-suspending task, 
 	\item the self-suspending task is the lowest-priority task, 
 	\item the scheduling policy is preemptive fixed-priority scheduling, and 
 	\item all tasks have constrained deadlines (i.e., $D_i \leq T_i$ for all $\tau_i$).
 \end{enumerate}
+
+Even for the restrictive case above, the mixed-integer linear programming (MILP) approach by Nelissen et al. \cite{ecrts15nelissen} does not provide the exact worst-case response time. 
+However, if we apply the characteristics of the worst-case release pattern provided in Lemma 2 by Nelissen et al. \cite{ecrts15nelissen},  the exact worst-case response time can be calculated by exploring all  release patterns that satisfy these conditions. Detailed discussions can be found in a recent report by Chen \cite{Chen2016b}. In fact, it has recently been shown that verifying the schedulability of such a task set is coNP-hard in the strong sense even in the considered simplified case~\cite{RTSS2016-suspension}. Therefore, analyzing the exact worst-case response time of task $\tau_k$ is NP-hard in the strong sense by following the same proof by Chen \cite{RTSS2016-suspension}.
+
 
 For an arbitrary number of tasks $k \geq 2$, 
 suppose that the system has $k-1$ regular sporadic tasks and only one segmented self-suspending task $\tau_k$, and that all tasks have implicit deadlines (i.e., $D_i = T_i$ for all $\tau_i$). Further suppose that task $\tau_k$ has $m_k$ segments with $m_k \geq 3$.  
@@ -28,9 +32,11 @@ where $W_k^0 = 0$.  Therefore, if we can derive the exact segment worst-case res
 Based on these considerations, it appears that the transformation problem is  --- at least in the considered special case --- equivalent to the  worst-case response time analysis of a multi-segmented self-suspending task. 
 
 However, deriving an exact bound $W_k^j$ for $j=1,2,\ldots,m_k-1$ for task $\tau_k$ is not easy: 
-even for the above ``simple'' case, Nelissen et al.'s solution~\cite{ecrts15nelissen} for calculating the exact worst-case response time requires exponential time complexity if $j \geq 2$. Furthermore, Nelissen et al. \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that the problem of deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be very challenging indeed.\footnote{In fact, in ongoing work, it has recently been shown that verifying the schedulability of task $\tau_k$ is coNP-hard in the strong sense even in the considered simplified case~\cite{Chen2016b}.}
+even for the above ``simple'' case, Nelissen et al.'s MILP solution~\cite{ecrts15nelissen} for calculating a safe upper bound of the worst-case response time requires exponential time complexity if $j \geq 2$. 
+Deriving the exact $W_k^j$ can be achieved by exploring all  release patterns that satisfy the conditions listed in Lemma 2 in \cite{ecrts15nelissen}, with very high time complexity. 
+Furthermore, Nelissen et al. \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that the problem of deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be very challenging indeed.
 
-Nelissen et al.~\cite{ecrts15nelissen} did not study the period enforcer; rather, they considered unrestricted self-suspensions. However, given that the period enforcer has no effect on tasks that do not self-suspend~\cite{Raj:suspension1991}, and given that in the considered special case only the lowest-priority task self-suspends, we believe that these observations transfer to the period enforcement case.
+Nelissen et al.~\cite{ecrts15nelissen} and Chen \cite{RTSS2016-suspension} did not study the period enforcer; rather, they considered unrestricted self-suspensions. However, given that the period enforcer has no effect on tasks that do not self-suspend~\cite{Raj:suspension1991}, and given that in the considered special case only the lowest-priority task self-suspends, we believe that these observations transfer to the period enforcement case.
 
 To summarize, to analyze the period enforcer based on Theorem~5 in~\cite{Raj:suspension1991}, a procedure for transforming multi-segmented self-suspending tasks into sets of single-segment deferrable tasks is needed, but no such procedure is given in the original proposal~\cite{Raj:suspension1991}.
 %
