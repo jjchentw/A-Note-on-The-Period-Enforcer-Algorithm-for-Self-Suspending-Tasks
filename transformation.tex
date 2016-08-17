@@ -34,7 +34,7 @@ Based on these considerations, it appears that the transformation problem is  --
 However, deriving an exact bound $W_k^j$ for $j=1,2,\ldots,m_k-1$ for task $\tau_k$ is not easy: 
 even for the above ``simple'' case, Nelissen et al.'s MILP solution~\cite{ecrts15nelissen} for calculating a safe upper bound of the worst-case response time requires exponential time complexity if $j \geq 2$. 
 Deriving the exact $W_k^j$ can be achieved by exploring all  release patterns that satisfy the conditions listed in Lemma 2 by Nelissen et al. \cite{ecrts15nelissen}, with very high time complexity. 
-Furthermore, Nelissen et al. \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that the problem of deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be very challenging indeed.
+%Furthermore, Nelissen et al. \cite{ecrts15nelissen} identified several misconceptions in prior analyses, and after correcting those misconceptions, observed that the problem of deriving the worst-case response time of a computation segment in pseudo-polynomial time seems to be very challenging indeed.
 
 Nelissen et al.~\cite{ecrts15nelissen} and Chen \cite{RTSS2016-suspension} did not study the period enforcer; rather, they considered unrestricted self-suspensions. However, given that the period enforcer has no effect on tasks that do not self-suspend~\cite{Raj:suspension1991}, and given that in the considered special case only the lowest-priority task self-suspends, we believe that these observations transfer to the period enforcement case.
 
