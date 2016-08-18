@@ -2,7 +2,7 @@
 
 
 \section{Introduction} 
-When real-time tasks suspend themselves (due to blocking I/O, lock contention, \textit{etc.}), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95,WC16-suspend-DATE,ecrts15nelissen}. This penalty, which is maximized when a task defers the completion of one job just until the release of the next job, can manifest as response-time increases and thus may lead to deadline misses.
+When real-time tasks suspend themselves (due to blocking I/O, lock contention, \textit{etc.}), they defer a part of their execution to be processed at a later time. A consequence of such deferred execution is a potential interference penalty for lower-priority tasks~\cite{LSS:87,LSST:91,Ra:90,ABRTW:93,SLS:95,WC16-suspend-DATE,ecrts15nelissen}. This penalty, which is maximized when a task defers the completion of one job just until the arrival of the next job, can manifest as response-time increases and thus may lead to deadline misses.
 
 To avoid such detrimental effects,  Rajkumar \cite{Raj:suspension1991} proposed the \emph{period enforcer} algorithm,  a technique to control (or shape) the processor demand of self-suspending tasks on uniprocessors and partitioned multiprocessors under preemptive fixed-priority scheduling. In a nutshell, the period enforcer algorithm artificially increases the length of certain suspensions whenever a task's activation pattern carries the risk of inducing undue interference in lower-priority tasks. 
 
@@ -33,15 +33,15 @@ Since the analysis of the period enforcer requires reasoning about different tas
 
 The most basic and best understood task model is the \emph{periodic task model} due to Liu and Layland~\cite{LL:73}. In this model, each task $\tau_i$ is characterized as a tuple $(C_i,T_i)$, where $C_i$ denotes an upper bound on the total execution time of any job of $\tau_i$ and $T_i$ denotes the (exact) \emph{inter-arrival time} (or \emph{period}) of $\tau_i$. Each such periodic task $\tau_i$ releases a job at time~0, and periodically every $T_i$ units thereafter. Each job must finish by the time the next arrives. Importantly, Liu and Layland assume both that the $k$\xth job of $\tau_i$ arrives \emph{exactly} at time $(k-1)\times T_i$, and that an incomplete job is \emph{always} available for execution (i.e., jobs never block on I/O or locks).
 
-A straightforward generalization of the periodic task model is to introduce an explicit \emph{relative deadline} parameter $D_i$. In this case, each task is represented by a three-tuple $(C_i, T_i, D_i)$, with the interpretation that every job of $\tau_i$ must finish within $D_i$ time units after its release. Task $\tau_i$ is said to have an \emph{implicit deadline}  if $D_i = T_i$, a \emph{constrained deadline} if $D_i \leq T_i$, and an \emph{arbitrary deadline} otherwise. We primarily consider implicit deadlines in this note.
+A straightforward generalization of the periodic task model is to introduce an explicit \emph{relative deadline} parameter $D_i$. In this case, each task is represented by a three-tuple $(C_i, T_i, D_i)$, with the interpretation that every job of $\tau_i$ must finish within $D_i$ time units after its arrival. Task $\tau_i$ is said to have an \emph{implicit deadline}  if $D_i = T_i$, a \emph{constrained deadline} if $D_i \leq T_i$, and an \emph{arbitrary deadline} otherwise. We primarily consider implicit deadlines in this note.
 
 \subsubsection{Sporadic Tasks}
 
-Mok~\cite{Mo:83} introduced the \emph{sporadic task model}, a widely used generalization of the periodic task model in which each task $\tau_i$ is still specified by a tuple $(C_i, T_i, D_i)$. However, the sporadic task model relaxes the inter-arrival constraint $T_i$ to specify a \emph{minimum} (rather than an exact) separation between jobs. In this interpretation, the first job is not necessarily released at time~0, and the exact release times of future jobs cannot be predicted, which is an appropriate modeling assumption for event-triggered tasks.
+Mok~\cite{Mo:83} introduced the \emph{sporadic task model}, a widely used generalization of the periodic task model in which each task $\tau_i$ is still specified by a tuple $(C_i, T_i, D_i)$. However, the sporadic task model relaxes the inter-arrival constraint $T_i$ to specify a \emph{minimum} (rather than an exact) separation between jobs. In this interpretation, the first job does not necessarily arrive at time~0, and the exact arrival times of future jobs cannot be predicted, which is an appropriate modeling assumption for event-triggered tasks.
 
-On uniprocessors, the relaxation from periodic to sporadic job arrivals does not introduce additional pessimism:\footnote{Assuming that all periodic tasks synchronously release a job at time zero.} since any two jobs of a sporadic task $\tau_i$ are  known to be released \emph{at least} $T_i$ time units apart, the sporadic task model~\cite{Mo:83} still allows for schedulability analysis that is as accurate as Liu and Layland's analysis of periodic tasks~\cite{LL:73}. 
+On uniprocessors, the relaxation from periodic to sporadic job arrivals does not introduce additional pessimism:\footnote{Assuming that all periodic tasks synchronously release a job at time zero.} since any two jobs of a sporadic task $\tau_i$ are  known to arrive \emph{at least} $T_i$ time units apart, the sporadic task model~\cite{Mo:83} still allows for schedulability analysis that is as accurate as Liu and Layland's analysis of periodic tasks~\cite{LL:73}. 
 
-Mok retained the assumption that incomplete jobs are always ready for execution (i.e., no suspensions), and that jobs, once released, are \emph{immediately} available for execution. 
+Mok retained the assumption that incomplete jobs are always ready for execution (i.e., no suspensions), and that jobs  are \emph{immediately} available for execution after their arrival.
 
 
 \subsubsection{Release Jitter}
@@ -49,11 +49,11 @@ Mok retained the assumption that incomplete jobs are always ready for execution 
 
 The latter assumption --- immediate availability for execution --- is inappropriate in many practical systems (especially in networked systems) if events (e.g., messages) that trigger job releases can incur non-negligible delays (e.g., network congestion). Such delays in task activation can be accounted for by introducing a notion of \emph{release jitter}. To this end, each task is represented by a four-tuple $(C_i, J_i, T_i, D_i)$, where the parameter $J_i$ is a bound on the maximum time that a job remains unavailable for execution after it should have started to run. Release jitter can be incorporated in both the periodic and the sporadic task models.
 
-In the presence of release jitter, the terms ``job arrival'' and ``job release,'' which are often used interchangeably, take on distinct meanings: a job's \emph{arrival time} denotes the point in time when it actually becomes available for execution, whereas a job's \emph{release time} is the instant that is relevant for the (minimum) inter-arrival time constraint. Any job of task $\tau_i$  \emph{arrives} at most $J_i$ time units after it is \emph{released}.
+In the presence of release jitter, the terms ``job arrival'' and ``job release,'' which are often used interchangeably, take on distinct meanings: a job's \emph{release time} denotes the point in time when it actually becomes available for execution, whereas a job's \emph{arrival time} is the instant that is relevant for the (minimum) inter-arrival time constraint. Any job of task $\tau_i$  is \emph{released} at most $J_i$ time units after it  \emph{arrives}.
 
 Notably, non-zero release jitter \emph{does} cause additional pessimism: in the worst case, two consecutive jobs of a task $\tau_i$ can be separated by as little as $T_i - J_i$ time units (if the earlier job incurs maximum release jitter and the successor job incurs none). As a result, a task may ``carry in'' some additional work into a given interval. Taking this effect into account, Audsley et al.~\cite{ABRTW:93} developed a response-time analysis for sporadic and periodic constrained-deadline tasks subject to release jitter under preemptive fixed-priority scheduling.
 
-However, even in the presence of release jitter, a key assumption remains that jobs do not self-suspend (e.g., wait for I/O).\footnote{Audsley et al.~\cite{ABRTW:93} do present a response-time analysis that takes into account a limited form of suspensions due to semaphores (``blocking''). However, their analysis does not apply to general self-suspensions (i.e., the kind of self-suspensions targeted by the period enforcer algorithm)  and is not relevant in the context of this paper.} That is, Audsley et al.~\cite{ABRTW:93} assume that, once a job has arrived, it continuously remains available for dispatching until it completes. This restriction is removed next.
+However, even in the presence of release jitter, a key assumption remains that jobs do not self-suspend (e.g., wait for I/O).\footnote{Audsley et al.~\cite{ABRTW:93} do present a response-time analysis that takes into account a limited form of suspensions due to semaphores (``blocking''). However, their analysis does not apply to general self-suspensions (i.e., the kind of self-suspensions targeted by the period enforcer algorithm)  and is not relevant in the context of this paper.} That is, Audsley et al.~\cite{ABRTW:93} assume that, once a job is released, it continuously remains available for dispatching until it completes. This restriction is removed next.
 
 
 \subsubsection{Self-Suspending Tasks}
@@ -66,7 +66,7 @@ To date, the real-time literature on self-suspensions has focused on two task mo
 The dynamic self-suspending task model characterizes each
 task $\tau_i$ as a four-tuple $(C_i,S_i,T_i,D_i)$: the parameters $C_i$, $T_i$, and $D_i$ have their usual meaning (i.e., as in the periodic and sporadic task models), and $S_i$ denotes an upper bound on the total self-suspension time of any job of $\tau_i$. The dynamic self-suspension model does not impose a bound on the maximum number of self-suspensions, nor does it make any assumptions as to where during a job's execution self-suspensions occur. That is, how often a job defers its execution, when it does so, and how much of its execution it defers may vary unpredictably from job to job.
 
-Allowing tasks to self-suspend can impose substantial scheduling penalties (an example is provided shortly in Section~\ref{sec:pe}) and greatly complicates  schedulability analysis (e.g., see~\cite{ecrts15nelissen,Ri:04,Chen2016}). In particular, release jitter and self-suspensions are not interchangeable concepts and it is not safe~\cite{Chen2016,ecrts15nelissen} to simply substitute $J_i$ with $S_i$ in Audsley et al.'s analysis~\cite{ABRTW:93}. (Nonetheless, under the dynamic suspension model, it is possible for jobs of self-suspending tasks to defer their entire execution requirement, so self-suspensions can be seen as a generalization of release jitter.)
+Allowing tasks to self-suspend can impose substantial scheduling penalties (an example is provided shortly in Section~\ref{sec:pe}) and greatly complicates  schedulability analysis (e.g., see~\cite{ecrts15nelissen,Ri:04,Chen2016}). In particular, release jitter and self-suspensions are not interchangeable concepts and it is not safe~\cite{Chen2016,ecrts15nelissen} to simply substitute $J_i$ with $S_i$ in Audsley et al.'s analysis~\cite{ABRTW:93}. (Nonetheless, under the dynamic suspension model, it is possible for jobs of self-suspending tasks to defer their entire execution requirement, so self-suspension can be seen as a generalization of release jitter.)
 
 The period enforcer algorithm aims to mitigate the negative effects of self-suspensions. However, for reasons that will be explained in Section~\ref{sec:incompat}, the period enforcer algorithm cannot be meaningfully combined with the dynamic suspension model. Instead, it requires the segmented suspension model, which we discuss next.
 
@@ -79,7 +79,7 @@ $(S_{i}^0,C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which
 
 The first self-suspension segment $S_i^0$, prior to the first execution segment, is equivalent to release jitter (i.e., the parameter $J_i$ in Section~\ref{sec:jitter}). However, in much of the literature on the segmented self-suspending task model, the segment $S_i^0$ is assumed to be absent (i.e., $S_i^0 = 0$), such that there are only $m_i - 1$ suspension intervals (and jobs arrive jitter-free). Unless noted otherwise we adopt this convention and assume $S_i^0 = 0$.
 
-We say that a segment \emph{arrives} when it becomes available for execution. The first computation segment arrives immediately when the job is released (unless $S_i^0 \neq 0$); the second computation segment (if any) arrives when the job resumes from its first self-suspension, \textit{etc.}
+We say that a segment is \emph{released} when it becomes available for execution. The first computation segment is released immediately when the job arrives (unless $S_i^0 \neq 0$); the second computation segment (if any) is released when the job resumes from its first self-suspension, \textit{etc.}
 
 
 The advantage of the dynamic model (Section~\ref{sec:dynamic}) is that it is more flexible since it does not impose any assumptions on a task's control flow. The advantage of the segmented model is that it allows for more accurate analysis. The period enforcer algorithm and its analysis~\cite{Raj:suspension1991} applies (only) to the segmented model, as explained in Sections~\ref{sec:incompat} and~\ref{sec:classic-analysis}. 
@@ -153,9 +153,9 @@ By definition,  $ET_{2,0}^2 = -T_2 = -10$. At time~5, when the second computatio
 \begin{align*}
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, a_{2,1}^2\right) ) = \max(0, 5) = 5
 \end{align*}
-since the arrival of $\tau_2$'s second segment (and the release of $\tau_1$) starts a new level-2 busy interval at time $a_{2,1}^2 = 5$. The second segment of $\tau_2$'s first job is hence immediately eligible to execute; however, due to the presence of a pending higher-priority job, $\tau_2$ is not actually scheduled until time~8 (just as without period enforcement as depicted in Figure \ref{fig:not-ok-without-period-enforcement}).
+since the release of $\tau_2$'s second segment (and the arrival of $\tau_1$) starts a new level-2 busy interval at time $a_{2,1}^2 = 5$. The second segment of $\tau_2$'s first job is hence immediately eligible to execute; however, due to the presence of a pending higher-priority job, $\tau_2$ is not actually scheduled until time~8 (just as without period enforcement as depicted in Figure \ref{fig:not-ok-without-period-enforcement}).
 
-The second segment of the second job of $\tau_2$ arrives at time $a_{2,2}^2 = 12$. In this case, the segment is \emph{not} immediately eligible to execute since
+The second segment of the second job of $\tau_2$ is released at time $a_{2,2}^2 = 12$. In this case, the segment is \emph{not} immediately eligible to execute since
 \begin{align*}
 	ET_{2,2}^2 & = \max\left(ET_{2,1}^2 + T_2,\ \mathit{busy}(\tau_2, a_{2,2}^2\right) ) = \max(5 + 10, 12) = 15.
 \end{align*}
@@ -248,8 +248,8 @@ In this section, we demonstrate with an example that there exist sets of sporadi
 
 To this end, consider a task system consisting of $2$ tasks. Let $\tau_1$ denote a sporadic task without self-suspensions and parameters $C_1 = 2$ and $T_1=D_1=10$, and let $\tau_2$ denote a self-suspending task consisting of two segments with parameters  $C_2^1 = 1$,  $S_2^1 = 6$, $C_2^2=1$, and $ T_2=D_2=11$. Suppose that we use the rate-monotonic priority assignment, i.e., $\tau_1$ has higher priority than $\tau_2$. This task set is schedulable without any enforcement since at most one computation segment of a job of $\tau_2$ can be delayed by $\tau_1$: 
 \begin{itemize}
-	\item if the first segment of a job of $\tau_2$ is interfered with by $\tau_1$, then the second segment resumes at most after $9$ time units after the release of the job and the response time of task $\tau_2$ is hence $10$; otherwise,
-	\item  if the first segment of a job of $\tau_2$ is not interfered with by $\tau_1$, then the second segment resumes at most $7$ time units after the release of the job and hence the  response time of task $\tau_2$ is at most $10$ even if the second segment is interfered with by $\tau_1$.
+	\item if the first segment of a job of $\tau_2$ is interfered with by $\tau_1$, then the second segment resumes at most $9$ time units after the arrival of the job and the response time of task $\tau_2$ is hence $10$; otherwise,
+	\item  if the first segment of a job of $\tau_2$ is not interfered with by $\tau_1$, then the second segment resumes at most $7$ time units after the arrival of the job and hence the  response time of task $\tau_2$ is at most $10$ even if the second segment is interfered with by $\tau_1$.
 \end{itemize}
 Figure \ref{fig:example-original} depicts an example schedule of the task set assuming periodic job arrivals.
 
@@ -277,7 +277,7 @@ Figure \ref{fig:example} shows the resulting schedule for a periodic release pat
 	ET_{2,1}^2 & = \max\left(-T_2 + T_2,\ \mathit{busy}(\tau_2, 9\right) ) = 9.
 \end{align*}
 
-In contrast to the first job, the second job of task $\tau_2$ (which is released at time $11$) is affected by period enforcement. The first segment of the second job arrives at time $a^1_{2,2} = 11$, incurs interference for one time unit during $[11, 12)$, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
+In contrast to the first job, the second job of task $\tau_2$ (which arrives at time $11$) is affected by period enforcement. The first segment of the second job is released at time $a^1_{2,2} = 11$, incurs interference for one time unit during $[11, 12)$, and suspends at time $13$. The  second segment of the second job hence resumes only at time $a^2_{2,2} = 19$. Thus, we have
 \begin{align*}
 	ET_{2,2}^1 & = \max\left(0 + 11,\ \mathit{busy}(\tau_2, 11)\right) = 11  \text{ and }
 \\
