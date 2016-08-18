@@ -77,7 +77,7 @@ The period enforcer algorithm aims to mitigate the negative effects of self-susp
 The (multi-)segmented self-suspending sporadic task model extends the  four-tuple $(C_i,S_i,T_i,D_i)$ by characterizing each self-suspending task as a fixed, finite linear sequence of computation and suspension intervals. These intervals are represented as a tuple
 $(S_{i}^0,C_{i}^1,S_{i}^1,C_{i}^2,S_{i}^2,...,S_{i}^{m_i-1},C_{i}^{m_i})$, which is composed of $m_i$ computation segments separated by $m_i$ suspension intervals.
 
-The first self-suspension segment $S_i^0$, prior to the first execution segment, is equivalent to release jitter (i.e., the parameter $J_i$ in Section~\ref{sec:jitter}). However, in much of the literature on the segmented self-suspending task model, the segment $S_i^0$ is assumed to be absent (i.e., $S_i^0 = 0$), such that there are only $m_i - 1$ suspension intervals (and jobs arrive jitter-free). Unless noted otherwise we adopt this convention.
+The first self-suspension segment $S_i^0$, prior to the first execution segment, is equivalent to release jitter (i.e., the parameter $J_i$ in Section~\ref{sec:jitter}). However, in much of the literature on the segmented self-suspending task model, the segment $S_i^0$ is assumed to be absent (i.e., $S_i^0 = 0$), such that there are only $m_i - 1$ suspension intervals (and jobs arrive jitter-free). Unless noted otherwise we adopt this convention and assume $S_i^0 = 0$.
 
 We say that a segment \emph{arrives} when it becomes available for execution. The first computation segment arrives immediately when the job is released (unless $S_i^0 \neq 0$); the second computation segment (if any) arrives when the job resumes from its first self-suspension, \textit{etc.}
 
